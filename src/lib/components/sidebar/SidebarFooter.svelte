@@ -19,9 +19,9 @@
 
  const footerClasses = $derived(
   cn(
-   'mt-auto p-4 border-t',
+   'mt-auto p-0 border-t',
    // Se colapsada no desktop, reduz padding lateral
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-2',
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-0',
    className
   )
  );

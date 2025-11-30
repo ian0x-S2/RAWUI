@@ -19,9 +19,9 @@
 
  const headerClasses = $derived(
   cn(
-   'flex flex-col space-y-2 p-4 border-b',
+   'flex flex-col space-y-2 p-2 border-b',
    // Se colapsada no desktop, reduz padding lateral
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-2',
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-0',
    className
   )
  );

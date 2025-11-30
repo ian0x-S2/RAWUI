@@ -19,9 +19,9 @@
 
  const contentClasses = $derived(
   cn(
-   'flex-1 overflow-y-auto p-4',
+   'flex-1 overflow-y-auto p-0',
    // Se colapsada no desktop, reduz padding lateral
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-2',
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-0',
    className
   )
  );

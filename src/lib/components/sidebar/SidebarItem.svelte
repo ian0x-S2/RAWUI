@@ -29,8 +29,12 @@
    'hover:bg-accent hover:text-accent-foreground',
    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
    active && 'bg-accent text-accent-foreground',
-   // Se colapsada, centraliza o conteúdo e remove gap
-   sidebarContext?.isCollapsed && 'justify-center gap-0 px-2',
+
+   // Se colapsada (Desktop e fechada no modo collapsible)
+   sidebarContext?.isCollapsed && [
+    'justify-center px-4 gap-0', // Remove gap e centraliza
+    'w-fit mx-auto' // Garante que o botão ocupe a largura da sidebar colapsada
+   ],
    className
   )
  );

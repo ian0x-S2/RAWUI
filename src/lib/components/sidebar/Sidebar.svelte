@@ -31,18 +31,28 @@
   cn(
    'fixed z-50 h-full border-r bg-background transition-all duration-300',
    side === 'left' ? 'left-0' : 'right-0',
+
+   // --- Lógica Mobile ---
    isMobile && [
     'w-64',
     open ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
    ],
-   !isMobile && [
-    // FIX:
-    side === 'left'
-     ? '-translate-x-full md:translate-x-0'
-     : 'translate-x-full md:translate-x-0',
 
-    variant === 'default' && 'w-64',
-    variant === 'collapsible' && [open ? 'w-64' : 'w-16']
+   // --- Lógica Desktop ---
+   !isMobile && [
+    // Previne glitch de carregamento (assume estado inicial 'aberto' se for desktop padrão)
+    // Mas permite fechar dinamicamente
+
+    // Variant: Default (Pode abrir/fechar completamente)
+    variant === 'default' && [
+     open ? 'w-64 translate-x-0' : 'w-0 -translate-x-full border-none overflow-hidden' // Esconde e remove largura
+    ],
+
+    // Variant: Collapsible (Alterna entre largo e ícone)
+    variant === 'collapsible' && [
+     'translate-x-0', // Sempre visível em posição
+     open ? 'w-64' : 'w-16'
+    ]
    ],
    className
   )
@@ -60,7 +70,7 @@
 
 <!-- Sidebar -->
 <aside class={sidebarClasses}>
- <div class="flex h-full flex-col overflow-y-auto">
+ <div class="flex h-full flex-col overflow-x-hidden overflow-y-auto">
   {@render children()}
  </div>
 </aside>

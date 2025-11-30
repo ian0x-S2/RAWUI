@@ -108,7 +108,7 @@
   <!-- Sidebar -->
   <Sidebar>
    <SidebarHeader>
-    <div class="flex items-center gap-3 px-2">
+    <div class="flex items-center gap-3 px-0">
      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
       <span class="text-sm font-bold text-primary-foreground">A</span>
      </div>
