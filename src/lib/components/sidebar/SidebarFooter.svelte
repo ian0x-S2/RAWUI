@@ -1,4 +1,6 @@
+<!-- SidebarFooter.svelte -->
 <script lang="ts">
+ import { getContext } from 'svelte';
  import { cn } from '$lib/utils';
  import type { Snippet } from 'svelte';
 
@@ -8,8 +10,23 @@
  }
 
  let { children, class: className }: Props = $props();
+
+ // Obtém o contexto da sidebar para saber se está colapsada
+ const sidebarContext = getContext<{
+  isCollapsed: boolean;
+  isMobile: boolean;
+ }>('sidebar');
+
+ const footerClasses = $derived(
+  cn(
+   'mt-auto p-4 border-t',
+   // Se colapsada no desktop, reduz padding lateral
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-2',
+   className
+  )
+ );
 </script>
 
-<div class={cn('mt-auto space-y-2 pt-4', className)}>
+<div class={footerClasses}>
  {@render children()}
 </div>

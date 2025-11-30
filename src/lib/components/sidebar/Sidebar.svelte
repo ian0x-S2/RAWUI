@@ -1,73 +1,64 @@
 <!-- Sidebar.svelte -->
 <script lang="ts">
- import { setContext, type Snippet } from 'svelte';
+ import { getContext, type Snippet } from 'svelte';
  import { cn } from '$lib/utils';
 
  interface Props {
   children: Snippet;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
   side?: 'left' | 'right';
   class?: string;
  }
 
- let {
-  children,
-  open = $bindable(false),
-  onOpenChange,
-  side = 'left',
-  class: className
- }: Props = $props();
+ let { children, side = 'left', class: className }: Props = $props();
 
- // Context para compartilhar estado com items
- const context = {
-  get open() {
-   return open;
-  },
-  close: () => {
-   open = false;
-   onOpenChange?.(false);
-  }
- };
+ // Obtém o contexto do Provider
+ const context = getContext<{
+  open: boolean;
+  isMobile: boolean;
+  variant: 'default' | 'collapsible';
+  isCollapsed: boolean;
+  close: () => void;
+  toggle: () => void;
+ }>('sidebar');
 
- setContext('sidebar', context);
+ if (!context) {
+  throw new Error('Sidebar must be used within a SidebarProvider');
+ }
 
- // Controla scroll do body quando sidebar está aberta
- $effect(() => {
-  if (open) {
-   document.body.style.overflow = 'hidden';
-  } else {
-   document.body.style.overflow = '';
-  }
+ const { open, isMobile, variant } = $derived(context);
 
-  return () => {
-   document.body.style.overflow = '';
-  };
- });
+ // Computed para classes da sidebar
+ const sidebarClasses = $derived(
+  cn(
+   'fixed z-50 h-full border-r bg-background transition-all duration-300',
+   side === 'left' ? 'left-0' : 'right-0',
+   // Mobile behavior (drawer)
+   isMobile && [
+    'w-64',
+    open ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
+   ],
+   // Desktop behavior
+   !isMobile && [
+    variant === 'default' && 'w-64 translate-x-0',
+    variant === 'collapsible' && [open ? 'w-64' : 'w-16', 'translate-x-0']
+   ],
+   className
+  )
+ );
 </script>
 
-<!-- Backdrop -->
-{#if open}
+<!-- Backdrop para mobile -->
+{#if isMobile && open}
  <button
-  class="fixed inset-0 z-40 bg-black/80 lg:hidden"
-  onclick={() => {
-   open = false;
-   onOpenChange?.(false);
-  }}
+  class="fixed inset-0 z-40 bg-black/80 md:hidden"
+  onclick={() => context.close()}
   aria-label="Close sidebar"
- />
+ ></button>
 {/if}
 
 <!-- Sidebar -->
-<aside
- class={cn(
-  'fixed z-50 h-full w-64 border-r bg-background transition-transform duration-300 lg:translate-x-0',
-  side === 'left' ? 'left-0' : 'right-0',
-  open ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full',
-  className
- )}
->
- <div class="flex h-full flex-col overflow-y-auto p-4">
+<aside class={sidebarClasses}>
+ <div class="flex h-full flex-col overflow-y-auto">
   {@render children()}
  </div>
 </aside>

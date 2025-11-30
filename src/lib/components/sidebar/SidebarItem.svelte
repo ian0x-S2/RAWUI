@@ -1,23 +1,84 @@
+<!-- SidebarItem.svelte -->
 <script lang="ts">
- import { getContext, type Snippet } from 'svelte';
+ import { getContext } from 'svelte';
  import { cn } from '$lib/utils';
+ import type { Snippet } from 'svelte';
 
  interface Props {
-  children: Snippet;
+  icon?: Snippet;
+  label: string;
   href?: string;
   active?: boolean;
   onclick?: () => void;
   class?: string;
  }
 
- let { children, href, active = false, onclick, class: className }: Props = $props();
+ let { icon, label, href, active = false, onclick, class: className }: Props = $props();
 
- const context = getContext<{ close: () => void }>('sidebar');
+ // Obtém o contexto da sidebar
+ const sidebarContext = getContext<{
+  isCollapsed: boolean;
+  isMobile: boolean;
+  close: () => void;
+ }>('sidebar');
 
- const handleClick = () => {
+ // Classes do item
+ const itemClasses = $derived(
+  cn(
+   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+   'hover:bg-accent hover:text-accent-foreground',
+   'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+   active && 'bg-accent text-accent-foreground',
+   // Se colapsada, centraliza o conteúdo e remove gap
+   sidebarContext?.isCollapsed && 'justify-center gap-0 px-2',
+   className
+  )
+ );
+
+ // Handler para clique
+ function handleClick() {
   onclick?.();
-  context?.close();
- };
+
+  // Se estiver no mobile e tem href, fecha a sidebar
+  if (sidebarContext?.isMobile && href) {
+   sidebarContext.close();
+  }
+ }
+
+ // Conteúdo do item
+ const showLabel = $derived(!sidebarContext?.isCollapsed || sidebarContext?.isMobile);
 </script>
 
-{@render children()}
+{#if href}
+ <a
+  {href}
+  class={itemClasses}
+  onclick={handleClick}
+  title={sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? label : undefined}
+ >
+  {#if icon}
+   <span class="shrink-0">
+    {@render icon()}
+   </span>
+  {/if}
+  {#if showLabel}
+   <span class="truncate">{label}</span>
+  {/if}
+ </a>
+{:else}
+ <button
+  type="button"
+  class={itemClasses}
+  onclick={handleClick}
+  title={sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? label : undefined}
+ >
+  {#if icon}
+   <span class="shrink-0">
+    {@render icon()}
+   </span>
+  {/if}
+  {#if showLabel}
+   <span class="truncate">{label}</span>
+  {/if}
+ </button>
+{/if}

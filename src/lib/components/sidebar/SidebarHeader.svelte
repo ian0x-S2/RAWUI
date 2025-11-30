@@ -1,4 +1,6 @@
+<!-- SidebarHeader.svelte -->
 <script lang="ts">
+ import { getContext } from 'svelte';
  import { cn } from '$lib/utils';
  import type { Snippet } from 'svelte';
 
@@ -8,8 +10,23 @@
  }
 
  let { children, class: className }: Props = $props();
+
+ // Obtém o contexto da sidebar para saber se está colapsada
+ const sidebarContext = getContext<{
+  isCollapsed: boolean;
+  isMobile: boolean;
+ }>('sidebar');
+
+ const headerClasses = $derived(
+  cn(
+   'flex flex-col space-y-2 p-4 border-b',
+   // Se colapsada no desktop, reduz padding lateral
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-2',
+   className
+  )
+ );
 </script>
 
-<div class={cn('mb-4 space-y-2', className)}>
+<div class={headerClasses}>
  {@render children()}
 </div>
