@@ -11,7 +11,6 @@
 
  let { children, class: className }: Props = $props();
 
- // Obtém o contexto da sidebar para saber se está colapsada
  const sidebarContext = getContext<{
   isCollapsed: boolean;
   isMobile: boolean;
@@ -19,9 +18,14 @@
 
  const contentClasses = $derived(
   cn(
-   'flex-1 overflow-y-auto p-0',
-   // Se colapsada no desktop, reduz padding lateral
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile && 'px-0',
+   'flex min-h-0 flex-1 flex-col gap-2 overflow-auto',
+   // Transição suave do padding
+   'transition-[padding] duration-300 ease-in-out',
+
+   // Padrão: p-4 (16px). Colapsado: p-2 (8px).
+   // Isso compensa a redução da sidebar
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'p-2' : 'p-4',
+
    className
   )
  );

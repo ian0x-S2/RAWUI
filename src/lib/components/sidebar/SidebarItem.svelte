@@ -15,74 +15,81 @@
 
  let { icon, label, href, active = false, onclick, class: className }: Props = $props();
 
- // Obtém o contexto da sidebar
  const sidebarContext = getContext<{
   isCollapsed: boolean;
   isMobile: boolean;
   close: () => void;
  }>('sidebar');
 
- // Classes do item
+ const isCollapsed = $derived(sidebarContext?.isCollapsed && !sidebarContext?.isMobile);
+
+ // Classes do container do item
  const itemClasses = $derived(
   cn(
-   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-   'hover:bg-accent hover:text-accent-foreground',
-   'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
-   active && 'bg-accent text-accent-foreground',
+   // BASE:
+   'group relative flex w-full items-center rounded-md border border-transparent p-2 text-sm font-medium transition-all duration-200 ease-in-out outline-none ring-sidebar-ring',
+   'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+   'active:bg-sidebar-accent active:text-sidebar-accent-foreground',
+   'disabled:pointer-events-none disabled:opacity-50',
+   'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+   // ESTADOS:
+   active && 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold',
 
-   // Se colapsada (Desktop e fechada no modo collapsible)
-   sidebarContext?.isCollapsed && [
-    'justify-center px-4 gap-0', // Remove gap e centraliza
-    'w-fit mx-auto' // Garante que o botão ocupe a largura da sidebar colapsada
-   ],
+   // AQUI ESTÁ O SEGREDO DO SHADCN:
+   // Animamos o GAP.
+   // Expandido: gap-2 (ou gap-3).
+   // Colapsado: gap-0 (o texto cola no ícone, mas como o texto tem width 0, ele some).
+   isCollapsed ? 'gap-0 justify-center' : 'gap-3 justify-start',
+
    className
   )
  );
 
- // Handler para clique
  function handleClick() {
   onclick?.();
-
-  // Se estiver no mobile e tem href, fecha a sidebar
   if (sidebarContext?.isMobile && href) {
    sidebarContext.close();
   }
  }
-
- // Conteúdo do item
- const showLabel = $derived(!sidebarContext?.isCollapsed || sidebarContext?.isMobile);
 </script>
+
+{#snippet ItemContent()}
+ {#if icon}
+  <!-- O ícone mantém tamanho fixo (size-4 = 16px) e nunca encolhe (shrink-0) -->
+  <span class="flex size-4 shrink-0 items-center justify-center">
+   {@render icon()}
+  </span>
+ {/if}
+
+ <span
+  class={cn(
+   'overflow-hidden whitespace-nowrap transition-all duration-200 ease-in-out',
+   // Transição suave do texto
+   isCollapsed
+    ? 'max-w-0 opacity-0' // Texto some completamente
+    : 'max-w-[200px] opacity-100' // Texto aparece
+  )}
+ >
+  {label}
+ </span>
+{/snippet}
 
 {#if href}
  <a
   {href}
   class={itemClasses}
   onclick={handleClick}
-  title={sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? label : undefined}
+  title={isCollapsed ? label : undefined}
  >
-  {#if icon}
-   <span class="shrink-0">
-    {@render icon()}
-   </span>
-  {/if}
-  {#if showLabel}
-   <span class="truncate">{label}</span>
-  {/if}
+  {@render ItemContent()}
  </a>
 {:else}
  <button
   type="button"
   class={itemClasses}
   onclick={handleClick}
-  title={sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? label : undefined}
+  title={isCollapsed ? label : undefined}
  >
-  {#if icon}
-   <span class="shrink-0">
-    {@render icon()}
-   </span>
-  {/if}
-  {#if showLabel}
-   <span class="truncate">{label}</span>
-  {/if}
+  {@render ItemContent()}
  </button>
 {/if}
