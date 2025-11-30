@@ -27,20 +27,22 @@
 
  const { open, isMobile, variant } = $derived(context);
 
- // Computed para classes da sidebar
  const sidebarClasses = $derived(
   cn(
    'fixed z-50 h-full border-r bg-background transition-all duration-300',
    side === 'left' ? 'left-0' : 'right-0',
-   // Mobile behavior (drawer)
    isMobile && [
     'w-64',
     open ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
    ],
-   // Desktop behavior
    !isMobile && [
-    variant === 'default' && 'w-64 translate-x-0',
-    variant === 'collapsible' && [open ? 'w-64' : 'w-16', 'translate-x-0']
+    // FIX:
+    side === 'left'
+     ? '-translate-x-full md:translate-x-0'
+     : 'translate-x-full md:translate-x-0',
+
+    variant === 'default' && 'w-64',
+    variant === 'collapsible' && [open ? 'w-64' : 'w-16']
    ],
    className
   )
