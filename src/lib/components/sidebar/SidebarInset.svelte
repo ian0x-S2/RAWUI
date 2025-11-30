@@ -1,6 +1,6 @@
 <script lang="ts">
  import { getContext, type Snippet } from 'svelte';
- import { cn } from '../../utils';
+ import { cn } from '../../utils/index.ts';
 
  interface Props {
   children: Snippet;
