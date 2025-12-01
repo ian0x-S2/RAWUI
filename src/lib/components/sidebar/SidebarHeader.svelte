@@ -1,4 +1,3 @@
-<!-- lib/components/sidebar/SidebarHeader.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { cn } from '../../utils/index.ts';
@@ -22,10 +21,13 @@
 
  const headerClasses = $derived(
   cn(
-   'flex items-center border-b p-2',
-   'transition-all duration-200 ease-linear overflow-hidden',
-   icon || label ? 'flex-row' : 'flex-col',
-   isCollapsed ? 'gap-0 justify-center' : 'gap-2 justify-start',
+   'flex w-full items-center border-b shrink-0',
+   'transition-all duration-200 ease-out',
+
+   // Padding e layout responsivos
+   isCollapsed ? 'p-3 justify-center' : 'p-3 justify-start',
+   isCollapsed ? 'gap-0' : 'gap-3',
+
    className
   )
  );
@@ -34,7 +36,7 @@
 <div class={headerClasses}>
  {#if icon || label}
   {#if icon}
-   <div class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-md">
+   <div class="flex size-8 shrink-0 items-center justify-center rounded-lg">
     {@render icon()}
    </div>
   {/if}
@@ -42,8 +44,9 @@
   {#if label}
    <span
     class={cn(
-     'truncate font-semibold transition-all duration-200 ease-linear',
-     isCollapsed ? 'w-0 opacity-0' : 'ml-1 w-auto opacity-100'
+     'truncate text-base font-semibold',
+     'transition-all duration-200 ease-out',
+     isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
     )}
    >
     {label}
@@ -52,7 +55,12 @@
  {/if}
 
  {#if children}
-  <div class={cn('flex w-full', (icon || label) && 'ml-auto')}>
+  <div
+   class={cn(
+    'flex transition-all duration-200 ease-out',
+    isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'ml-auto w-auto opacity-100'
+   )}
+  >
    {@render children()}
   </div>
  {/if}

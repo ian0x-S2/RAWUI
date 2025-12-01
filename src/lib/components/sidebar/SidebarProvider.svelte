@@ -1,4 +1,3 @@
-<!-- lib/components/sidebar/SidebarProvider.svelte -->
 <script lang="ts">
  import { setContext } from 'svelte';
  import type { Snippet } from 'svelte';
@@ -32,7 +31,6 @@
   });
  }
 
- // Bloqueia scroll no mobile quando aberto
  $effect(() => {
   if (isMobile && mobileOpen) {
    document.body.style.overflow = 'hidden';
@@ -65,18 +63,12 @@
  setContext('sidebar', context);
 </script>
 
-<!--
-  Container Principal:
-  Define as variáveis de largura aqui.
-  --sidebar-width: 16rem (256px)
-  --sidebar-width-icon: 4rem
--->
 <div
  class={cn(
-  'group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar',
+  'group/sidebar-wrapper flex min-h-svh w-full has-[data-variant=inset]:bg-sidebar',
   className
  )}
- style="--sidebar-width: 16rem; --sidebar-width-icon: 4rem;"
+ style="--sidebar-width: 16rem; --sidebar-width-icon: 3.5rem;"
 >
  {@render children()}
 </div>

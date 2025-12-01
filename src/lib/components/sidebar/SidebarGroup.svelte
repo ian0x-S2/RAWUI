@@ -1,4 +1,3 @@
-<!-- SidebarGroup.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { cn } from '../../utils/index.ts';
@@ -11,13 +10,18 @@
 
  let { children, class: className }: Props = $props();
 
- // Obtém o contexto da sidebar para saber se está colapsada
  const sidebarContext = getContext<{
   isCollapsed: boolean;
   isMobile: boolean;
  }>('sidebar');
 
- const groupClasses = $derived(cn('space-y-1', className));
+ const groupClasses = $derived(
+  cn(
+   'flex flex-col transition-all duration-200 ease-out',
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'gap-1' : 'gap-1',
+   className
+  )
+ );
 </script>
 
 <div class={groupClasses}>

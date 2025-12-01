@@ -1,4 +1,3 @@
-<!-- SidebarContent.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { cn } from '../../utils/index.ts';
@@ -18,13 +17,13 @@
 
  const contentClasses = $derived(
   cn(
-   'flex min-h-0 flex-1 flex-col gap-2 overflow-auto',
-   // Transição suave do padding
-   'transition-[padding] duration-300 ease-in-out',
+   'flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden',
+   'transition-all duration-200 ease-out',
 
-   // Padrão: p-4 (16px). Colapsado: p-2 (8px).
-   // Isso compensa a redução da sidebar
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'p-2' : 'p-3',
+   // Padding otimizado: menos espaço quando colapsado
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile
+    ? 'px-2 py-2 gap-1'
+    : 'px-3 py-3 gap-2',
 
    className
   )

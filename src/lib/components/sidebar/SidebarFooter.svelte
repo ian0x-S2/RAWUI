@@ -12,28 +12,21 @@
 
  let { children, class: className, icon, label }: Props = $props();
 
- // Obtém o contexto da sidebar para saber se está colapsada
  const sidebarContext = getContext<{
   isCollapsed: boolean;
   isMobile: boolean;
  }>('sidebar');
 
- // Define se está colapsado (apenas desktop)
  const isCollapsed = $derived(sidebarContext?.isCollapsed && !sidebarContext?.isMobile);
 
  const footerClasses = $derived(
   cn(
-   // Base layout: mt-auto para ficar no fundo, border-t
-   'flex items-center mt-auto border-t p-2',
-   'transition-all duration-200 ease-linear overflow-hidden',
+   'flex w-full items-center border-t mt-auto shrink-0',
+   'transition-all duration-200 ease-out',
 
-   // Se tiver icon/label, força linha. Se não, usa coluna (padrão container genérico)
-   icon || label ? 'flex-row' : 'flex-col',
-
-   // Lógica de colapso:
-   // Colapsado: gap-0 e centralizado (modo ícone)
-   // Expandido: gap-2 e alinhado à esquerda
-   isCollapsed ? 'gap-0 justify-center px-0' : 'gap-2 justify-start',
+   // Padding e layout responsivos
+   isCollapsed ? 'p-3 justify-center' : 'p-3 justify-start',
+   isCollapsed ? 'gap-0' : 'gap-3',
 
    className
   )
@@ -43,7 +36,7 @@
 <div class={footerClasses}>
  {#if icon || label}
   {#if icon}
-   <div class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-md">
+   <div class="flex size-8 shrink-0 items-center justify-center rounded-lg">
     {@render icon()}
    </div>
   {/if}
@@ -51,9 +44,9 @@
   {#if label}
    <span
     class={cn(
-     'truncate font-semibold transition-all duration-200 ease-linear',
-     // Esconde o texto suavemente quando colapsado
-     isCollapsed ? 'w-0 opacity-0' : 'ml-1 w-auto opacity-100'
+     'truncate text-sm font-semibold',
+     'transition-all duration-200 ease-out',
+     isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
     )}
    >
     {label}
@@ -62,7 +55,12 @@
  {/if}
 
  {#if children}
-  <div class={cn('flex w-full', (icon || label) && 'ml-auto')}>
+  <div
+   class={cn(
+    'flex transition-all duration-200 ease-out',
+    isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'ml-auto w-auto opacity-100'
+   )}
+  >
    {@render children()}
   </div>
  {/if}

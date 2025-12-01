@@ -1,4 +1,3 @@
-<!-- SidebarItem.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { cn } from '../../utils/index.ts';
@@ -23,23 +22,24 @@
 
  const isCollapsed = $derived(sidebarContext?.isCollapsed && !sidebarContext?.isMobile);
 
- // Classes do container do item
+ // Mostrar tooltip no hover quando colapsado
+ let showTooltip = $state(false);
+
  const itemClasses = $derived(
   cn(
-   // BASE:
-   'group relative flex w-full items-center rounded-md border border-transparent p-2 text-sm font-medium transition-all duration-200 ease-in-out outline-none ring-sidebar-ring',
+   'group relative flex w-full items-center rounded-lg text-sm font-medium',
+   'transition-all duration-200 ease-out',
    'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-   'active:bg-sidebar-accent active:text-sidebar-accent-foreground',
-   'disabled:pointer-events-none disabled:opacity-50',
-   'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-   // ESTADOS:
-   active && 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold',
+   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
 
-   // AQUI ESTÁ O SEGREDO DO SHADCN:
-   // Animamos o GAP.
-   // Expandido: gap-2 (ou gap-3).
-   // Colapsado: gap-0 (o texto cola no ícone, mas como o texto tem width 0, ele some).
-   isCollapsed ? 'gap-0 justify-center' : 'gap-3 justify-start',
+   // Padding responsivo
+   isCollapsed ? 'p-2 justify-center' : 'p-2 justify-start',
+
+   // Gap suave
+   isCollapsed ? 'gap-0' : 'gap-3',
+
+   // Estado ativo
+   active && 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold',
 
    className
   )
@@ -55,23 +55,28 @@
 
 {#snippet ItemContent()}
  {#if icon}
-  <!-- O ícone mantém tamanho fixo (size-4 = 16px) e nunca encolhe (shrink-0) -->
-  <span class="flex size-4 shrink-0 items-center justify-center">
+  <span class="flex size-5 shrink-0 items-center justify-center">
    {@render icon()}
   </span>
  {/if}
 
  <span
   class={cn(
-   'overflow-hidden whitespace-nowrap transition-all duration-200 ease-in-out',
-   // Transição suave do texto
-   isCollapsed
-    ? 'max-w-0 opacity-0' // Texto some completamente
-    : 'max-w-[200px] opacity-100' // Texto aparece
+   'overflow-hidden text-sm whitespace-nowrap',
+   'transition-all duration-200 ease-out',
+   isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
   )}
  >
   {label}
  </span>
+
+ {#if isCollapsed && showTooltip}
+  <div
+   class="pointer-events-none absolute left-full z-50 ml-2 rounded-md border bg-popover px-3 py-1.5 text-sm whitespace-nowrap text-popover-foreground shadow-md"
+  >
+   {label}
+  </div>
+ {/if}
 {/snippet}
 
 {#if href}
@@ -79,7 +84,8 @@
   {href}
   class={itemClasses}
   onclick={handleClick}
-  title={isCollapsed ? label : undefined}
+  onmouseenter={() => (showTooltip = true)}
+  onmouseleave={() => (showTooltip = false)}
  >
   {@render ItemContent()}
  </a>
@@ -88,7 +94,8 @@
   type="button"
   class={itemClasses}
   onclick={handleClick}
-  title={isCollapsed ? label : undefined}
+  onmouseenter={() => (showTooltip = true)}
+  onmouseleave={() => (showTooltip = false)}
  >
   {@render ItemContent()}
  </button>
