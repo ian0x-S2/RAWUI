@@ -22,10 +22,12 @@
  const headerClasses = $derived(
   cn(
    'flex w-full items-center border-b shrink-0',
-   'transition-all duration-200 ease-out',
+   // AJUSTE 10: ease-linear
+   'transition-all duration-200 ease-linear',
 
-   // Padding e layout responsivos
-   isCollapsed ? 'p-3 justify-center' : 'p-3 justify-start',
+   // AJUSTE 11: p-3 uniforme
+   'p-3',
+   isCollapsed ? 'justify-center' : 'justify-start',
    isCollapsed ? 'gap-0' : 'gap-3',
 
    className
@@ -36,7 +38,8 @@
 <div class={headerClasses}>
  {#if icon || label}
   {#if icon}
-   <div class="flex size-8 shrink-0 items-center justify-center rounded-lg">
+   <!-- AJUSTE 12: size-6 para destaque -->
+   <div class="flex size-6 shrink-0 items-center justify-center">
     {@render icon()}
    </div>
   {/if}
@@ -45,7 +48,7 @@
    <span
     class={cn(
      'truncate text-base font-semibold',
-     'transition-all duration-200 ease-out',
+     'transition-all duration-200 ease-linear',
      isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
     )}
    >
@@ -57,7 +60,7 @@
  {#if children}
   <div
    class={cn(
-    'flex transition-all duration-200 ease-out',
+    'flex transition-all duration-200 ease-linear',
     isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'ml-auto w-auto opacity-100'
    )}
   >
