@@ -24,7 +24,7 @@
 
    // Padrão: p-4 (16px). Colapsado: p-2 (8px).
    // Isso compensa a redução da sidebar
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'p-2' : 'p-4',
+   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'p-2' : 'p-3',
 
    className
   )

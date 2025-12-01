@@ -49,7 +49,7 @@
     variant === 'default' && [open ? 'w-[16rem]' : 'w-0 border-none overflow-hidden'],
     // Collapsed: w-[16rem] -> w-[3rem] (48px)
     // 48px é o padrão ideal para ícones centralizados (16px padding + 16px icon + 16px padding)
-    variant === 'collapsible' && [open ? 'w-[16rem]' : 'w-[3rem]']
+    variant === 'collapsible' && [open ? 'w-[16rem]' : 'w-[4rem]']
    ],
    className
   )

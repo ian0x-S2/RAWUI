@@ -102,20 +102,29 @@
   <circle cx="12" cy="17" r="0.01" />
  </svg>
 {/snippet}
-
+{#snippet teamLogo()}
+ <div
+  class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"
+ >
+  <svg
+   xmlns="http://www.w3.org/2000/svg"
+   class="size-4"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+  >
+   <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+  </svg>
+ </div>
+{/snippet}
 <SidebarProvider variant={currentVariant} defaultOpen={true}>
  <div class="flex min-h-screen bg-background">
   <!-- Sidebar -->
   <Sidebar>
-   <SidebarHeader>
-    <div class="flex items-center gap-3 px-0">
-     <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-      <span class="text-sm font-bold text-primary-foreground">A</span>
-     </div>
-     <span class="text-lg font-semibold">My App</span>
-    </div>
-   </SidebarHeader>
-
+   <SidebarHeader icon={teamLogo} label="Acme Inc." />
    <SidebarContent>
     <SidebarGroup>
      <SidebarGroupLabel>Principal</SidebarGroupLabel>
@@ -185,7 +194,7 @@
   <SidebarInset>
    <!-- Header -->
    <header
-    class="flex flex-row-reverse items-center gap-4 border-b bg-background px-4 py-3"
+    class="flex flex-row-reverse items-center gap-4 border-b bg-background px-2 py-3"
    >
     <SidebarTrigger />
 
