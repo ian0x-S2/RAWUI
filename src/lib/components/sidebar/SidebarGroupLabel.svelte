@@ -19,7 +19,7 @@
 
  const labelClasses = $derived(
   cn(
-   'flex items-center text-xs font-semibold text-muted-foreground uppercase tracking-wide transition-all duration-100 ease-in-out',
+   'flex items-center text-xs font-semibold text-muted-foreground uppercase tracking-wide  ease-in-out',
    // Animação de altura e padding para esconder suavemente
    isCollapsed ? 'h-0 py-0  opacity-0 overflow-hidden' : 'h-8 px-2 py-1.5 opacity-100 ',
    className

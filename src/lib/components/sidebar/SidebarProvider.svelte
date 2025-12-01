@@ -1,22 +1,26 @@
-<!-- SidebarProvider.svelte -->
+<!-- lib/components/sidebar/SidebarProvider.svelte -->
 <script lang="ts">
  import { setContext } from 'svelte';
  import type { Snippet } from 'svelte';
  import { browser } from '$app/environment';
+ import { cn } from '../../utils/index.ts';
 
  interface Props {
   children: Snippet;
   defaultOpen?: boolean;
   variant?: 'default' | 'collapsible';
+  class?: string;
  }
 
- let { children, defaultOpen = true, variant = 'default' }: Props = $props();
+ let {
+  children,
+  defaultOpen = true,
+  variant = 'default',
+  class: className
+ }: Props = $props();
 
- // Estado da sidebar
  let open = $state(defaultOpen);
  let mobileOpen = $state(false);
-
- // Detectar se estamos no mobile
  let isMobile = $state(false);
 
  if (browser) {
@@ -28,30 +32,22 @@
   });
  }
 
- // Controla scroll do body quando sidebar está aberta no mobile
+ // Bloqueia scroll no mobile quando aberto
  $effect(() => {
   if (isMobile && mobileOpen) {
    document.body.style.overflow = 'hidden';
   } else {
    document.body.style.overflow = '';
   }
-
-  return () => {
-   document.body.style.overflow = '';
-  };
  });
 
- // Context para compartilhar com todos os componentes
  const context = {
   get open() {
    return isMobile ? mobileOpen : open;
   },
   set open(value: boolean) {
-   if (isMobile) {
-    mobileOpen = value;
-   } else {
-    open = value;
-   }
+   if (isMobile) mobileOpen = value;
+   else open = value;
   },
   get isMobile() {
    return isMobile;
@@ -62,23 +58,25 @@
   get isCollapsed() {
    return variant === 'collapsible' && !open && !isMobile;
   },
-  close: () => {
-   if (isMobile) {
-    mobileOpen = false;
-   } else {
-    open = false;
-   }
-  },
-  toggle: () => {
-   if (isMobile) {
-    mobileOpen = !mobileOpen;
-   } else {
-    open = !open;
-   }
-  }
+  close: () => (isMobile ? (mobileOpen = false) : (open = false)),
+  toggle: () => (isMobile ? (mobileOpen = !mobileOpen) : (open = !open))
  };
 
  setContext('sidebar', context);
 </script>
 
-{@render children()}
+<!--
+  Container Principal:
+  Define as variáveis de largura aqui.
+  --sidebar-width: 16rem (256px)
+  --sidebar-width-icon: 4rem
+-->
+<div
+ class={cn(
+  'group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar',
+  className
+ )}
+ style="--sidebar-width: 16rem; --sidebar-width-icon: 4rem;"
+>
+ {@render children()}
+</div>
