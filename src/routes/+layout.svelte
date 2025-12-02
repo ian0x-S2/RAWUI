@@ -150,7 +150,7 @@
 <ThemeProvider disableTransitionOnChange={true} defaultTheme="dark" enableSystem={true}>
  <SidebarProvider variant="collapsible" open={data.sidebarOpen}>
   <!-- SIDEBAR -->
-  <Sidebar>
+  <Sidebar side="left">
    <SidebarHeader class="" icon={teamLogo} label="Acme Inc." />
 
    <SidebarContent>

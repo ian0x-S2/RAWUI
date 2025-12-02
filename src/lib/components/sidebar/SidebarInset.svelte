@@ -11,10 +11,8 @@
 </script>
 
 <main
- class={cn(
-  'relative flex min-h-screen flex-1 flex-col bg-background', // flex-1 é crucial aqui
-  className
- )}
+ class={cn('relative flex min-h-screen flex-1 flex-col bg-background', className)}
+ style="order: 2;"
 >
  {@render children()}
 </main>

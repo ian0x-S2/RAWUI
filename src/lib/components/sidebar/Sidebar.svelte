@@ -60,11 +60,16 @@
  {/if}
 {:else}
  <!-- DESKTOP -->
+ <!-- Spacer: aparece ANTES quando left, DEPOIS quando right -->
  <div
   class="relative hidden bg-transparent md:block"
-  style="width: {widthStyle}; transition: width 280ms {transitionTiming};"
+  style="width: {widthStyle}; transition: width 280ms {transitionTiming}; order: {side ===
+  'left'
+   ? 1
+   : 3};"
  ></div>
 
+ <!-- Sidebar fixa -->
  <div
   class={cn(
    'fixed inset-y-0 z-10 hidden h-svh border-r bg-background md:flex',

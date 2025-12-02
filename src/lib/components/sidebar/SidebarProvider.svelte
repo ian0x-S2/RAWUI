@@ -56,7 +56,7 @@
     mobileOpen = value;
    } else {
     open = value;
-    setCookie(value); // Salva no cookie ao alterar
+    setCookie(value);
    }
   },
   get isMobile() {
@@ -92,7 +92,7 @@
   'group/sidebar-wrapper flex min-h-svh w-full has-[data-variant=inset]:bg-sidebar',
   className
  )}
- style="--sidebar-width: 16rem; --sidebar-width-icon: 3.5rem;"
+ style="--sidebar-width: 16rem; --sidebar-width-icon: 3.5rem; display: flex;"
 >
  {@render children()}
 </div>
