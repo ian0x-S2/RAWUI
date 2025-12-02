@@ -1,5 +1,6 @@
 <script lang="ts">
  import './layout.css';
+ import type { LayoutProps } from './$types';
  import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
  import SidebarProvider from '$lib/components/sidebar/SidebarProvider.svelte';
  import SidebarInset from '$lib/components/sidebar/SidebarInset.svelte';
@@ -10,7 +11,7 @@
  import SidebarGroupLabel from '$lib/components/sidebar/SidebarGroupLabel.svelte';
  import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
  // Recebe os dados do servidor (Cookie)
- let { data, children } = $props();
+ let { data, children }: LayoutProps = $props();
 
  // Estado local
  let currentPath = $state('/dashboard');
@@ -137,12 +138,6 @@
  </div>
 {/snippet}
 
-<!--
-  ========================================
-  LAYOUT PRINCIPAL
-  ========================================
-  open={data.sidebarOpen} -> Garante zero flicker no reload
--->
 <SidebarProvider variant="collapsible" open={data.sidebarOpen}>
  <!-- SIDEBAR -->
  <Sidebar>
