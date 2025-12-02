@@ -10,15 +10,17 @@
  import SidebarGroupLabel from '$lib/components/sidebar/SidebarGroupLabel.svelte';
  import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 
- // --- ESTADO DA PÁGINA ---
+ // Recebe os dados do servidor (Cookie)
+ let { data } = $props();
+
+ // Estado local
  let currentVariant = $state<'default' | 'collapsible'>('default');
  let currentPath = $state('/dashboard');
 </script>
 
 <!--
   ========================================
-  SNIPPETS (ÍCONES E LOGOS)
-  Definidos aqui para não depender de libs externas
+  SNIPPETS DE ÍCONES (VISUAL BONITO)
   ========================================
 -->
 
@@ -128,30 +130,30 @@
   <circle cx="12" cy="17" r="0.01" />
  </svg>
 {/snippet}
+
 {#snippet footerIcon()}
- <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
-  <span class="text-xs font-bold text-primary">JD</span>
+ <div
+  class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary"
+ >
+  JD
  </div>
 {/snippet}
+
 <!--
   ========================================
   LAYOUT PRINCIPAL
   ========================================
+  open={data.sidebarOpen} -> Garante zero flicker no reload
 -->
-
-<SidebarProvider variant={currentVariant} defaultOpen={true}>
- <!--
-    SIDEBAR ESQUERDA
-    Não precisa de wrapper extra, o Provider cuida disso.
- -->
+<SidebarProvider variant="collapsible" open={data.sidebarOpen}>
+ <!-- SIDEBAR -->
  <Sidebar>
-  <!-- HEADER: Logo + Nome da Empresa -->
   <SidebarHeader icon={teamLogo} label="Acme Inc." />
 
-  <!-- CONTENT: Links de Navegação -->
   <SidebarContent>
-   <!-- Grupo 1: Principal -->
    <SidebarGroup>
+    <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+
     <SidebarItem
      icon={homeIcon}
      label="Dashboard"
@@ -177,7 +179,6 @@
     />
    </SidebarGroup>
 
-   <!-- Grupo 2: Usuário -->
    <SidebarGroup>
     <SidebarGroupLabel>Conta</SidebarGroupLabel>
 
@@ -199,16 +200,12 @@
    </SidebarGroup>
   </SidebarContent>
 
-  <!-- FOOTER: Perfil do Usuário -->
-  <SidebarFooter icon={footerIcon} label="Jhon@email.com"></SidebarFooter>
+  <SidebarFooter icon={footerIcon} label="john@acme.com" />
  </Sidebar>
 
- <!--
-    CONTEÚDO PRINCIPAL (INSET)
-    Empurrado automaticamente pela sidebar (Ghost Gap)
- -->
+ <!-- INSET (CONTEÚDO) -->
  <SidebarInset>
-  <!-- Header do Conteúdo -->
+  <!-- HEADER DO CONTEÚDO -->
   <header
    class="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4 shadow-sm"
   >
@@ -247,9 +244,9 @@
    </div>
   </header>
 
-  <!-- Corpo do Conteúdo -->
+  <!-- CORPO DO CONTEÚDO -->
   <div class="flex flex-1 flex-col gap-4 bg-muted/10 p-4 md:p-8">
-   <!-- Grid de Cards de Exemplo -->
+   <!-- GRID DE CARDS -->
    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
     <div
      class="flex aspect-video flex-col justify-between rounded-xl border bg-muted/50 p-4"
@@ -271,22 +268,16 @@
     </div>
    </div>
 
-   <!-- Área Maior de Conteúdo -->
+   <!-- CONTEÚDO GRANDE -->
    <div class="min-h-[100vh] flex-1 rounded-xl border bg-muted/50 p-8 md:min-h-min">
     <div class="max-w-2xl">
-     <h2 class="mb-2 text-lg font-semibold">Como a nova Sidebar funciona:</h2>
+     <h2 class="mb-2 text-lg font-semibold">Setup Completo</h2>
      <ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+      <li><strong>Ícones:</strong> SVGs definidos em snippets locais.</li>
+      <li><strong>Flicker:</strong> Resolvido via Cookies + SSR.</li>
+      <li><strong>Estilo:</strong> Mantido o estilo original com 3.5rem no ícone.</li>
       <li>
-       <strong>Provider:</strong> Define as variáveis CSS <code>--sidebar-width</code>.
-      </li>
-      <li>
-       <strong>Desktop:</strong> Cria um elemento invisível (relative) que empurra este conteúdo
-       automaticamente.
-      </li>
-      <li><strong>Mobile:</strong> Vira um drawer (overlay) sem empurrar o conteúdo.</li>
-      <li>
-       <strong>Animação:</strong> Usa <code>ease-linear</code> e <code>duration-200</code>
-       igual ao original do React.
+       <strong>Responsividade:</strong> Sidebar vira drawer no mobile automaticamente.
       </li>
      </ul>
     </div>

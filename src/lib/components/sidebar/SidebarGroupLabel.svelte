@@ -20,10 +20,8 @@
  const labelClasses = $derived(
   cn(
    'flex items-center px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide',
-   // AJUSTE 8: ease-linear
    ' ',
 
-   // AJUSTE 9: max-height em vez de height (mais suave)
    isCollapsed ? 'max-h-0 py-0 opacity-0 overflow-hidden' : 'max-h-7 py-1.5 opacity-100',
 
    className
