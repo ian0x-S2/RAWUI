@@ -22,10 +22,8 @@
  const footerClasses = $derived(
   cn(
    'flex w-full items-center border-t mt-auto shrink-0',
-   // AJUSTE 13: ease-linear
    'transition-all duration-200 ease-linear',
 
-   // AJUSTE 14: p-3 igual ao header
    'p-3',
    isCollapsed ? 'justify-center' : 'justify-start',
    isCollapsed ? 'gap-0' : 'gap-3',
