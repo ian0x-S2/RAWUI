@@ -4,6 +4,33 @@
   <meta charset="utf-8" />
   <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+   (function () {
+    try {
+     const storageKey = 'theme';
+     const defaultTheme = 'system';
+     const enableSystem = true;
+
+     function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+     }
+
+     const themeName = localStorage.getItem(storageKey) || defaultTheme;
+     const isSystem = enableSystem && themeName === 'system';
+     const theme = isSystem ? getSystemTheme() : themeName;
+
+     // Aplica a classe IMEDIATAMENTE no HTML
+     if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+     }
+
+     // Aplica color-scheme
+     document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+    } catch (e) {
+     // Fail silently
+    }
+   })();
+  </script>
   %sveltekit.head%
  </head>
  <body data-sveltekit-preload-data="hover">

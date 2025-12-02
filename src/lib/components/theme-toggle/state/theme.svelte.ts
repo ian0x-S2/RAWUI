@@ -2,10 +2,9 @@ import { getContext, setContext } from 'svelte';
 import type { ThemeState } from '../types.ts';
 import type { UseStorageReturn } from '$lib/hooks/state/storage.svelte'; // Ajuste o import para onde está seu hook
 
-const THEME_KEY = Symbol('next-themes');
+const THEME_KEY = Symbol('svelte-themes');
 
 export class ThemeManager implements ThemeState {
- // Agora guardamos a referência ao hook de storage
  #storage: UseStorageReturn<string>;
 
  #resolvedTheme = $state<string | undefined>(undefined);
@@ -15,7 +14,6 @@ export class ThemeManager implements ThemeState {
  #systemTheme = $state<'dark' | 'light' | undefined>(undefined);
 
  constructor(
-  // Recebe o storage já inicializado pelo componente
   storage: UseStorageReturn<string>,
   initial: Omit<ThemeState, 'theme' | 'setTheme'> & { enableSystem: boolean }
  ) {
@@ -27,7 +25,6 @@ export class ThemeManager implements ThemeState {
 
  // --- GETTERS ---
 
- // O tema agora vem direto do seu hook (que é reativo)
  get theme() {
   return this.#storage.value;
  }
@@ -52,7 +49,6 @@ export class ThemeManager implements ThemeState {
  _setSystemTheme(v: 'dark' | 'light' | undefined) {
   this.#systemTheme = v;
  }
- // Usado quando há um forcedTheme para atualizar o storage sem loop infinito
  _setThemeState(v: string) {
   if (this.#storage.value !== v) {
    this.#storage.set(v);
@@ -61,7 +57,6 @@ export class ThemeManager implements ThemeState {
 
  // --- API PÚBLICA ---
  setTheme = (value: string) => {
-  // Delega a escrita para o seu hook
   this.#storage.set(value);
  };
 }
