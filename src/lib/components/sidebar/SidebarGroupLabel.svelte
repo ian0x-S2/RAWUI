@@ -19,7 +19,7 @@
 
  const labelClasses = $derived(
   cn(
-   'flex items-center px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide',
+   'flex items-center px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide',
    ' ',
 
    isCollapsed ? 'max-h-0 py-0 opacity-0 overflow-hidden' : 'max-h-7 py-1.5 opacity-100',

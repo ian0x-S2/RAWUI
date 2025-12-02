@@ -22,10 +22,8 @@
  const headerClasses = $derived(
   cn(
    'flex w-full items-center border-b shrink-0',
-   // AJUSTE 10: ease-linear
    'transition-all duration-200 ease-linear',
 
-   // AJUSTE 11: p-3 uniforme
    'p-3',
    isCollapsed ? 'justify-center' : 'justify-start',
    isCollapsed ? 'gap-0' : 'gap-3',
@@ -38,7 +36,6 @@
 <div class={headerClasses}>
  {#if icon || label}
   {#if icon}
-   <!-- AJUSTE 12: size-6 para destaque -->
    <div class="flex size-6 shrink-0 items-center justify-center">
     {@render icon()}
    </div>

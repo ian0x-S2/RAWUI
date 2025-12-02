@@ -19,12 +19,10 @@
   class: className
  }: Props = $props();
 
- // --- ESTADO (Iniciado pelo Servidor) ---
  let open = $state(initialOpen);
  let mobileOpen = $state(false);
  let isMobile = $state(false);
 
- // --- FUNÇÃO DE COOKIE ---
  function setCookie(value: boolean) {
   if (browser) {
    const maxAge = 60 * 60 * 24 * 7; // 7 dias

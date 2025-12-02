@@ -38,7 +38,6 @@
 <div class={footerClasses}>
  {#if icon || label}
   {#if icon}
-   <!-- AJUSTE 15: size-6 igual ao header -->
    <div class="flex size-6 shrink-0 items-center justify-center">
     {@render icon()}
    </div>

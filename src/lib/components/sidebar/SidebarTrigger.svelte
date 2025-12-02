@@ -10,7 +10,6 @@
 
  let { class: className, children }: Props = $props();
 
- // Obtém o contexto da sidebar
  const sidebarContext = getContext<{
   toggle: () => void;
   isMobile: boolean;

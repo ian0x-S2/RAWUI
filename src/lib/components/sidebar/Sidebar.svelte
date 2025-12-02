@@ -21,7 +21,6 @@
 
  const { open, isMobile, variant } = $derived(context);
 
- // Transição mais suave com cubic-bezier personalizado
  const transitionTiming = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
  const widthStyle = $derived(

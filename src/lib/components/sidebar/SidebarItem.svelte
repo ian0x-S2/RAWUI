@@ -26,16 +26,13 @@
  const itemClasses = $derived(
   cn(
    'group relative flex w-full items-center rounded-lg text-sm font-medium',
-   // AJUSTE 1: Mudei para ease-linear (mais suave)
    'transition-all duration-200 ease-linear',
    'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
 
-   // AJUSTE 2: Padding uniforme p-2 sempre
    'p-2',
    isCollapsed ? 'justify-center' : 'justify-start',
 
-   // AJUSTE 3: Gap sempre definido
    isCollapsed ? 'gap-0' : 'gap-3',
 
    active && 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold',
@@ -54,8 +51,7 @@
 
 {#snippet ItemContent()}
  {#if icon}
-  <!-- AJUSTE 4: size-4 (16px) para ícones consistentes -->
-  <span class="flex size-4 shrink-0 items-center justify-center">
+  <span class="flex size-5 shrink-0 items-center justify-center">
    {@render icon()}
   </span>
  {/if}
@@ -63,7 +59,6 @@
  <span
   class={cn(
    'overflow-hidden text-sm whitespace-nowrap',
-   // AJUSTE 5: ease-linear + duração exata
    'transition-all duration-200 ease-linear',
    isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
   )}
