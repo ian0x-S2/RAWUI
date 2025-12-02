@@ -147,7 +147,12 @@
   - defaultTheme="system": Respeita o SO do usuário
   - enableSystem: Ativa listeners de mudança de preferência do SO
 -->
-<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+<ThemeProvider
+ disableTransitionOnChange={true}
+ attribute="class"
+ defaultTheme="dark"
+ enableSystem
+>
  <SidebarProvider variant="collapsible" open={data.sidebarOpen}>
   <!-- SIDEBAR -->
   <Sidebar>
