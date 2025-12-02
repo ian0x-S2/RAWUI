@@ -83,15 +83,17 @@ export function useStorage<Value>(
  const storage = browser ? (options?.storage ?? window.localStorage) : undefined;
 
  // Inicializa o estado com o valor inicial (ou undefined) de forma síncrona.
- let current = $state<Value | undefined>(() => {
-  if (typeof initialValue === 'function') {
-   if (!browser) {
-    // CORREÇÃO: Converte explicitamente para '() => Value' para satisfazer o TS.
-    return (initialValue as () => Value)();
+ let current = $state<Value | undefined>(
+  (() => {
+   if (typeof initialValue === 'function') {
+    if (!browser) {
+     return (initialValue as () => Value)();
+    }
+    return undefined; // Add explicit return for browser case
    }
-  }
-  return initialValue as Value | undefined;
- });
+   return initialValue as Value | undefined;
+  })()
+ );
 
  // === Funções de Utility ===
 
