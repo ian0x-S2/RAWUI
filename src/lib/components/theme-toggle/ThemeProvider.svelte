@@ -1,7 +1,10 @@
 <script lang="ts">
  import { onMount } from 'svelte';
  import { browser } from '$app/environment';
- import { ThemeManager, createThemeContext } from './theme.svelte';
+ import {
+  ThemeManager,
+  createThemeContext
+ } from '$lib/components/theme-toggle/state/theme.svelte';
  import { script } from './script.ts';
  import type { Attribute } from './types.ts';
  import { useLocalStorage } from '$lib/hooks/state/storage.svelte';

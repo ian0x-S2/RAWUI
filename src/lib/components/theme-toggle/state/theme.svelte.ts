@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import type { ThemeState } from './types.ts';
+import type { ThemeState } from '../types.ts';
 import type { UseStorageReturn } from '$lib/hooks/state/storage.svelte'; // Ajuste o import para onde está seu hook
 
 const THEME_KEY = Symbol('next-themes');

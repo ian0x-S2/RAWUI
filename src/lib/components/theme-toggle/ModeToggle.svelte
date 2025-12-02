@@ -1,5 +1,5 @@
 <script lang="ts">
- import { useTheme } from '$lib/components/theme-toggle/theme.svelte';
+ import { useTheme } from '$lib/components/theme-toggle/state/theme.svelte';
  import Button from '$lib/components/button/Button.svelte';
 
  const themeState = useTheme();
