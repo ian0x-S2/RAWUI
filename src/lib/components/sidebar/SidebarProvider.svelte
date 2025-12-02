@@ -94,7 +94,7 @@
   'group/sidebar-wrapper flex min-h-svh w-full has-[data-variant=inset]:bg-sidebar',
   className
  )}
- style="--sidebar-width: 16rem; --sidebar-width-icon: 5rem;"
+ style="--sidebar-width: 16rem; --sidebar-width-icon: 3.5rem;"
 >
  {@render children()}
 </div>
