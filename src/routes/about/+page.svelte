@@ -1,4 +1,5 @@
 <script lang="ts">
+ import Button from '$lib/components/button/Button.svelte';
  import { useLocalStorage } from '$lib/hooks/state/storage.svelte';
 
  // Cria o estado. Note que não usamos $state aqui, pois a função já encapsula o estado.
@@ -18,3 +19,6 @@
 <button onclick={toggleTheme}> Mudar Tema </button>
 
 <button onclick={myData.remove}> Remover do Storage </button>
+<div>
+ <Button href="https://google.com" variant="outline" size="sm">Hello</Button>
+</div>
