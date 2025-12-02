@@ -43,7 +43,7 @@
 
   <aside
    class={cn(
-    'fixed inset-y-0 z-50 h-full w-[18rem] border-r bg-background shadow-lg',
+    'fixed inset-y-0 z-50 h-full w-[70%] border-r bg-background shadow-lg',
     side === 'left' ? 'left-0' : 'right-0 border-r-0 border-l',
     className
    )}
