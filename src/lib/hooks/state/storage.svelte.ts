@@ -56,10 +56,6 @@ const getStorageItem = (storage: Storage, key: string) => {
  return value;
 };
 
-/**
- * Hook/Função que gerencia o valor do storage usando Svelte 5 Runes.
- * Toda a interação com 'localStorage' é isolada no $effect.
- */
 export function useStorage<Value>(
  key: string,
  params?: UseStorageInitialValue<Value> | UseStorageOptions<Value>
@@ -79,23 +75,19 @@ export function useStorage<Value>(
   options ? options?.initialValue : params
  ) as UseStorageInitialValue<Value>;
 
- // Define o storage, protegido por SSR.
  const storage = browser ? (options?.storage ?? window.localStorage) : undefined;
 
- // Inicializa o estado com o valor inicial (ou undefined) de forma síncrona.
  let current = $state<Value | undefined>(
   (() => {
    if (typeof initialValue === 'function') {
     if (!browser) {
      return (initialValue as () => Value)();
     }
-    return undefined; // Add explicit return for browser case
+    return undefined;
    }
    return initialValue as Value | undefined;
   })()
  );
-
- // === Funções de Utility ===
 
  const serializer = (value: Value) => {
   if (options?.serializer) return options.serializer(value);
@@ -114,39 +106,32 @@ export function useStorage<Value>(
  };
 
  const set = (value: Value) => {
-  if (!storage) return; // Ignora no SSR
+  if (!storage) return; // Ignore no SSR
   const s = serializer(value);
   setStorageItem(storage, key, s);
-  current = value; // Atualiza o estado local imediatamente
+  current = value;
  };
 
  const remove = () => {
-  if (!storage) return; // Ignora no SSR
+  if (!storage) return;
   removeStorageItem(storage, key);
   current = undefined;
  };
 
- // === LÓGICA DE CLIENTE ($effect) ===
  $effect(() => {
   if (storage) {
-   // 1. CARREGAMENTO INICIAL: Executado apenas no cliente (após a montagem)
    const storageValue = getStorageItem(storage, key);
 
    if (storageValue !== undefined) {
-    // Se o storage tem valor, usa ele.
     current = deserializer(storageValue);
    } else if (initialValue !== undefined) {
-    // Se não tem, usa o valor inicial e persiste no storage.
     const v =
-     typeof initialValue === 'function'
-      ? (initialValue as () => Value)() // Correto: usa Value
-      : initialValue;
+     typeof initialValue === 'function' ? (initialValue as () => Value)() : initialValue;
 
     setStorageItem(storage, key, serializer(v));
     current = v;
    }
 
-   // 2. LISTENERS: Sincronização entre abas/eventos customizados
    const onChange = (e: Event) => {
     if (e instanceof StorageEvent || e.type === STORAGE_EVENT) {
      const updatedStorageValue = getStorageItem(storage, key);
