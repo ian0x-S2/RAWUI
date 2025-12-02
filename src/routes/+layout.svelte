@@ -9,7 +9,6 @@
  import SidebarGroup from '$lib/components/sidebar/SidebarGroup.svelte';
  import SidebarGroupLabel from '$lib/components/sidebar/SidebarGroupLabel.svelte';
  import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
-
  // Recebe os dados do servidor (Cookie)
  let { data, children } = $props();
 
@@ -147,7 +146,7 @@
 <SidebarProvider variant="collapsible" open={data.sidebarOpen}>
  <!-- SIDEBAR -->
  <Sidebar>
-  <SidebarHeader icon={teamLogo} label="Acme Inc." />
+  <SidebarHeader class="" icon={teamLogo} label="Acme Inc." />
 
   <SidebarContent>
    <SidebarGroup>

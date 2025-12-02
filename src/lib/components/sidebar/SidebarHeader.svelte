@@ -36,7 +36,11 @@
 <div class={headerClasses}>
  {#if icon || label}
   {#if icon}
-   <div class="flex size-6 shrink-0 items-center justify-center">
+   <div
+    class="
+       {isCollapsed ? 'mr-0.5' : 'mr-0'}
+       flex size-6 shrink-0 items-center justify-center"
+   >
     {@render icon()}
    </div>
   {/if}
