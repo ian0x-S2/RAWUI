@@ -55,10 +55,6 @@
  }: Props = $props();
 </script>
 
-<!--
-  Lógica Polimórfica:
-  Substitui o "asChild" do React verificando se é um link (href) ou botão.
--->
 {#if href}
  <a
   {href}

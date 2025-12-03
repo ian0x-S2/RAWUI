@@ -7,12 +7,7 @@
 
 <div class="mx-auto mt-10 w-2/3">
  <DropdownMenu>
-  <DropdownTrigger
-   class="rounded bg-black px-4 py-2
-      text-white"
-  >
-   Abrir Menu
-  </DropdownTrigger>
+  <DropdownTrigger>Abrir Menu</DropdownTrigger>
 
   <DropdownContent>
    <DropdownItem onclick={() => alert('Oi')}>Meu Perfil</DropdownItem>
