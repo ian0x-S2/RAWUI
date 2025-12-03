@@ -42,7 +42,7 @@ export class ThemeManager implements ThemeState {
   return this.#systemTheme;
  }
 
- // --- SETTERS INTERNOS ---
+ // --- SETTERS INTERNS ---
  _setResolvedTheme(v: string | undefined) {
   this.#resolvedTheme = v;
  }
@@ -55,7 +55,6 @@ export class ThemeManager implements ThemeState {
   }
  }
 
- // --- API PÚBLICA ---
  setTheme = (value: string) => {
   this.#storage.set(value);
  };

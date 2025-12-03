@@ -38,7 +38,6 @@
 
  type ButtonVariant = VariantProps<typeof buttonVariants>;
 
- // Interseção de tipos para aceitar props de botão e link sem reclamar
  type Props = HTMLButtonAttributes &
   HTMLAnchorAttributes &
   ButtonVariant & {
