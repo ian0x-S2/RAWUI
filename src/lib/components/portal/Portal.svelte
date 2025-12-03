@@ -1,22 +1,28 @@
 <!-- src/lib/components/portal/Portal.svelte -->
 <script lang="ts">
- import { mount, unmount, getAllContexts } from 'svelte';
+ import { mount, unmount, getAllContexts, type Snippet } from 'svelte';
  import PortalConsumer from './PortalConsumer.svelte';
 
- let { target = document.body, children } = $props();
+ // ADICIONE A TIPAGEM E O VALOR PADRÃO "undefined"
+ let {
+  target = undefined,
+  children
+ }: { target?: HTMLElement | undefined; children: Snippet } = $props();
 
  const context = getAllContexts();
  let instance: any;
 
  $effect(() => {
+  const container = target || document.body;
+
   instance = mount(PortalConsumer, {
-   target,
+   target: container,
    props: { children, context }
   });
 
   return () => {
    if (instance) {
-    unmount(instance);
+    unmount(instance, { outro: true });
    }
   };
  });
