@@ -8,4 +8,3 @@ export { default as SidebarHeader } from './SidebarHeader.svelte';
 export { default as SidebarItem } from './SidebarItem.svelte';
 export { default as SidebarTrigger } from './SidebarTrigger.svelte';
 export { default as SidebarProvider } from './SidebarProvider.svelte';
-export { default as SidebarDropdown } from './SidebarDropdown.svelte';

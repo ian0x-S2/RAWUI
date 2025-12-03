@@ -1,24 +1,22 @@
 <script lang="ts">
- import Button from '$lib/components/button/Button.svelte';
- import { useLocalStorage } from '$lib/hooks/state/storage.svelte';
-
- // Cria o estado. Note que não usamos $state aqui, pois a função já encapsula o estado.
- const myData = useLocalStorage('user-settings', { theme: 'dark' });
-
- function toggleTheme() {
-  if (myData.value?.theme === 'dark') {
-   myData.set({ theme: 'light' });
-  } else {
-   myData.set({ theme: 'dark' });
-  }
- }
+ import DropdownContent from '$lib/components/dropdown/DropdownContent.svelte';
+ import DropdownMenu from '$lib/components/dropdown/DropdownMenu.svelte';
+ import DropdownTrigger from '$lib/components/dropdown/DropdownTrigger.svelte';
+ import DropdownItem from '$lib/components/dropdown/DropdownItem.svelte';
 </script>
 
-<h1>Tema atual: {myData.value?.theme}</h1>
+<div class="mx-auto mt-10 w-2/3">
+ <DropdownMenu>
+  <DropdownTrigger
+   class="rounded bg-black px-4 py-2
+      text-white"
+  >
+   Abrir Menu
+  </DropdownTrigger>
 
-<button onclick={toggleTheme}> Mudar Tema </button>
-
-<button onclick={myData.remove}> Remover do Storage </button>
-<div>
- <Button href="https://google.com" variant="outline" size="sm">Hello</Button>
+  <DropdownContent>
+   <DropdownItem onclick={() => alert('Oi')}>Meu Perfil</DropdownItem>
+   <DropdownItem>Sair</DropdownItem>
+  </DropdownContent>
+ </DropdownMenu>
 </div>
