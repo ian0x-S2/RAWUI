@@ -7,7 +7,6 @@
  let { children, placement = 'bottom' }: { children: Snippet; placement?: Placement } =
   $props();
 
- // Gera ID único estável (Server & Client)
  const uid = $props.id();
 
  const state = new DropdownState({ baseId: uid, placement });

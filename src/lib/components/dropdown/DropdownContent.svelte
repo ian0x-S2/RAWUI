@@ -1,4 +1,4 @@
-<!-- src/lib/components/ui/dropdown-menu/content.svelte -->
+<!-- src/lib/components/ui/dropdown-menu/DropdownContent.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import type { DropdownState } from './ctx.svelte.js';
@@ -11,6 +11,7 @@
 
 {#if root.isOpen}
  <Portal>
+  <!-- O ...root.contentProps injeta o onkeydown e o role="menu" -->
   <div
    {...root.contentProps}
    {...restProps}
