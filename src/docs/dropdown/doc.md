@@ -21,8 +21,8 @@ Um componente dropdown totalmente acessível para exibir menus de ações, opç�
 
 Copie e cole os arquivos do componente no seu projeto:
 
-```bash
-src/lib/components/dropdown/
+<CodeBlock language="bash" code={
+`src/lib/components/dropdown/
 ├── DropdownMenu.svelte
 ├── DropdownTrigger.svelte
 ├── DropdownContent.svelte
@@ -31,13 +31,13 @@ src/lib/components/dropdown/
 ├── DropdownLabel.svelte
 ├── ctx.svelte.ts
 └── index.ts
-```
+`} />
 
 **Dependências necessárias:**
 
-```bash
-npm install @floating-ui/dom
-```
+<CodeBlock language="bash" code={
+`npm install @floating-ui/dom
+`} />
 
 > **Nota:** O componente `DropdownTrigger` depende das variantes de botão (`buttonVariants`). Certifique-se de ter o componente Button configurado ou ajuste a importação. O `DropdownContent` utiliza um componente `Portal`.
 
