@@ -15,50 +15,73 @@
   DropdownContent,
   DropdownItem
  } from '$lib/components/dropdown';
- let open = $state(false);
 
- function handleSave() {
-  console.log('Salvando dados...');
-  // Aqui você faria sua lógica (fetch, validação, etc)
+ // Crie estados separados para cada modal
+ let openProfile = $state(false);
+ let openProfile2 = $state(false);
 
-  // 2. Fecha o modal programaticamente
-  open = false;
+ function handleSaveProfile() {
+  console.log('Salvando perfil 1...');
+  // Lógica específica do perfil 1
+  openProfile = false;
+ }
+
+ function handleSaveProfile2() {
+  console.log('Salvando perfil 2...');
+  // Lógica específica do perfil 2
+  openProfile2 = false;
  }
 </script>
 
-<div class="mx-auto flex w-1/2 flex-col p-10">
- <!-- 3. Faça o bind aqui -->
- <Dialog bind:open>
-  <DialogTrigger variant="outline">Editar Perfil</DialogTrigger>
+<div class="mx-auto flex w-1/2 flex-col gap-10 p-10">
+ <!-- MODAL 1: Vinculado a openProfile -->
+ <Dialog bind:open={openProfile}>
+  <DialogTrigger variant="outline">Editar Perfil 1</DialogTrigger>
 
   <DialogContent class="sm:max-w-[425px]">
    <DialogHeader>
-    <DialogTitle>Editar Perfil</DialogTitle>
-    <DialogDescription>Faça alterações no seu perfil aqui.</DialogDescription>
+    <DialogTitle>Editar Perfil 1</DialogTitle>
+    <DialogDescription>Alterações do perfil 1.</DialogDescription>
    </DialogHeader>
 
    <div class="grid gap-4 py-4">
-    <!-- inputs... -->
+    <p>Conteúdo do Modal 1</p>
    </div>
 
    <DialogFooter>
-    <!-- 4. Chame a função no clique -->
-    <Button onclick={handleSave} type="submit">Salvar Alterações</Button>
+    <Button onclick={handleSaveProfile} type="submit">Salvar 1</Button>
    </DialogFooter>
   </DialogContent>
  </Dialog>
 
- <div
-  class="preview flex min-h-[200px] items-center justify-center rounded-lg border p-10"
- >
-  <DropdownMenu class=" ">
+ <!-- DROPDOWN (Mantido igual) -->
+ <div class="preview flex items-center justify-center rounded-lg border p-4">
+  <DropdownMenu>
    <DropdownTrigger>Abrir Menu</DropdownTrigger>
-   <DropdownContent class="  ">
-    <DropdownItem>Perfil</DropdownItem>
-    <DropdownItem>Configurações</DropdownItem>
-    <DropdownItem>Ajuda</DropdownItem>
-    <DropdownItem>Sair</DropdownItem>
+   <DropdownContent>
+    <DropdownItem>Item A</DropdownItem>
+    <DropdownItem>Item B</DropdownItem>
    </DropdownContent>
   </DropdownMenu>
  </div>
+
+ <!-- MODAL 2: Vinculado a openProfile2 -->
+ <Dialog bind:open={openProfile2}>
+  <DialogTrigger variant="outline">Editar Perfil 2</DialogTrigger>
+
+  <DialogContent class="sm:max-w-[425px]">
+   <DialogHeader>
+    <DialogTitle>Editar Perfil 2</DialogTitle>
+    <DialogDescription>Alterações do perfil 2.</DialogDescription>
+   </DialogHeader>
+
+   <div class="grid gap-4 py-4">
+    <p>Conteúdo do Modal 2</p>
+   </div>
+
+   <DialogFooter>
+    <Button onclick={handleSaveProfile2} type="submit">Salvar 2</Button>
+   </DialogFooter>
+  </DialogContent>
+ </Dialog>
 </div>

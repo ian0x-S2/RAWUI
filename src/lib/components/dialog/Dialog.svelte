@@ -5,10 +5,12 @@
 
  let { children, open = $bindable(false) } = $props();
 
- const uid = $props.id();
- const dialogState = new DialogState(uid, open);
+ // Gera um ID único e consistente (Server/Client) para esta instância
+ const id = $props.id();
 
- // Sincronia bidirecional
+ const dialogState = new DialogState(id, open);
+
+ // Sincronia reativa
  $effect(() => {
   open = dialogState.isOpen;
  });

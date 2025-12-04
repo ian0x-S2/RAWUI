@@ -14,27 +14,67 @@
 
  const lockBodyScroll: Attachment = () => {
   if (!browser) return;
-
   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
   const originalOverflow = document.body.style.overflow;
   const originalPadding = document.body.style.paddingRight;
-
   document.body.style.overflow = 'hidden';
   document.body.style.paddingRight = `${scrollbarWidth}px`;
-
   return () => {
    document.body.style.overflow = originalOverflow;
    document.body.style.paddingRight = originalPadding;
   };
  };
 
- const focusOnMount: Attachment = (node) => {
+ const manageFocus: Attachment = (node) => {
   if (!browser) return;
-  (node as HTMLElement).focus();
+
+  const el = node as HTMLElement;
+
+  setTimeout(() => {
+   el.focus();
+  }, 10);
+
+  const handleTrap = (e: KeyboardEvent) => {
+   if (e.key !== 'Tab') return;
+
+   const focusableEls = el.querySelectorAll(
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+   );
+
+   if (focusableEls.length === 0) {
+    e.preventDefault();
+    return;
+   }
+
+   const firstEl = focusableEls[0] as HTMLElement;
+   const lastEl = focusableEls[focusableEls.length - 1] as HTMLElement;
+
+   if (e.shiftKey) {
+    if (document.activeElement === firstEl || document.activeElement === el) {
+     e.preventDefault();
+     lastEl.focus();
+    }
+   } else {
+    if (document.activeElement === lastEl) {
+     e.preventDefault();
+     firstEl.focus();
+    }
+   }
+  };
+
+  el.addEventListener('keydown', handleTrap);
+
+  return () => {
+   el.removeEventListener('keydown', handleTrap);
+   root.triggerRef?.focus();
+  };
  };
 
  function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') root.close();
+  if (e.key === 'Escape') {
+   e.stopPropagation();
+   root.close();
+  }
  }
 
  function flyAndScale(
@@ -47,7 +87,6 @@
  ): TransitionConfig {
   const style = getComputedStyle(node);
   const transform = style.transform === 'none' ? '' : style.transform;
-
   return {
    duration,
    easing: cubicOut,
@@ -68,19 +107,20 @@
 
 <Portal>
  {#if root.isOpen}
-  <!-- BACKDROP -->
+  <!-- Backdrop -->
   <div
    role="presentation"
    transition:fade={{ duration: 150 }}
    {@attach lockBodyScroll}
    onclick={root.close}
-   class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+   class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
   ></div>
 
+  <!-- Wrapper -->
   <div
    class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0"
   >
-   <!-- MODAL BOX -->
+   <!-- Modal Content -->
    <div
     role="dialog"
     id={root.baseId}
@@ -88,10 +128,10 @@
     aria-labelledby={root.titleId}
     aria-describedby={root.descriptionId}
     tabindex="-1"
-    {@attach focusOnMount}
+    {@attach manageFocus}
     transition:flyAndScale={{ duration: 200 }}
     class={cn(
-     'pointer-events-auto relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg sm:rounded-lg md:w-full',
+     'pointer-events-auto relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg outline-none sm:rounded-lg md:w-full',
      className
     )}
     {...restProps}

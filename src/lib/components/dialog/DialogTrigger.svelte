@@ -1,4 +1,3 @@
-<!-- src/lib/components/ui/dialog/DialogTrigger.svelte -->
 <script lang="ts">
  import { getContext, type Snippet } from 'svelte';
  import type { DialogState } from './ctx.svelte.js';
@@ -23,6 +22,11 @@
  } & HTMLButtonAttributes = $props();
 
  const root = getContext<DialogState>('dialog-root');
+
+ function handleClick(e: MouseEvent) {
+  root.triggerRef = e.currentTarget as HTMLElement;
+  root.toggle();
+ }
 </script>
 
 <button
@@ -31,7 +35,7 @@
  aria-haspopup="dialog"
  aria-expanded={root.isOpen}
  aria-controls={root.baseId}
- onclick={root.toggle}
+ onclick={handleClick}
  {...restProps}
 >
  {@render children()}

@@ -1,5 +1,6 @@
 export class DialogState {
  isOpen = $state(false);
+ triggerRef: HTMLElement | null = null;
 
  baseId: string;
  titleId: string;
