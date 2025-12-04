@@ -1,121 +1,114 @@
 <script lang="ts">
  import { tick } from 'svelte';
 
- // Estado
- let headings = $state<{ id: string; text: string; depth: number }[]>([]);
- let activeId = $state<string>('');
- let isScrolling = $state(false);
+ type HeadingData = {
+  id: string;
+  text: string;
+  element: HTMLElement;
+ };
 
- // Função segura para ler o DOM
+ let headings = $state<HeadingData[]>([]);
+ let activeId = $state<string>('');
+
+ let ticking = false;
+ let isManualScrolling = false;
+
  async function updateHeadings() {
-  // Espera o Svelte terminar qualquer atualização pendente no DOM
   await tick();
 
-  // Pequeno delay adicional para garantir que o markdown foi processado
-  await new Promise((resolve) => setTimeout(resolve, 50));
-
-  const elements = Array.from(document.querySelectorAll('.prose h2'));
+  const elements = Array.from(document.querySelectorAll('.prose h2')) as HTMLElement[];
 
   headings = elements
    .map((elem) => ({
     id: elem.id,
-    text: (elem as HTMLElement).innerText,
-    depth: Number(elem.tagName.substring(1))
+    text: elem.innerText,
+    element: elem
    }))
-   // BLINDAGEM: Filtra apenas itens que realmente tenham um ID
-   .filter((h) => h.id && h.id.length > 0);
- }
+   .filter((h) => h.id);
 
- function handleClick(e: MouseEvent, id: string) {
-  e.preventDefault();
-  const element = document.getElementById(id);
-
-  if (element) {
-   // Marca que estamos fazendo scroll programático
-   isScrolling = true;
-   activeId = id;
-
-   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-   window.history.pushState(null, '', `#${id}`);
-
-   // Desabilita o flag após a animação terminar
-   setTimeout(() => {
-    isScrolling = false;
-   }, 1000);
-  }
+  if (!activeId) handleScroll();
  }
 
  function handleScroll() {
-  // Ignora scroll events durante navegação programática
-  if (isScrolling) return;
+  if (ticking || isManualScrolling) return;
 
-  const scrollY = window.scrollY;
-  const offset = 150;
+  ticking = true;
+  requestAnimationFrame(() => {
+   const scrollY = window.scrollY;
+   const offset = 120;
 
-  // Só tenta buscar se tivermos headings válidos
-  if (headings.length === 0) return;
-
-  for (const heading of headings) {
-   // Proteção extra: verifica se o ID existe antes de buscar
-   if (!heading.id) continue;
-
-   const element = document.getElementById(heading.id);
-
-   if (element && element.offsetTop - offset <= scrollY) {
-    activeId = heading.id;
+   for (let i = headings.length - 1; i >= 0; i--) {
+    const heading = headings[i];
+    if (heading.element.offsetTop <= scrollY + offset) {
+     activeId = heading.id;
+     ticking = false;
+     return;
+    }
    }
-  }
+
+   if (headings.length > 0 && scrollY < headings[0].element.offsetTop) {
+    activeId = '';
+   }
+   ticking = false;
+  });
+ }
+
+ function scrollToHeading(e: MouseEvent, id: string) {
+  e.preventDefault();
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  isManualScrolling = true;
+
+  activeId = id;
+
+  window.history.pushState(null, '', `#${id}`);
+
+  const y = element.getBoundingClientRect().top + window.scrollY - 80;
+
+  window.scrollTo({ top: y, behavior: 'smooth' });
+
+  setTimeout(() => {
+   isManualScrolling = false;
+  }, 1000);
  }
 
  $effect(() => {
   updateHeadings();
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll);
 
-  // Observa mudanças no DOM para detectar quando headings são adicionados
-  const observer = new MutationObserver(() => {
-   updateHeadings();
-  });
-
-  // Observa a div .prose por mudanças
-  const proseElement = document.querySelector('.prose');
-  if (proseElement) {
-   observer.observe(proseElement, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['id']
-   });
+  const observer = new MutationObserver(updateHeadings);
+  const prose = document.querySelector('.prose');
+  if (prose) {
+   observer.observe(prose, { childList: true, subtree: true });
   }
-
-  // Retry: Tenta novamente após 200ms caso não encontre headings
-  const retryTimeout = setTimeout(() => {
-   if (headings.length === 0) {
-    updateHeadings();
-   }
-  }, 200);
 
   return () => {
    window.removeEventListener('scroll', handleScroll);
+   window.removeEventListener('resize', handleScroll);
    observer.disconnect();
-   clearTimeout(retryTimeout);
   };
  });
 </script>
 
 {#if headings.length > 0}
  <nav class="sticky top-24 hidden max-h-[calc(100vh-6rem)] w-64 overflow-y-auto lg:block">
-  <h4 class="mb-4 text-sm font-semibold text-foreground">Nesta página</h4>
+  <h4 class="mb-4 text-sm font-semibold tracking-tight text-foreground">Nesta página</h4>
 
-  <ul class="space-y-2 text-sm">
+  <ul class="space-y-0.5 border-l border-border/60 text-sm">
    {#each headings as heading (heading.id)}
     <li>
      <a
       href="#{heading.id}"
-      class="block transition-all duration-200 ease-in-out hover:text-foreground
-						{activeId === heading.id
-       ? '-ml-0.5 border-l-2 border-primary pl-2 font-medium text-foreground'
-       : 'text-muted-foreground'}"
-      onclick={(e) => handleClick(e, heading.id)}
+      onclick={(e) => scrollToHeading(e, heading.id)}
+      class="
+              -ml-px block border-l-2 py-1.5 pl-4 transition-colors duration-200 ease-in-out
+              hover:text-foreground
+              {activeId === heading.id
+       ? 'border-primary text-primary'
+       : 'border-transparent text-muted-foreground hover:border-border'}
+            "
      >
       {heading.text}
      </a>
