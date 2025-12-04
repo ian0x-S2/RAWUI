@@ -3,7 +3,6 @@
  import { mount, unmount, getAllContexts, type Snippet } from 'svelte';
  import PortalConsumer from './PortalConsumer.svelte';
 
- // ADICIONE A TIPAGEM E O VALOR PADRÃO "undefined"
  let {
   target = undefined,
   children
