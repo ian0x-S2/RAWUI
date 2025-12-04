@@ -84,4 +84,14 @@
    </DialogFooter>
   </DialogContent>
  </Dialog>
+
+ <div class="preview flex items-center justify-center rounded-lg border p-4">
+  <DropdownMenu>
+   <DropdownTrigger>Abrir Menu</DropdownTrigger>
+   <DropdownContent>
+    <DropdownItem>Item A2</DropdownItem>
+    <DropdownItem>Item B</DropdownItem>
+   </DropdownContent>
+  </DropdownMenu>
+ </div>
 </div>

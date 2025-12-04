@@ -1,3 +1,4 @@
+<!-- src/lib/components/ui/dialog/DialogContent.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { fade } from 'svelte/transition';
@@ -34,48 +35,48 @@
    el.focus();
   }, 10);
 
-  const handleTrap = (e: KeyboardEvent) => {
-   if (e.key !== 'Tab') return;
-
-   const focusableEls = el.querySelectorAll(
-    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-   );
-
-   if (focusableEls.length === 0) {
-    e.preventDefault();
+  const handleKeyDown = (e: KeyboardEvent) => {
+   // FECHAR COM ESC
+   if (e.key === 'Escape') {
+    e.stopPropagation();
+    root.close();
     return;
    }
 
-   const firstEl = focusableEls[0] as HTMLElement;
-   const lastEl = focusableEls[focusableEls.length - 1] as HTMLElement;
+   if (e.key === 'Tab') {
+    const focusableEls = el.querySelectorAll(
+     'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
 
-   if (e.shiftKey) {
-    if (document.activeElement === firstEl || document.activeElement === el) {
+    if (focusableEls.length === 0) {
      e.preventDefault();
-     lastEl.focus();
+     return;
     }
-   } else {
-    if (document.activeElement === lastEl) {
-     e.preventDefault();
-     firstEl.focus();
+
+    const firstEl = focusableEls[0] as HTMLElement;
+    const lastEl = focusableEls[focusableEls.length - 1] as HTMLElement;
+
+    if (e.shiftKey) {
+     if (document.activeElement === firstEl || document.activeElement === el) {
+      e.preventDefault();
+      lastEl.focus();
+     }
+    } else {
+     if (document.activeElement === lastEl) {
+      e.preventDefault();
+      firstEl.focus();
+     }
     }
    }
   };
 
-  el.addEventListener('keydown', handleTrap);
+  el.addEventListener('keydown', handleKeyDown);
 
   return () => {
-   el.removeEventListener('keydown', handleTrap);
+   el.removeEventListener('keydown', handleKeyDown);
    root.triggerRef?.focus();
   };
  };
-
- function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-   e.stopPropagation();
-   root.close();
-  }
- }
 
  function flyAndScale(
   node: Element,
@@ -103,11 +104,8 @@
  }
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
-
 <Portal>
  {#if root.isOpen}
-  <!-- Backdrop -->
   <div
    role="presentation"
    transition:fade={{ duration: 150 }}
@@ -116,11 +114,9 @@
    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
   ></div>
 
-  <!-- Wrapper -->
   <div
    class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0"
   >
-   <!-- Modal Content -->
    <div
     role="dialog"
     id={root.baseId}
@@ -131,7 +127,7 @@
     {@attach manageFocus}
     transition:flyAndScale={{ duration: 200 }}
     class={cn(
-     'pointer-events-auto relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg outline-none sm:rounded-lg md:w-full',
+     'pointer-events-auto relative grid w-full max-w-lg gap-4 rounded-lg border bg-background p-6 shadow-lg outline-none md:w-full',
      className
     )}
     {...restProps}
