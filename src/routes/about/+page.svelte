@@ -9,7 +9,12 @@
   DialogFooter
  } from '$lib/components/dialog/index';
  import Button from '$lib/components/button/Button.svelte';
-
+ import {
+  DropdownMenu,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem
+ } from '$lib/components/dropdown';
  let open = $state(false);
 
  function handleSave() {
@@ -21,7 +26,7 @@
  }
 </script>
 
-<div class="p-10">
+<div class="mx-auto flex w-1/2 flex-col p-10">
  <!-- 3. Faça o bind aqui -->
  <Dialog bind:open>
   <DialogTrigger variant="outline">Editar Perfil</DialogTrigger>
@@ -42,4 +47,18 @@
    </DialogFooter>
   </DialogContent>
  </Dialog>
+
+ <div
+  class="preview flex min-h-[200px] items-center justify-center rounded-lg border p-10"
+ >
+  <DropdownMenu class=" ">
+   <DropdownTrigger>Abrir Menu</DropdownTrigger>
+   <DropdownContent class="  ">
+    <DropdownItem>Perfil</DropdownItem>
+    <DropdownItem>Configurações</DropdownItem>
+    <DropdownItem>Ajuda</DropdownItem>
+    <DropdownItem>Sair</DropdownItem>
+   </DropdownContent>
+  </DropdownMenu>
+ </div>
 </div>
