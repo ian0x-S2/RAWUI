@@ -10,7 +10,6 @@
  let copied = $state(false);
  let sourceDialogOpen = $state(false);
 
- // Função para copiar o markdown cru
  function copyRaw() {
   if (!data.raw) return;
   navigator.clipboard.writeText(data.raw);
@@ -18,43 +17,45 @@
   setTimeout(() => (copied = false), 2000);
  }
 
- // Função para abrir o dialog de código-fonte
  function openSourceDialog() {
   sourceDialogOpen = true;
  }
 </script>
 
-<div class="relative min-h-screen w-full bg-background pb-20 text-foreground">
- <div
-  class="bg-subtle-grid mask-gradient fixed inset-0 top-0 -z-10 h-[500px] opacity-50"
- ></div>
+<!-- Layout mais limpo, removido grid background, espaçamento refinado -->
+<div class="min-h-screen w-full bg-background text-foreground">
+ <div class="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-20">
+  <div class="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_220px]">
+   <!-- MAIN -->
+   <main class="min-w-0" in:fade={{ duration: 150 }}>
+    <!-- Header simplificado com breadcrumb minimal -->
+    <header class="mb-12">
+     <nav class="mb-6 flex items-center gap-1.5 text-sm text-muted-foreground">
+      <a href="/docs" class="transition-colors hover:text-foreground">Docs</a>
+      <span class="text-muted-foreground/40">/</span>
+      <span class="text-foreground">{data.meta?.title}</span>
+     </nav>
 
- <div class="container mx-auto max-w-7xl px-4 py-8 md:py-12 lg:py-14">
-  <div
-   class="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_240px] xl:grid-cols-[1fr_280px] xl:gap-16"
-  >
-   <!-- COLUNA PRINCIPAL -->
-   <main class="min-w-0" in:fade={{ duration: 200 }}>
-    <!-- Header e Botões -->
-    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-     <div class="flex items-center gap-2 text-sm text-muted-foreground">
-      <span class="cursor-pointer transition-colors hover:text-foreground">Docs</span>
-      <span class="opacity-30">/</span>
-      <span class="font-medium text-foreground">{data.meta?.title}</span>
-     </div>
+     <!-- Título e descrição com hierarquia visual clara -->
+     <h1 class="text-3xl font-semibold tracking-tight text-foreground lg:text-4xl">
+      {data.meta?.title ?? 'Sem Título'}
+     </h1>
+     {#if data.meta?.description}
+      <p class="mt-3 text-base text-muted-foreground lg:text-lg">
+       {data.meta.description}
+      </p>
+     {/if}
 
-     <!-- Botões de Ação -->
-     <div class="flex items-center gap-2 self-start sm:self-auto">
-      <!-- Botão Ver Código-fonte -->
+     <!-- Botões mais sutis, inline com header -->
+     <div class="mt-6 flex items-center gap-2">
       {#if data.sourceFiles && data.sourceFiles.length > 0}
        <button
         onclick={openSourceDialog}
-        class="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-4 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:text-foreground"
+        class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
        >
         <svg
+         class="size-3.5"
          xmlns="http://www.w3.org/2000/svg"
-         width="14"
-         height="14"
          viewBox="0 0 24 24"
          fill="none"
          stroke="currentColor"
@@ -62,101 +63,82 @@
          stroke-linecap="round"
          stroke-linejoin="round"
         >
-         <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-         <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-         <path d="M10 9H8" />
-         <path d="M16 13H8" />
-         <path d="M16 17H8" />
+         <polyline points="16 18 22 12 16 6" />
+         <polyline points="8 6 2 12 8 18" />
         </svg>
-        Ver código-fonte
-        <span class="rounded bg-muted/50 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+        Código
+        <span class="rounded bg-muted px-1 py-0.5 text-[10px] tabular-nums">
          {data.sourceFiles.length}
         </span>
        </button>
       {/if}
 
-      <!-- Botão Copiar Markdown -->
       <button
        onclick={copyRaw}
-       class="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-4 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:text-foreground"
+       class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       >
        {#if copied}
-        <div in:fly={{ y: 5 }} class="flex items-center gap-2 text-emerald-500">
+        <span
+         in:fly={{ y: -4, duration: 150 }}
+         class="flex items-center gap-1.5 text-emerald-500"
+        >
          <svg
+          class="size-3.5"
           xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
-          stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg
+          stroke-linejoin="round"
          >
-         Copiado!
-        </div>
+          <path d="M20 6 9 17l-5-5" />
+         </svg>
+         Copiado
+        </span>
        {:else}
         <svg
+         class="size-3.5"
          xmlns="http://www.w3.org/2000/svg"
-         width="14"
-         height="14"
          viewBox="0 0 24 24"
          fill="none"
          stroke="currentColor"
          stroke-width="2"
          stroke-linecap="round"
          stroke-linejoin="round"
-         ><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path
-          d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
-         /></svg
         >
-        Copiar Markdown
+         <rect width="14" height="14" x="8" y="8" rx="2" />
+         <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </svg>
+        Copiar
        {/if}
       </button>
      </div>
-    </div>
+    </header>
 
-    <!-- Container do Conteúdo -->
-    <div
-     class="relative min-h-[500px] rounded-xl border border-border/50 bg-card/30 p-8 shadow-sm md:p-10"
+    <!-- Conteúdo sem container/borda, prose refinado -->
+    <article
+     class="prose max-w-none prose-neutral dark:prose-invert
+						prose-headings:font-semibold prose-headings:tracking-tight
+						prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-xl prose-h2:font-semibold
+						prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-lg
+						prose-p:leading-relaxed prose-p:text-muted-foreground
+						prose-a:font-medium prose-a:text-foreground prose-a:underline prose-a:decoration-muted-foreground/40 prose-a:underline-offset-4 hover:prose-a:decoration-foreground
+						prose-strong:font-medium prose-strong:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[13px] prose-code:font-normal
+						prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-lg
+						prose-pre:bg-zinc-950
+						prose-pre:text-sm
+						prose-li:text-muted-foreground prose-img:rounded-lg"
     >
-     <!-- Cabeçalho Interno (Título/Desc) -->
-     <div class="mb-10 space-y-4 border-b border-border/40 pb-8">
-      {#if data.meta?.description}
-       <h1 class="scroll-m-20 text-3xl font-bold tracking-tight lg:text-4xl">
-        {data.meta?.title ?? 'Sem Título'}
-       </h1>
-       <p class="text-lg font-light text-muted-foreground">
-        {data.meta.description}
-       </p>
-      {/if}
-     </div>
-
-     <!-- Conteúdo Renderizado -->
-     <div
-      class="prose max-w-none prose-zinc dark:prose-invert
-							prose-headings:font-semibold prose-headings:tracking-tight
-							prose-h2:mt-12 prose-h2:border-b prose-h2:pb-2 prose-h2:text-2xl
-							prose-p:leading-7 prose-p:text-muted-foreground
-							prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-							prose-code:rounded prose-code:bg-muted/50 prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-							prose-pre:bg-zinc-950 prose-img:rounded-lg prose-img:border"
-     >
-      {#key data.meta.title}
-       <data.content />
-      {/key}
-     </div>
-    </div>
+     {#key data.meta.title}
+      <data.content />
+     {/key}
+    </article>
    </main>
 
-   <!-- SIDEBAR TOC -->
-   <aside class="hidden lg:block" transition:fade>
-    <div class="sticky top-24 max-h-[calc(100vh-8rem)]">
-     <div
-      class="mb-4 text-xs font-semibold tracking-wider text-muted-foreground/50 uppercase"
-     >
-      Nesta página
-     </div>
+   <!-- Sidebar mais minimalista -->
+   <aside class="hidden lg:block">
+    <div class="sticky top-20">
      {#key data.meta.title}
       <TableOfContents />
      {/key}
@@ -174,19 +156,3 @@
   bind:open={sourceDialogOpen}
  />
 {/if}
-
-<style>
- .bg-subtle-grid {
-  background-size: 40px 40px;
-  background-image: linear-gradient(
-    to right,
-    hsl(var(--border) / 0.1) 1px,
-    transparent 1px
-   ),
-   linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px);
- }
-
- .mask-gradient {
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
- }
-</style>
