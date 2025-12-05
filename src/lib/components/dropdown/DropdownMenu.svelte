@@ -1,7 +1,6 @@
-<!-- src/lib/components/ui/dropdown-menu/root.svelte -->
 <script lang="ts">
- import { setContext, type Snippet } from 'svelte';
- import { DropdownState } from './ctx.svelte.js';
+ import { type Snippet } from 'svelte';
+ import { DropdownState, setDropdownRoot } from './ctx.svelte.js';
  import type { Placement } from '@floating-ui/dom';
 
  let { children, placement = 'bottom' }: { children: Snippet; placement?: Placement } =
@@ -11,7 +10,7 @@
 
  const state = new DropdownState({ baseId: uid, placement });
 
- setContext('dropdown-root', state);
+ setDropdownRoot(state);
 </script>
 
 {@render children()}

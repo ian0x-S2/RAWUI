@@ -1,13 +1,19 @@
-<!-- src/lib/components/ui/dropdown-menu/DropdownContent.svelte -->
 <script lang="ts">
- import { getContext } from 'svelte';
+ import { type Snippet } from 'svelte';
  import { scale } from 'svelte/transition';
- import type { DropdownState } from './ctx.svelte.js';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import { getDropdownRoot } from './ctx.svelte.js';
  import Portal from '$lib/components/portal/Portal.svelte';
- import { cn } from '$lib/utils'; // <--- Importar cn
+ import { cn } from '$lib/utils';
 
- let { children, class: className = undefined, ...restProps } = $props();
- const root = getContext<DropdownState>('dropdown-root');
+ type Props = {
+  children: Snippet;
+  class?: string;
+ } & HTMLAttributes<HTMLDivElement>;
+
+ let { children, class: className, ...restProps }: Props = $props();
+
+ const root = getDropdownRoot();
 </script>
 
 <Portal>
@@ -17,7 +23,7 @@
    {...restProps}
    transition:scale={{ duration: 100, start: 0.95 }}
    class={cn(
-    ' fixed z-50 min-w-32 overflow-hidden rounded-md border border-border  bg-popover p-1 text-popover-foreground shadow-md',
+    'fixed z-50 min-w-32 overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md',
     className
    )}
    style="width: max-content;"

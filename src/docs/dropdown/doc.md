@@ -1,6 +1,6 @@
 ---
 title: Dropdown Menu
-description: Menu suspenso para exibir ações e opções, acionado por um botão. Posicionamento automático, navegação por teclado e acessível.
+description: Menu suspenso acessível para exibir ações contextuais. Inclui posicionamento automático, navegação por teclado e suporte a submenus.
 componentId: dropdown
 ---
 
@@ -11,16 +11,20 @@ componentId: dropdown
     DropdownContent, 
     DropdownItem,
     DropdownSeparator,
-    DropdownLabel
+    DropdownLabel,
+    DropdownSub,
+    DropdownSubTrigger,
+    DropdownSubContent,
+    DropdownSubItem
   } from '$lib/components/dropdown/index';
   import CodeBlock from '$lib/intern/CodeBlock.svelte';
 </script>
 
-Um componente dropdown totalmente acessível para exibir menus de ações, opções de usuário e navegação contextual.
+O componente Dropdown Menu oferece uma forma elegante de exibir listas de ações ou opções em um menu suspenso. Totalmente acessível, com navegação por teclado completa e suporte a submenus de um nível.
 
 ## Instalação
 
-Copie e cole os arquivos do componente no seu projeto:
+Copie os arquivos do componente para o seu projeto:
 
 <CodeBlock language="bash" code={
 `src/lib/components/dropdown/
@@ -30,19 +34,23 @@ Copie e cole os arquivos do componente no seu projeto:
 ├── DropdownItem.svelte
 ├── DropdownSeparator.svelte
 ├── DropdownLabel.svelte
+├── DropdownSub.svelte
+├── DropdownSubTrigger.svelte
+├── DropdownSubContent.svelte
+├── DropdownSubItem.svelte
 ├── ctx.svelte.ts
 └── index.ts
 `} />
 
-**Dependências necessárias:**
+**Dependência externa:**
 
-<CodeBlock language="bash" code={
-`npm install @floating-ui/dom
-`} />
+<CodeBlock language="bash" code={`npm install @floating-ui/dom`} />
 
-> **Nota:** O componente `DropdownTrigger` depende das variantes de botão (`buttonVariants`). Certifique-se de ter o componente Button configurado ou ajuste a importação. O `DropdownContent` utiliza um componente `Portal`.
+> O `DropdownTrigger` utiliza as variantes do componente Button (`buttonVariants`). O `DropdownContent` e `DropdownSubContent` dependem do componente `Portal`.
 
 ## Uso Básico
+
+O dropdown é composto por um trigger (botão) e um conteúdo que aparece ao clicar:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
   <DropdownMenu>
@@ -57,13 +65,13 @@ Copie e cole os arquivos do componente no seu projeto:
 </div>
 
 <CodeBlock language="svelte" code={
-`<script lang="ts">
+`<script>
   import { 
     DropdownMenu, 
     DropdownTrigger, 
     DropdownContent, 
     DropdownItem 
-  } from '$lib/components/dropdown/index';
+  } from '$lib/components/dropdown';
 </script>
 
 <DropdownMenu>
@@ -77,17 +85,19 @@ Copie e cole os arquivos do componente no seu projeto:
 </DropdownMenu>
 `} />
 
-## Funcionalidades
+## Recursos
 
-- **Posicionamento Inteligente** - Usa Floating UI para garantir que o menu sempre fique visível na tela.
-- **Portal** - Renderiza o conteúdo no `<body>` evitando problemas de z-index e overflow.
-- **Acessível** - ARIA completo e navegação por teclado (Setas, Enter, Esc, Home, End).
-- **Auto-close** - Fecha automaticamente ao clicar fora ou pressionar Esc.
-- **Customizável** - Aceita classes CSS e conteúdo rico (ícones, avatares, etc).
+- **Posicionamento Inteligente** — O menu se ajusta automaticamente para permanecer visível na tela
+- **Portal** — O conteúdo é renderizado no `<body>`, evitando problemas de z-index e overflow
+- **Acessibilidade** — Atributos ARIA e navegação completa por teclado
+- **Auto-close** — Fecha ao clicar fora, pressionar Esc ou selecionar um item
+- **Submenus** — Suporte a um nível de submenus com abertura por hover ou teclado
 
 ## Exemplos
 
-### Com Ações e Ícones
+### Itens com Ícones
+
+Adicione ícones aos itens usando a classe `gap-2` para espaçamento adequado:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
   <DropdownMenu>
@@ -118,22 +128,22 @@ Copie e cole os arquivos do componente no seu projeto:
 `<DropdownMenu>
   <DropdownTrigger variant="default">Ações</DropdownTrigger>
   <DropdownContent>
-    <DropdownItem class="gap-2" onclick={() => handleEdit()}>
+    <DropdownItem class="gap-2" onclick={handleEdit}>
       <EditIcon class="h-4 w-4" />
       Editar
     </DropdownItem>
-    <DropdownItem class="gap-2" onclick={() => handleDuplicate()}>
+    <DropdownItem class="gap-2" onclick={handleDuplicate}>
       <CopyIcon class="h-4 w-4" />
       Duplicar
     </DropdownItem>
-    <DropdownItem class="gap-2" onclick={() => handleArchive()}>
+    <DropdownItem class="gap-2" onclick={handleArchive}>
       <ArchiveIcon class="h-4 w-4" />
       Arquivar
     </DropdownItem>
     <DropdownSeparator />
     <DropdownItem 
       class="gap-2 text-destructive focus:text-destructive" 
-      onclick={() => handleDelete()}
+      onclick={handleDelete}
     >
       <TrashIcon class="h-4 w-4" />
       Deletar
@@ -142,13 +152,15 @@ Copie e cole os arquivos do componente no seu projeto:
 </DropdownMenu>
 `} />
 
-### Com Separadores e Labels
+### Separadores e Labels
+
+Organize os itens em grupos usando `DropdownLabel` e `DropdownSeparator`:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
   <DropdownMenu>
-    <DropdownTrigger>Opções</DropdownTrigger>
+    <DropdownTrigger>Minha Conta</DropdownTrigger>
     <DropdownContent class="w-56">
-      <DropdownLabel>Minha Conta</DropdownLabel>
+      <DropdownLabel>Conta</DropdownLabel>
       <DropdownSeparator />
       <DropdownItem class="gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -167,7 +179,7 @@ Copie e cole os arquivos do componente no seu projeto:
       </DropdownItem>
       <DropdownItem class="gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-        Convites
+        Convidar
       </DropdownItem>
     </DropdownContent>
   </DropdownMenu>
@@ -175,9 +187,9 @@ Copie e cole os arquivos do componente no seu projeto:
 
 <CodeBlock language="svelte" code={
 `<DropdownMenu>
-  <DropdownTrigger>Opções</DropdownTrigger>
+  <DropdownTrigger>Minha Conta</DropdownTrigger>
   <DropdownContent class="w-56">
-    <DropdownLabel>Minha Conta</DropdownLabel>
+    <DropdownLabel>Conta</DropdownLabel>
     <DropdownSeparator />
     <DropdownItem>Perfil</DropdownItem>
     <DropdownItem>Configurações</DropdownItem>
@@ -185,14 +197,129 @@ Copie e cole os arquivos do componente no seu projeto:
     <DropdownLabel>Equipe</DropdownLabel>
     <DropdownSeparator />
     <DropdownItem>Membros</DropdownItem>
-    <DropdownItem>Convites</DropdownItem>
+    <DropdownItem>Convidar</DropdownItem>
+  </DropdownContent>
+</DropdownMenu>
+`} />
+
+### Submenus
+
+Crie menus hierárquicos com `DropdownSub`, `DropdownSubTrigger`, `DropdownSubContent` e `DropdownSubItem`. O submenu abre ao passar o mouse ou navegar com as teclas de seta:
+
+<div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[250px]">
+  <DropdownMenu>
+    <DropdownTrigger>Opções</DropdownTrigger>
+    <DropdownContent class="w-48">
+      <DropdownItem class="gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        Nova foto
+      </DropdownItem>
+      <DropdownSeparator />
+      <DropdownSub>
+        <DropdownSubTrigger class="gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+          Convidar usuários
+        </DropdownSubTrigger>
+        <DropdownSubContent>
+          <DropdownSubItem onclick={() => alert('E-mail')}>
+            Por e-mail
+          </DropdownSubItem>
+          <DropdownSubItem onclick={() => alert('Link')}>
+            Por link
+          </DropdownSubItem>
+          <DropdownSeparator />
+          <DropdownSubItem onclick={() => alert('Contatos')}>
+            Da lista de contatos
+          </DropdownSubItem>
+        </DropdownSubContent>
+      </DropdownSub>
+      <DropdownSub>
+        <DropdownSubTrigger class="gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+          Compartilhar
+        </DropdownSubTrigger>
+        <DropdownSubContent>
+          <DropdownSubItem onclick={() => alert('Twitter')}>
+            Twitter
+          </DropdownSubItem>
+          <DropdownSubItem onclick={() => alert('Facebook')}>
+            Facebook
+          </DropdownSubItem>
+          <DropdownSubItem onclick={() => alert('LinkedIn')}>
+            LinkedIn
+          </DropdownSubItem>
+        </DropdownSubContent>
+      </DropdownSub>
+      <DropdownSeparator />
+      <DropdownItem class="gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Configurações
+      </DropdownItem>
+    </DropdownContent>
+  </DropdownMenu>
+</div>
+
+<CodeBlock language="svelte" code={
+`<script>
+  import { 
+    DropdownMenu, 
+    DropdownTrigger, 
+    DropdownContent, 
+    DropdownItem,
+    DropdownSeparator,
+    DropdownSub,
+    DropdownSubTrigger,
+    DropdownSubContent,
+    DropdownSubItem
+  } from '$lib/components/dropdown';
+</script>
+
+<DropdownMenu>
+  <DropdownTrigger>Opções</DropdownTrigger>
+  <DropdownContent class="w-48">
+    <DropdownItem>Nova foto</DropdownItem>
+    <DropdownSeparator />
+    
+    <DropdownSub>
+      <DropdownSubTrigger>Convidar usuários</DropdownSubTrigger>
+      <DropdownSubContent>
+        <DropdownSubItem onclick={handleEmailInvite}>
+          Por e-mail
+        </DropdownSubItem>
+        <DropdownSubItem onclick={handleLinkInvite}>
+          Por link
+        </DropdownSubItem>
+        <DropdownSeparator />
+        <DropdownSubItem onclick={handleContactsInvite}>
+          Da lista de contatos
+        </DropdownSubItem>
+      </DropdownSubContent>
+    </DropdownSub>
+    
+    <DropdownSub>
+      <DropdownSubTrigger>Compartilhar</DropdownSubTrigger>
+      <DropdownSubContent>
+        <DropdownSubItem onclick={() => shareOn('twitter')}>
+          Twitter
+        </DropdownSubItem>
+        <DropdownSubItem onclick={() => shareOn('facebook')}>
+          Facebook
+        </DropdownSubItem>
+        <DropdownSubItem onclick={() => shareOn('linkedin')}>
+          LinkedIn
+        </DropdownSubItem>
+      </DropdownSubContent>
+    </DropdownSub>
+    
+    <DropdownSeparator />
+    <DropdownItem>Configurações</DropdownItem>
   </DropdownContent>
 </DropdownMenu>
 `} />
 
 ### Posicionamento
 
-O componente ajusta automaticamente a posição para não sair da tela. Você pode definir a posição preferencial:
+Defina a posição preferencial do menu através da prop `placement`. O componente ajusta automaticamente se não houver espaço:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center gap-4 min-h-[200px] flex-wrap">
   <DropdownMenu placement="top">
@@ -233,30 +360,25 @@ O componente ajusta automaticamente a posição para não sair da tela. Você po
 </div>
 
 <CodeBlock language="svelte" code={
-`<DropdownMenu placement="top">...</DropdownMenu>
+`<!-- Posições básicas -->
+<DropdownMenu placement="top">...</DropdownMenu>
+<DropdownMenu placement="bottom">...</DropdownMenu>
+<DropdownMenu placement="left">...</DropdownMenu>
+<DropdownMenu placement="right">...</DropdownMenu>
+
+<!-- Com alinhamento -->
 <DropdownMenu placement="top-start">...</DropdownMenu>
 <DropdownMenu placement="top-end">...</DropdownMenu>
-
-<DropdownMenu placement="bottom">...</DropdownMenu>
 <DropdownMenu placement="bottom-start">...</DropdownMenu>
 <DropdownMenu placement="bottom-end">...</DropdownMenu>
-
-<DropdownMenu placement="left">...</DropdownMenu>
-<DropdownMenu placement="left-start">...</DropdownMenu>
-<DropdownMenu placement="left-end">...</DropdownMenu>
-
-<DropdownMenu placement="right">...</DropdownMenu>
-<DropdownMenu placement="right-start">...</DropdownMenu>
-<DropdownMenu placement="right-end">...</DropdownMenu>
 `} />
-
 
 ## Estilização
 
-Todos os componentes aceitam a prop `class` para customização. As classes padrão usam variáveis CSS do Tailwind:
+Todos os componentes aceitam a prop `class` para customização:
 
 <CodeBlock language="svelte" code={
-`<!-- Dropdown com largura customizada -->
+`<!-- Largura customizada -->
 <DropdownContent class="w-64">
   ...
 </DropdownContent>
@@ -266,13 +388,13 @@ Todos os componentes aceitam a prop `class` para customização. As classes padr
   Deletar
 </DropdownItem>
 
-<!-- Item com gap para ícone -->
-<DropdownItem class="gap-2 font-semibold">
-  <Icon />
+<!-- Item com ícone -->
+<DropdownItem class="gap-2">
+  <Icon class="h-4 w-4" />
   Texto
 </DropdownItem>
 
-<!-- Label com cor customizada -->
+<!-- Label customizado -->
 <DropdownLabel class="text-primary">
   Seção Principal
 </DropdownLabel>
@@ -280,7 +402,7 @@ Todos os componentes aceitam a prop `class` para customização. As classes padr
 
 ## Exemplo Completo
 
-Menu dropdown completo com múltiplas seções, ícones, informações de usuário e lógica de navegação.
+Menu de usuário com avatar, múltiplas seções e submenu:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[400px]">
   <DropdownMenu placement="bottom-end">
@@ -296,44 +418,34 @@ Menu dropdown completo com múltiplas seções, ícones, informações de usuár
       
       <DropdownSeparator />
       
-      <DropdownLabel>Minha Conta</DropdownLabel>
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Perfil')}>
+      <DropdownItem class="gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Perfil
       </DropdownItem>
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Configurações')}>
+      <DropdownItem class="gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         Configurações
       </DropdownItem>
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Assinatura')}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-        Assinatura
-      </DropdownItem>
       
       <DropdownSeparator />
       
-      <DropdownLabel>Equipe</DropdownLabel>
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Membros')}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Membros da equipe
-      </DropdownItem>
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Convidar')}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-        Convidar membros
-      </DropdownItem>
-      
-      <DropdownSeparator />
-      
-      <DropdownItem class="gap-2" onclick={() => alert('Navegar: Ajuda')}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-        Central de ajuda
-      </DropdownItem>
+      <DropdownSub>
+        <DropdownSubTrigger class="gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          Tema
+        </DropdownSubTrigger>
+        <DropdownSubContent>
+          <DropdownSubItem>Claro</DropdownSubItem>
+          <DropdownSubItem>Escuro</DropdownSubItem>
+          <DropdownSubItem>Sistema</DropdownSubItem>
+        </DropdownSubContent>
+      </DropdownSub>
       
       <DropdownSeparator />
       
       <DropdownItem 
         class="gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
-        onclick={() => alert('Logout realizado')}
+        onclick={() => alert('Logout')}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         Sair
@@ -342,112 +454,27 @@ Menu dropdown completo com múltiplas seções, ícones, informações de usuár
   </DropdownMenu>
 </div>
 
-<CodeBlock language="svelte" code={
-`<script>
-  import { goto } from '$app/navigation';
-  import { 
-    DropdownMenu, 
-    DropdownTrigger, 
-    DropdownContent, 
-    DropdownItem,
-    DropdownSeparator,
-    DropdownLabel 
-  } from '$lib/components/dropdown';
-  import { 
-    UserIcon, 
-    SettingsIcon, 
-    CreditCardIcon,
-    UsersIcon,
-    UserPlusIcon,
-    HelpCircleIcon,
-    LogOutIcon
-  } from '$lib/icons';
-  
-  let user = {
-    name: "John Doe",
-    email: "john@example.com",
-    initials: "JD"
-  };
-  
-  function handleLogout() {
-    goto('/login');
-  }
-</script>
-
-<DropdownMenu placement="bottom-end">
-  <DropdownTrigger variant="ghost" size="icon" class="rounded-full">
-    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold">
-      {user.initials}
-    </div>
-  </DropdownTrigger>
-  
-  <DropdownContent class="w-64">
-    <DropdownLabel>{user.name}</DropdownLabel>
-    <div class="px-2 text-xs text-muted-foreground pb-2">{user.email}</div>
-    
-    <DropdownSeparator />
-    
-    <DropdownLabel>Minha Conta</DropdownLabel>
-    <DropdownItem class="gap-2" onclick={() => goto('/profile')}>
-      <UserIcon class="h-4 w-4" />
-      Perfil
-    </DropdownItem>
-    <DropdownItem class="gap-2" onclick={() => goto('/settings')}>
-      <SettingsIcon class="h-4 w-4" />
-      Configurações
-    </DropdownItem>
-    <DropdownItem class="gap-2" onclick={() => goto('/billing')}>
-      <CreditCardIcon class="h-4 w-4" />
-      Assinatura
-    </DropdownItem>
-    
-    <DropdownSeparator />
-    
-    <DropdownLabel>Equipe</DropdownLabel>
-    <DropdownItem class="gap-2" onclick={() => goto('/team')}>
-      <UsersIcon class="h-4 w-4" />
-      Membros da equipe
-    </DropdownItem>
-    <DropdownItem class="gap-2" onclick={() => goto('/team/invite')}>
-      <UserPlusIcon class="h-4 w-4" />
-      Convidar membros
-    </DropdownItem>
-    
-    <DropdownSeparator />
-    
-    <DropdownItem class="gap-2" onclick={() => goto('/help')}>
-      <HelpCircleIcon class="h-4 w-4" />
-      Central de ajuda
-    </DropdownItem>
-    
-    <DropdownSeparator />
-    
-    <DropdownItem 
-      class="gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
-      onclick={handleLogout}
-    >
-      <LogOutIcon class="h-4 w-4" />
-      Sair
-    </DropdownItem>
-  </DropdownContent>
-</DropdownMenu>
-`} />
-
 ## Navegação por Teclado
 
-O componente possui suporte completo para navegação por teclado:
+### Menu Principal
 
 | Tecla | Ação |
 | :--- | :--- |
-| `Space` / `Enter` | Abre o menu (quando focado no trigger) |
-| `↓` (Seta para baixo) | Abre o menu e foca no primeiro item |
-| `↑` (Seta para cima) | Abre o menu e foca no último item |
-| `↓` / `↑` (Menu aberto) | Navega entre os itens (com loop) |
-| `Enter` / `Space` | Seleciona o item focado |
+| `Space` / `Enter` | Abre o menu (no trigger) ou seleciona o item focado |
+| `↓` | Abre o menu e foca no primeiro item / Move para o próximo item |
+| `↑` | Abre o menu e foca no último item / Move para o item anterior |
 | `Home` | Foca no primeiro item |
 | `End` | Foca no último item |
 | `Esc` | Fecha o menu e retorna o foco ao trigger |
 | `Tab` | Fecha o menu |
+
+### Submenus
+
+| Tecla | Ação |
+| :--- | :--- |
+| `→` / `Enter` / `Space` | Abre o submenu (no trigger do submenu) |
+| `←` / `Esc` | Fecha o submenu e retorna ao item pai |
+| `↓` / `↑` | Navega entre os itens do submenu |
 
 ## API Reference
 
@@ -457,8 +484,8 @@ Componente raiz que gerencia o estado do dropdown.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `placement` | `Placement` | `'bottom'` | Posição preferencial do menu. Valores: `top`, `right`, `bottom`, `left` e suas variações com `-start` e `-end` |
-| `children` | `Snippet` | - | Conteúdo (deve incluir `DropdownTrigger` e `DropdownContent`) |
+| `placement` | `Placement` | `'bottom'` | Posição preferencial: `top`, `bottom`, `left`, `right` e variações com `-start` / `-end` |
+| `children` | `Snippet` | — | Deve conter `DropdownTrigger` e `DropdownContent` |
 
 ### DropdownTrigger
 
@@ -466,11 +493,10 @@ Botão que abre/fecha o dropdown.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `variant` | `string` | `'outline'` | Estilo do botão: `default`, `outline`, `ghost`, `secondary`, `destructive`, `link` |
-| `size` | `string` | `'default'` | Tamanho do botão: `default`, `sm`, `lg`, `icon` |
-| `class` | `string` | - | Classes CSS adicionais |
-| `children` | `Snippet` | - | Conteúdo do botão |
-| `...props` | `HTMLButtonAttributes` | - | Aceita todas as props de um `<button>` |
+| `variant` | `string` | `'outline'` | `default`, `outline`, `ghost`, `secondary`, `destructive`, `link` |
+| `size` | `string` | `'default'` | `default`, `sm`, `lg`, `icon` |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Conteúdo do botão |
 
 ### DropdownContent
 
@@ -478,36 +504,68 @@ Container do menu suspenso.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `class` | `string` | - | Classes CSS adicionais |
-| `children` | `Snippet` | - | Itens do menu |
-| `...props` | `HTMLAttributes` | - | Aceita todas as props de um `<div>` |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Itens do menu |
 
 ### DropdownItem
 
-Item individual do menu.
+Item clicável do menu.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `onclick` | `(e: MouseEvent) => void` | - | Função executada ao clicar no item |
-| `class` | `string` | - | Classes CSS adicionais |
-| `children` | `Snippet` | - | Conteúdo do item |
-| `...props` | `HTMLAttributes` | - | Aceita todas as props de um `<div>` |
+| `onclick` | `(e: MouseEvent) => void` | — | Callback ao clicar |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Conteúdo do item |
 
 ### DropdownSeparator
 
-Linha divisória para separar grupos de itens.
+Linha divisória entre grupos de itens.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `class` | `string` | - | Classes CSS adicionais |
-| `...props` | `HTMLAttributes` | - | Aceita todas as props de um `<div>` |
+| `class` | `string` | — | Classes CSS adicionais |
 
 ### DropdownLabel
 
-Label não clicável para agrupar ou identificar seções.
+Texto não interativo para identificar seções.
 
 | Prop | Tipo | Padrão | Descrição |
 | :--- | :--- | :--- | :--- |
-| `class` | `string` | - | Classes CSS adicionais |
-| `children` | `Snippet` | - | Conteúdo do label |
-| `...props` | `HTMLAttributes` | - | Aceita todas as props de um `<div>` |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Texto do label |
+
+### DropdownSub
+
+Wrapper para criar um submenu.
+
+| Prop | Tipo | Padrão | Descrição |
+| :--- | :--- | :--- | :--- |
+| `children` | `Snippet` | — | Deve conter `DropdownSubTrigger` e `DropdownSubContent` |
+
+### DropdownSubTrigger
+
+Item que abre o submenu ao hover ou teclado.
+
+| Prop | Tipo | Padrão | Descrição |
+| :--- | :--- | :--- | :--- |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Conteúdo (texto e ícone opcional) |
+
+### DropdownSubContent
+
+Container do submenu.
+
+| Prop | Tipo | Padrão | Descrição |
+| :--- | :--- | :--- | :--- |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Itens do submenu |
+
+### DropdownSubItem
+
+Item clicável dentro do submenu.
+
+| Prop | Tipo | Padrão | Descrição |
+| :--- | :--- | :--- | :--- |
+| `onclick` | `(e: MouseEvent) => void` | — | Callback ao clicar |
+| `class` | `string` | — | Classes CSS adicionais |
+| `children` | `Snippet` | — | Conteúdo do item |

@@ -1,7 +1,14 @@
-<!-- src/lib/components/ui/dropdown-menu/DropdownLabel.svelte -->
 <script lang="ts">
- import { cn } from '$lib/utils'; // <--- Importar cn
- let { children, class: className = undefined, ...restProps } = $props();
+ import { type Snippet } from 'svelte';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import { cn } from '$lib/utils';
+
+ type Props = {
+  children: Snippet;
+  class?: string;
+ } & HTMLAttributes<HTMLDivElement>;
+
+ let { children, class: className, ...restProps }: Props = $props();
 </script>
 
 <div

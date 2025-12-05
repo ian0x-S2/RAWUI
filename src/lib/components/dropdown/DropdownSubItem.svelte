@@ -1,7 +1,7 @@
 <script lang="ts">
  import { type Snippet } from 'svelte';
  import type { HTMLAttributes } from 'svelte/elements';
- import { getDropdownRoot } from './ctx.svelte.js';
+ import { getDropdownRoot, getDropdownSub } from './ctx.svelte.js';
  import { cn } from '$lib/utils';
 
  type Props = {
@@ -13,15 +13,17 @@
  let { children, class: className, onclick, ...restProps }: Props = $props();
 
  const root = getDropdownRoot();
+ const sub = getDropdownSub();
 
  let el: HTMLElement;
 
  $effect(() => {
-  if (el) return root.registerItem(el);
+  if (el) return sub.registerItem(el);
  });
 
  function handleClick(e: MouseEvent) {
   if (onclick) onclick(e);
+  sub.close();
   root.close();
  }
 
