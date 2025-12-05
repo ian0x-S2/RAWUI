@@ -1,4 +1,3 @@
-<!-- src/lib/components/ui/dialog/DialogContent.svelte -->
 <script lang="ts">
  import { getContext } from 'svelte';
  import { fade } from 'svelte/transition';
@@ -31,12 +30,11 @@
 
   const el = node as HTMLElement;
 
-  setTimeout(() => {
+  const focusTimeout = setTimeout(() => {
    el.focus();
   }, 10);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-   // FECHAR COM ESC
    if (e.key === 'Escape') {
     e.stopPropagation();
     root.close();
@@ -73,6 +71,7 @@
   el.addEventListener('keydown', handleKeyDown);
 
   return () => {
+   clearTimeout(focusTimeout);
    el.removeEventListener('keydown', handleKeyDown);
    root.triggerRef?.focus();
   };
