@@ -1,7 +1,14 @@
 // src/routes/doc/[slug]/+page.ts
 import { error } from '@sveltejs/kit';
+import { loadComponentFiles } from '$lib/utils/component-loader';
 
 export const prerender = true;
+
+// Glob all component source files at build time
+const componentSources = import.meta.glob('/src/lib/components/**/*.{svelte,ts,js}', {
+ query: '?raw',
+ import: 'default'
+}) as Record<string, () => Promise<string>>;
 
 export async function load({ params }) {
  const { slug } = params;
@@ -30,10 +37,17 @@ export async function load({ params }) {
   rawResolver() as Promise<string>
  ]);
 
+ // 3. Carrega o código-fonte do componente se componentId estiver definido
+ const componentId = post.metadata?.componentId;
+ const sourceFiles = componentId
+  ? await loadComponentFiles(componentId, componentSources)
+  : [];
+
  return {
   content: post.default, // O componente Svelte
   meta: post.metadata, // Frontmatter
-  raw: rawContent // A string do Markdown <--- NOVO
+  raw: rawContent, // A string do Markdown
+  sourceFiles // Array de arquivos fonte do componente
  };
 }
 

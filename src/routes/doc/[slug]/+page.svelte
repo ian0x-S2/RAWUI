@@ -3,10 +3,12 @@
  import { fade, fly } from 'svelte/transition';
  import type { PageData } from './$types';
  import TableOfContents from '$lib/intern/TableOfContents.svelte';
+ import SourceCodeViewer from '$lib/components/SourceCodeViewer.svelte';
 
  let { data }: { data: PageData } = $props();
 
  let copied = $state(false);
+ let sourceDialogOpen = $state(false);
 
  // Função para copiar o markdown cru
  function copyRaw() {
@@ -14,6 +16,11 @@
   navigator.clipboard.writeText(data.raw);
   copied = true;
   setTimeout(() => (copied = false), 2000);
+ }
+
+ // Função para abrir o dialog de código-fonte
+ function openSourceDialog() {
+  sourceDialogOpen = true;
  }
 </script>
 
@@ -28,7 +35,7 @@
   >
    <!-- COLUNA PRINCIPAL -->
    <main class="min-w-0" in:fade={{ duration: 200 }}>
-    <!-- Header e Botão Copiar -->
+    <!-- Header e Botões -->
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
      <div class="flex items-center gap-2 text-sm text-muted-foreground">
       <span class="cursor-pointer transition-colors hover:text-foreground">Docs</span>
@@ -36,13 +43,14 @@
       <span class="font-medium text-foreground">{data.meta?.title}</span>
      </div>
 
-     <!-- Botão Copiar Markdown -->
-     <button
-      onclick={copyRaw}
-      class="flex items-center gap-2 self-start rounded-lg border border-border/40 bg-muted/30 px-4 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:text-foreground sm:self-auto"
-     >
-      {#if copied}
-       <div in:fly={{ y: 5 }} class="flex items-center gap-2 text-emerald-500">
+     <!-- Botões de Ação -->
+     <div class="flex items-center gap-2 self-start sm:self-auto">
+      <!-- Botão Ver Código-fonte -->
+      {#if data.sourceFiles && data.sourceFiles.length > 0}
+       <button
+        onclick={openSourceDialog}
+        class="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-4 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:text-foreground"
+       >
         <svg
          xmlns="http://www.w3.org/2000/svg"
          width="14"
@@ -52,28 +60,60 @@
          stroke="currentColor"
          stroke-width="2"
          stroke-linecap="round"
-         stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg
+         stroke-linejoin="round"
         >
-        Copiado!
-       </div>
-      {:else}
-       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        ><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path
-         d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
-        /></svg
-       >
-       Copiar Markdown
+         <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+         <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+         <path d="M10 9H8" />
+         <path d="M16 13H8" />
+         <path d="M16 17H8" />
+        </svg>
+        Ver código-fonte
+        <span class="rounded bg-muted/50 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+         {data.sourceFiles.length}
+        </span>
+       </button>
       {/if}
-     </button>
+
+      <!-- Botão Copiar Markdown -->
+      <button
+       onclick={copyRaw}
+       class="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/30 px-4 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:text-foreground"
+      >
+       {#if copied}
+        <div in:fly={{ y: 5 }} class="flex items-center gap-2 text-emerald-500">
+         <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg
+         >
+         Copiado!
+        </div>
+       {:else}
+        <svg
+         xmlns="http://www.w3.org/2000/svg"
+         width="14"
+         height="14"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         ><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path
+          d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+         /></svg
+        >
+        Copiar Markdown
+       {/if}
+      </button>
+     </div>
     </div>
 
     <!-- Container do Conteúdo -->
@@ -95,12 +135,12 @@
      <!-- Conteúdo Renderizado -->
      <div
       class="prose max-w-none prose-zinc dark:prose-invert
-             prose-headings:font-semibold prose-headings:tracking-tight
-             prose-h2:mt-12 prose-h2:border-b prose-h2:pb-2 prose-h2:text-2xl
-             prose-p:leading-7 prose-p:text-muted-foreground
-             prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-             prose-code:rounded prose-code:bg-muted/50 prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-             prose-pre:bg-zinc-950 prose-img:rounded-lg prose-img:border"
+							prose-headings:font-semibold prose-headings:tracking-tight
+							prose-h2:mt-12 prose-h2:border-b prose-h2:pb-2 prose-h2:text-2xl
+							prose-p:leading-7 prose-p:text-muted-foreground
+							prose-a:font-medium prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+							prose-code:rounded prose-code:bg-muted/50 prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+							prose-pre:bg-zinc-950 prose-img:rounded-lg prose-img:border"
      >
       {#key data.meta.title}
        <data.content />
@@ -125,6 +165,15 @@
   </div>
  </div>
 </div>
+
+<!-- Dialog de Código-fonte -->
+{#if data.sourceFiles && data.sourceFiles.length > 0}
+ <SourceCodeViewer
+  files={data.sourceFiles}
+  componentName={data.meta?.title ?? 'Componente'}
+  bind:open={sourceDialogOpen}
+ />
+{/if}
 
 <style>
  .bg-subtle-grid {

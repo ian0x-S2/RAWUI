@@ -1,6 +1,7 @@
 ---
 title: Dropdown Menu
 description: Menu suspenso para exibir ações e opções, acionado por um botão. Posicionamento automático, navegação por teclado e acessível.
+componentId: dropdown
 ---
 
 <script>
