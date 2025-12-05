@@ -1,14 +1,12 @@
 <script lang="ts">
- import { setContext } from 'svelte';
- import type { Snippet } from 'svelte';
- import { browser } from '$app/environment';
- import { cn } from '../../utils/index.ts';
+ import { onDestroy, type Snippet } from 'svelte';
+ import { cn } from '$lib/utils';
+ import { SidebarState, setSidebarContext, type SidebarVariant } from './ctx.svelte.js';
 
  interface Props {
   children: Snippet;
-  // Recebe o valor inicial do servidor (Cookies)
   open?: boolean;
-  variant?: 'default' | 'collapsible';
+  variant?: SidebarVariant;
   class?: string;
  }
 
@@ -19,72 +17,16 @@
   class: className
  }: Props = $props();
 
- let open = $state(initialOpen);
- let mobileOpen = $state(false);
- let isMobile = $state(false);
-
- function setCookie(value: boolean) {
-  if (browser) {
-   const maxAge = 60 * 60 * 24 * 7; // 7 dias
-   document.cookie = `sidebar:state=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
-  }
- }
-
- if (browser) {
-  const mediaQuery = window.matchMedia('(max-width: 768px)');
-  isMobile = mediaQuery.matches;
-
-  mediaQuery.addEventListener('change', (e) => {
-   isMobile = e.matches;
-  });
- }
-
- $effect(() => {
-  if (isMobile && mobileOpen) {
-   document.body.style.overflow = 'hidden';
-  } else {
-   document.body.style.overflow = '';
-  }
+ const state = new SidebarState({
+  defaultOpen: initialOpen,
+  variant
  });
 
- const context = {
-  get open() {
-   return isMobile ? mobileOpen : open;
-  },
-  set open(value: boolean) {
-   if (isMobile) {
-    mobileOpen = value;
-   } else {
-    open = value;
-    setCookie(value);
-   }
-  },
-  get isMobile() {
-   return isMobile;
-  },
-  get variant() {
-   return variant;
-  },
-  get isCollapsed() {
-   return variant === 'collapsible' && !open && !isMobile;
-  },
-  close: () => {
-   if (isMobile) mobileOpen = false;
-   else {
-    open = false;
-    setCookie(false);
-   }
-  },
-  toggle: () => {
-   if (isMobile) mobileOpen = !mobileOpen;
-   else {
-    open = !open;
-    setCookie(open);
-   }
-  }
- };
+ setSidebarContext(state);
 
- setContext('sidebar', context);
+ onDestroy(() => {
+  state.destroy();
+ });
 </script>
 
 <div
@@ -92,7 +34,13 @@
   'group/sidebar-wrapper flex min-h-svh w-full has-[data-variant=inset]:bg-sidebar',
   className
  )}
- style="--sidebar-width: 16rem; --sidebar-width-icon: 3.5rem; display: flex;"
+ style="
+		--sidebar-width: 16rem;
+		--sidebar-width-icon: 3.5rem;
+		--sidebar-width-floating: 18rem;
+		--sidebar-transition-duration: 300ms;
+		--sidebar-transition-easing: cubic-bezier(0.32, 0.72, 0, 1);
+	"
 >
  {@render children()}
 </div>

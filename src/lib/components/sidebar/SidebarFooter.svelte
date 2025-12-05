@@ -1,45 +1,39 @@
 <script lang="ts">
- import { getContext } from 'svelte';
- import { cn } from '../../utils/index.ts';
  import type { Snippet } from 'svelte';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import { cn } from '$lib/utils';
+ import { getSidebarContext } from './ctx.svelte.js';
 
- interface Props {
+ interface Props extends HTMLAttributes<HTMLDivElement> {
   children?: Snippet;
   class?: string;
   icon?: Snippet;
   label?: string;
  }
 
- let { children, class: className, icon, label }: Props = $props();
+ let { children, class: className, icon, label, ...restProps }: Props = $props();
 
- const sidebarContext = getContext<{
-  isCollapsed: boolean;
-  isMobile: boolean;
- }>('sidebar');
-
- const isCollapsed = $derived(sidebarContext?.isCollapsed && !sidebarContext?.isMobile);
-
- const footerClasses = $derived(
-  cn(
-   'flex w-full items-center border-t mt-auto shrink-0',
-   'transition-all duration-200 ease-linear',
-
-   'p-3',
-   isCollapsed ? 'justify-center' : 'justify-start',
-   isCollapsed ? 'gap-0' : 'gap-3',
-
-   className
-  )
- );
+ const ctx = getSidebarContext();
 </script>
 
-<div class={footerClasses}>
+<div
+ class={cn(
+  'mt-auto flex w-full shrink-0 items-center border-t p-3',
+  'transition-[gap,justify-content,padding] duration-200 ease-out',
+  ctx.isCollapsed ? 'justify-center gap-0' : 'justify-start gap-3',
+  className
+ )}
+ data-sidebar="footer"
+ {...restProps}
+>
  {#if icon || label}
   {#if icon}
    <div
-    class="{isCollapsed
-     ? 'mr-0.5'
-     : 'mr-0'} flex size-6 shrink-0 items-center justify-center"
+    class={cn(
+     'flex size-6 shrink-0 items-center justify-center',
+     'transition-[margin] duration-200 ease-out',
+     ctx.isCollapsed ? 'mr-0' : 'mr-0'
+    )}
    >
     {@render icon()}
    </div>
@@ -49,8 +43,8 @@
    <span
     class={cn(
      'truncate text-sm font-semibold',
-     'transition-all duration-200 ease-linear',
-     isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
+     'transition-[width,opacity] duration-200 ease-out',
+     ctx.isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
     )}
    >
     {label}
@@ -61,8 +55,9 @@
  {#if children}
   <div
    class={cn(
-    'flex transition-all duration-200 ease-linear',
-    isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'ml-auto w-auto opacity-100'
+    'flex',
+    'transition-[width,opacity,margin] duration-200 ease-out',
+    ctx.isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'ml-auto w-auto opacity-100'
    )}
   >
    {@render children()}

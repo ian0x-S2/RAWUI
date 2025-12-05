@@ -1,29 +1,28 @@
 <script lang="ts">
- import { getContext } from 'svelte';
- import { cn } from '../../utils/index.ts';
  import type { Snippet } from 'svelte';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import { cn } from '$lib/utils';
+ import { getSidebarContext } from './ctx.svelte.js';
 
- interface Props {
+ interface Props extends HTMLAttributes<HTMLDivElement> {
   children: Snippet;
   class?: string;
  }
 
- let { children, class: className }: Props = $props();
+ let { children, class: className, ...restProps }: Props = $props();
 
- const sidebarContext = getContext<{
-  isCollapsed: boolean;
-  isMobile: boolean;
- }>('sidebar');
-
- const groupClasses = $derived(
-  cn(
-   'flex flex-col transition-all duration-200 ease-out',
-   sidebarContext?.isCollapsed && !sidebarContext?.isMobile ? 'gap-1' : 'gap-1',
-   className
-  )
- );
+ const ctx = getSidebarContext();
 </script>
 
-<div class={groupClasses}>
+<div
+ class={cn(
+  'flex flex-col gap-1',
+  'transition-[gap] duration-200 ease-out',
+  ctx.isCollapsed && 'gap-0.5',
+  className
+ )}
+ data-sidebar="group"
+ {...restProps}
+>
  {@render children()}
 </div>

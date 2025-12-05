@@ -1,85 +1,111 @@
 <script lang="ts">
- import { getContext, type Snippet } from 'svelte';
- import { cn } from '../../utils/index.ts';
+ import type { Snippet } from 'svelte';
+ import { cn } from '$lib/utils';
  import { fade, fly } from 'svelte/transition';
  import { cubicOut } from 'svelte/easing';
+ import { getSidebarContext, type SidebarSide } from './ctx.svelte.js';
 
  interface Props {
   children: Snippet;
-  side?: 'left' | 'right';
+  side?: SidebarSide;
   class?: string;
  }
 
  let { children, side = 'left', class: className }: Props = $props();
 
- const context = getContext<{
-  open: boolean;
-  isMobile: boolean;
-  variant: 'default' | 'collapsible';
-  close: () => void;
- }>('sidebar');
-
- const { open, isMobile, variant } = $derived(context);
-
- const transitionTiming = 'cubic-bezier(0.32, 0.72, 0, 1)';
-
- const widthStyle = $derived(
-  open
-   ? 'var(--sidebar-width)'
-   : variant === 'collapsible'
-     ? 'var(--sidebar-width-icon)'
-     : '0px'
- );
+ const ctx = getSidebarContext();
 </script>
 
-{#if isMobile}
- {#if open}
+{#if ctx.isMobile}
+ {#if ctx.isOpen}
   <button
-   class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
-   onclick={() => context.close()}
-   aria-label="Close sidebar"
-   transition:fade={{ duration: 250, easing: cubicOut }}
+   class={cn(
+    'fixed inset-0 z-40 bg-black/50 md:hidden',
+    'transition-[backdrop-filter] duration-300'
+   )}
+   style="backdrop-filter: blur(4px);"
+   {...ctx.overlayProps}
+   transition:fade={{ duration: 200, easing: cubicOut }}
   ></button>
 
   <aside
    class={cn(
-    'fixed inset-y-0 z-50 h-full w-[70%] border-r border-sidebar bg-background shadow-lg',
-    side === 'left' ? 'left-0' : 'right-0 border-r-0 border-l',
+    'fixed inset-y-0 z-50 flex h-full w-[280px] max-w-[85vw] flex-col overflow-hidden bg-sidebar shadow-xl',
+    side === 'left'
+     ? 'left-0 border-r border-sidebar-border'
+     : 'right-0 border-l border-sidebar-border',
     className
    )}
+   {...ctx.sidebarProps}
    transition:fly={{
-    x: side === 'left' ? -288 : 288,
-    duration: 280,
+    x: side === 'left' ? -300 : 300,
+    duration: 300,
     easing: cubicOut
    }}
   >
-   <div class="flex h-full w-full flex-col overflow-hidden">
-    {@render children()}
-   </div>
+   {@render children()}
   </aside>
  {/if}
 {:else}
- <!-- DESKTOP -->
- <!-- Spacer: aparece ANTES quando left, DEPOIS quando right -->
- <div
-  class="relative hidden bg-transparent md:block"
-  style="width: {widthStyle}; transition: width 280ms {transitionTiming}; order: {side ===
-  'left'
-   ? 1
-   : 3};"
- ></div>
+ {#if !ctx.isFloating}
+  <div
+   class="relative hidden bg-transparent md:block"
+   style="
+				width: {ctx.spacerWidth};
+				transition: width var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+				order: {side === 'left' ? 1 : 3};
+			"
+   aria-hidden="true"
+  ></div>
+ {/if}
 
- <!-- Sidebar fixa -->
- <div
-  class={cn(
-   'fixed inset-y-0 z-10 hidden h-svh border-r bg-background md:flex',
-   side === 'left' ? 'left-0' : 'right-0 border-r-0 border-l',
-   className
-  )}
-  style="width: {widthStyle}; transition: width 280ms {transitionTiming};"
- >
-  <div class="flex h-full w-full flex-col overflow-hidden">
+ {#if ctx.isFloating}
+  {#if ctx.isOpen}
+   <button
+    class="fixed inset-0 z-40 hidden bg-black/30 md:block"
+    style="backdrop-filter: blur(2px);"
+    {...ctx.overlayProps}
+    transition:fade={{ duration: 200, easing: cubicOut }}
+   ></button>
+
+   <aside
+    class={cn(
+     'fixed z-50 hidden flex-col overflow-hidden rounded-lg border border-sidebar-border bg-sidebar shadow-2xl md:flex',
+     side === 'left' ? 'left-4' : 'right-4',
+     className
+    )}
+    style="
+					width: var(--sidebar-width-floating, 18rem);
+					top: 1rem;
+					bottom: 1rem;
+				"
+    {...ctx.sidebarProps}
+    transition:fly={{
+     x: side === 'left' ? -320 : 320,
+     duration: 300,
+     easing: cubicOut
+    }}
+   >
+    {@render children()}
+   </aside>
+  {/if}
+ {:else}
+  <aside
+   class={cn(
+    'fixed inset-y-0 z-10 hidden h-svh flex-col overflow-hidden bg-sidebar md:flex',
+    'will-change-[width]',
+    side === 'left'
+     ? 'left-0 border-r border-sidebar-border'
+     : 'right-0 border-l border-sidebar-border',
+    className
+   )}
+   style="
+				width: {ctx.sidebarWidth};
+				transition: width var(--sidebar-transition-duration) var(--sidebar-transition-easing);
+			"
+   {...ctx.sidebarProps}
+  >
    {@render children()}
-  </div>
- </div>
+  </aside>
+ {/if}
 {/if}
