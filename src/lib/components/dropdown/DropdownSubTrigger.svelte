@@ -32,7 +32,7 @@
  {...restProps}
  onpointerenter={handlePointerEnter}
  class={cn(
-  'relative my-1 flex cursor-default items-center justify-between rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+  'relative my-1 flex cursor-default items-center justify-between rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
   className
  )}
 >
