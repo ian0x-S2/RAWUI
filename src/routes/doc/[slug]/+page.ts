@@ -5,43 +5,44 @@ export const prerender = true;
 
 export async function load({ params }) {
  const { slug } = params;
-
- // 1. Mapeia todos os arquivos .md dentro de src/docs
- // eager: false (padrão) retorna uma função que carrega o módulo
- const modules = import.meta.glob('/src/docs/**/*.md');
-
- // 2. Constrói o caminho esperado: src/docs/dropdown/doc.md
  const path = `/src/docs/${slug}/doc.md`;
 
- // 3. Busca o importador correspondente ao caminho
- const resolver = modules[path];
+ // 1. Carrega o Componente e Metadados (Compilado pelo Mdsvex)
+ const modules = import.meta.glob('/src/docs/**/*.md');
 
- if (!resolver) {
-  // Dica de debug: mostre as chaves disponíveis se der 404
-  // console.log('Caminhos disponíveis:', Object.keys(modules));
+ // 2. Carrega o TEXTO PURO (?raw) para o modo AI/Robot
+ // 'import: default' garante que pegamos a string direta
+ const rawModules = import.meta.glob('/src/docs/**/*.md', {
+  query: '?raw',
+  import: 'default'
+ });
+
+ const resolver = modules[path];
+ const rawResolver = rawModules[path];
+
+ if (!resolver || !rawResolver) {
   error(404, `Documentação não encontrada para: ${slug}`);
  }
 
- // 4. Carrega o componente e os metadados
- const post = (await resolver()) as any;
+ // Executa as promessas em paralelo
+ const [post, rawContent] = await Promise.all([
+  resolver() as Promise<any>,
+  rawResolver() as Promise<string>
+ ]);
 
  return {
-  // Agora ISSO funciona, pois não precisa virar JSON
-  content: post.default,
-  meta: post.metadata
+  content: post.default, // O componente Svelte
+  meta: post.metadata, // Frontmatter
+  raw: rawContent // A string do Markdown <--- NOVO
  };
 }
 
-// Gera as rotas estáticas para o build
+// Mantive sua função entries igual
 export function entries() {
- // Pega todas as chaves (caminhos dos arquivos)
  const modules = import.meta.glob('/src/docs/**/*.md');
  const paths = Object.keys(modules);
-
- // Transforma ['/src/docs/dropdown/doc.md', ...] em [{ slug: 'dropdown' }, ...]
  return paths.map((path) => {
   const parts = path.split('/');
-  // O slug é a penúltima parte (ex: 'dropdown' em '.../dropdown/doc.md')
   const slug = parts[parts.length - 2];
   return { slug };
  });

@@ -109,7 +109,7 @@
 </script>
 
 {#if headings.length > 0}
- <nav class="sticky top-24 hidden max-h-[calc(100vh-6rem)] w-64 overflow-y-auto lg:block">
+ <nav class="fixed top-35 hidden max-h-[calc(100vh-6rem)] w-64 overflow-y-auto lg:block">
   <h4 class="mb-4 text-sm font-semibold tracking-tight text-foreground">Nesta página</h4>
   <ul class="space-y-0.5 border-l border-border/60 text-sm">
    {#each headings as heading (heading.id)}
