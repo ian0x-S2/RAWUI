@@ -54,7 +54,7 @@
     in:fly={{ y: 10, duration: 300, delay: 200 }}
    >
     <a
-     href="/doc/introduction"
+     href="/docs/introduction"
      class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
     >
      Começar
