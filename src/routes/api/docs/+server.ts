@@ -1,63 +1,73 @@
+// src/routes/api/docs/+server.ts
 import { json } from '@sveltejs/kit';
-
-// 1. Interface para os metadados (Frontmatter) do seu Markdown
-interface DocMetadata {
- title?: string;
- date?: string; // Opcional, pois nem toda doc tem data
- published?: boolean;
- [key: string]: any;
-}
-
-// 2. Interface do objeto que será retornado para o frontend
-export interface Doc {
- slug: string;
- metadata: DocMetadata;
-}
-
-// 3. Interface interna para o arquivo carregado pelo Vite/Mdsvex
-interface MdsvexFile {
- default: unknown; // O Componente Svelte (não enviamos isso no JSON)
- metadata: DocMetadata;
-}
-
-async function getDocs(): Promise<Doc[]> {
- const docs: Doc[] = [];
-
- // Carrega todos os arquivos .md
- const paths = import.meta.glob('/src/docs/*.md', {
-  eager: true
- });
-
- for (const path in paths) {
-  const file = paths[path] as MdsvexFile;
-
-  // Pega o nome do arquivo (ex: 'intro.md' -> 'intro')
-  const slug = path.split('/').pop()?.replace('.md', '');
-
-  // Validações de segurança
-  if (!file || !file.metadata || !slug) continue;
-
-  // Se tiver a flag published: false, pula este arquivo
-  if (file.metadata.published === false) continue;
-
-  // Monta o objeto SEM o conteúdo do componente
-  const doc: Doc = {
-   slug,
-   metadata: file.metadata
-  };
-
-  docs.push(doc);
- }
-
- // Ordena por data (se houver) ou mantém a ordem
- return docs.sort((a, b) => {
-  const dateA = new Date(a.metadata.date ?? 0).getTime();
-  const dateB = new Date(b.metadata.date ?? 0).getTime();
-  return dateB - dateA; // Mais recentes primeiro
- });
-}
+import type { DocItem, DocGroup } from '$lib/types/docs';
 
 export async function GET() {
- const docs = await getDocs();
- return json(docs);
+ const allFiles = import.meta.glob('/src/docs/**/*.md', { eager: true });
+ const docs: DocItem[] = [];
+
+ for (const path in allFiles) {
+  const file = allFiles[path] as any;
+  const metadata = file.metadata;
+
+  if (!metadata || metadata.published === false) continue;
+
+  // Lógica inteligente para pegar o slug:
+  // Se for "src/docs/components/button/doc.md" -> slug = "button"
+  // Se for "src/docs/guides/introduction.md" -> slug = "introduction"
+  const pathParts = path.split('/');
+  const filename = pathParts.pop(); // doc.md ou introduction.md
+  const folder = pathParts.pop(); // button ou guides
+
+  let slug = filename === 'doc.md' ? folder : filename?.replace('.md', '');
+
+  if (!slug) continue;
+
+  docs.push({
+   slug,
+   metadata: {
+    ...metadata,
+    // Define um grupo padrão se não houver
+    group: metadata.group || 'Outros'
+   }
+  });
+ }
+
+ // Agrupamento
+ const grouped = docs.reduce(
+  (acc, doc) => {
+   const groupName = doc.metadata.group;
+   if (!acc[groupName]) {
+    acc[groupName] = [];
+   }
+   acc[groupName].push(doc);
+   return acc;
+  },
+  {} as Record<string, DocItem[]>
+ );
+
+ // Ordenação dos itens dentro dos grupos
+ Object.keys(grouped).forEach((key) => {
+  grouped[key].sort((a, b) => {
+   // Prioriza 'order', depois alfabético
+   const orderA = a.metadata.order ?? 99;
+   const orderB = b.metadata.order ?? 99;
+   if (orderA !== orderB) return orderA - orderB;
+   return a.metadata.title.localeCompare(b.metadata.title);
+  });
+ });
+
+ // Define a ordem dos Grupos na Sidebar
+ const groupOrder = ['Começando', 'Componentes', 'Utilitários'];
+
+ const result: DocGroup[] = Object.entries(grouped)
+  .map(([groupName, items]) => ({ groupName, items }))
+  .sort((a, b) => {
+   const indexA = groupOrder.indexOf(a.groupName);
+   const indexB = groupOrder.indexOf(b.groupName);
+   // Se não estiver na lista groupOrder, vai para o final
+   return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+  });
+
+ return json(result);
 }

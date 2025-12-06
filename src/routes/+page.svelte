@@ -1,86 +1,127 @@
 <script lang="ts">
- import SidebarTrigger from '$lib/components/sidebar/SidebarTrigger.svelte';
+ import Button from '$lib/components/button/Button.svelte';
+ import ModeToggle from '$lib/components/theme-toggle/ModeToggle.svelte';
+ import { fly } from 'svelte/transition';
 
- // Estado local
- let currentVariant = $state<'default' | 'collapsible'>('default');
- let currentPath = $state('/dashboard');
+ // Snippet do ícone (Substituindo a string @html)
 </script>
 
-<!-- HEADER DO CONTEÚDO -->
-<header
- class="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4 shadow-sm"
+{#snippet terminalIcon()}
+ <svg
+  width="14"
+  height="14"
+  viewBox="0 0 15 15"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+ >
+  <path
+   d="M4.79289 11.2071C4.60536 11.3946 4.60536 11.6987 4.79289 11.8862C4.98043 12.0737 5.28448 12.0737 5.47202 11.8862L8.97202 8.38623C9.15956 8.1987 9.15956 7.89465 8.97202 7.70712L5.47202 4.20712C5.28448 4.01959 4.98043 4.01959 4.79289 4.20712C4.60536 4.39465 4.60536 4.6987 4.79289 4.88623L7.95333 8.04668L4.79289 11.2071ZM10.5 10.5C10.5 10.2239 10.2761 10 10 10H8.5C8.22386 10 8 10.2239 8 10.5C8 10.7761 8.22386 11 8.5 11H10C10.2761 11 10.5 10.7761 10.5 10.5Z"
+   fill="currentColor"
+   fill-rule="evenodd"
+   clip-rule="evenodd"
+  ></path>
+ </svg>
+{/snippet}
+
+<!-- BACKGROUND STATIC NOISE (RAW FEEL) -->
+<div class="fixed inset-0 z-[-1] bg-background">
+ <div
+  class="absolute inset-0 opacity-[0.04]"
+  style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=');"
+ ></div>
+</div>
+
+<div
+ class="relative flex min-h-screen w-full flex-col font-sans selection:bg-foreground selection:text-background"
 >
- <SidebarTrigger />
-
- <div class="mx-2 h-4 w-px bg-border"></div>
-
- <h1 class="text-sm font-semibold text-foreground">
-  {currentPath === '/dashboard' ? 'Visão Geral' : currentPath.replace('/', '')}
- </h1>
-
- <div class="ml-auto flex items-center gap-2">
-  <span class="hidden text-xs text-muted-foreground sm:inline-block"
-   >Modo da Sidebar:</span
+ <!-- COMPACT HEADER -->
+ <header
+  class="fixed top-4 left-1/2 z-50 flex h-9 w-auto -translate-x-1/2 items-center gap-3 rounded-full border border-border/40 bg-background/50 pr-2 pl-4 backdrop-blur-md"
+ >
+  <!-- LOGO -->
+  <a
+   href="/"
+   class="flex items-center gap-2 text-[11px] font-bold tracking-widest text-foreground uppercase transition-opacity hover:opacity-70"
   >
-  <div class="flex rounded-md border bg-muted/20 p-1">
-   <button
-    onclick={() => (currentVariant = 'default')}
-    class="rounded px-2 py-1 text-xs font-medium transition-colors {currentVariant ===
-    'default'
-     ? 'bg-white shadow-sm dark:bg-zinc-800'
-     : 'text-muted-foreground hover:bg-muted/50'}"
+   <img src="/yy.svg" alt="RawUI Logo" class="h-4 w-4 opacity-90 dark:invert" />
+   RAWUI
+  </a>
+
+  <!-- DIVIDER -->
+  <div class="mx-1 h-2.5 w-px bg-border/60"></div>
+
+  <!-- NAV -->
+  <nav class="flex items-center gap-3 text-[11px] font-medium text-muted-foreground">
+   <a href="/docs" class="transition-colors hover:text-foreground">Docs</a>
+   <a
+    href="https://github.com/seu-repo"
+    target="_blank"
+    class="transition-colors hover:text-foreground">GitHub</a
    >
-    Default
-   </button>
-   <button
-    onclick={() => (currentVariant = 'collapsible')}
-    class="rounded px-2 py-1 text-xs font-medium transition-colors {currentVariant ===
-    'collapsible'
-     ? 'bg-white shadow-sm dark:bg-zinc-800'
-     : 'text-muted-foreground hover:bg-muted/50'}"
+  </nav>
+
+  <!-- DIVIDER -->
+  <div class="mx-1 h-2.5 w-px bg-border/60"></div>
+
+  <!-- THEME TOGGLE (Ajustado para caber no header compacto) -->
+  <div class="flex items-center">
+   <!-- Usando uma escala para ajustar o botão padrão ao header slim -->
+   <div class="scale-75">
+    <ModeToggle  />
+   </div>
+  </div>
+ </header>
+
+ <!-- MAIN CONTENT -->
+ <main class="flex w-full flex-1 flex-col items-center justify-center px-4">
+  <div class="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
+   <!-- Badge Ultra Minimal -->
+   <div
+    class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground/60 uppercase"
+    in:fly={{ y: 10, duration: 400 }}
    >
-    Collapsible
-   </button>
-  </div>
- </div>
-</header>
+    v1.0.0 &mdash; Production Ready
+   </div>
 
-<!-- CORPO DO CONTEÚDO -->
-<div class="flex flex-1 flex-col gap-4 bg-muted/10 p-4 md:p-8">
- <!-- GRID DE CARDS -->
- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-  <div
-   class="flex aspect-video flex-col justify-between rounded-xl border bg-muted/50 p-4"
-  >
-   <span class="text-sm font-medium text-muted-foreground">Receita Total</span>
-   <span class="text-2xl font-bold">R$ 45.231,89</span>
-  </div>
-  <div
-   class="flex aspect-video flex-col justify-between rounded-xl border bg-muted/50 p-4"
-  >
-   <span class="text-sm font-medium text-muted-foreground">Assinaturas</span>
-   <span class="text-2xl font-bold">+2350</span>
-  </div>
-  <div
-   class="flex aspect-video flex-col justify-between rounded-xl border bg-muted/50 p-4"
-  >
-   <span class="text-sm font-medium text-muted-foreground">Ativos Agora</span>
-   <span class="text-2xl font-bold">+573</span>
-  </div>
- </div>
+   <!-- Typography Hero Compacto -->
+   <h1
+    class="mb-4 text-7xl font-bold tracking-tighter text-foreground sm:text-8xl md:text-9xl"
+    style="letter-spacing: -0.06em;"
+    in:fly={{ y: 10, duration: 400, delay: 50 }}
+   >
+    RAWUI
+   </h1>
 
- <!-- CONTEÚDO GRANDE -->
- <div class="min-h-[100vh] flex-1 rounded-xl border bg-muted/50 p-8 md:min-h-min">
-  <div class="max-w-2xl">
-   <h2 class="mb-2 text-lg font-semibold">Setup Completo</h2>
-   <ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-    <li><strong>Ícones:</strong> SVGs definidos em snippets locais.</li>
-    <li><strong>Flicker:</strong> Resolvido via Cookies + SSR.</li>
-    <li><strong>Estilo:</strong> Mantido o estilo original com 3.5rem no ícone.</li>
-    <li>
-     <strong>Responsividade:</strong> Sidebar vira drawer no mobile automaticamente.
-    </li>
-   </ul>
+   <p
+    class="mb-8 max-w-sm text-sm leading-relaxed font-medium text-muted-foreground md:text-base"
+    in:fly={{ y: 10, duration: 400, delay: 100 }}
+   >
+    Componentes brutos. Sem abstrações.<br />
+    <span class="text-foreground/80">O código é seu, a regra é sua.</span>
+   </p>
+
+   <!-- Actions Compactas -->
+   <div class="flex items-center gap-3" in:fly={{ y: 10, duration: 400, delay: 150 }}>
+    <Button href="/docs" size="sm" class="h-8 rounded-md px-5 text-xs font-semibold">
+     <!-- Uso do snippet render -->
+     {@render terminalIcon()}
+     Docs
+    </Button>
+
+    <a
+     href="/docs/components/button"
+     class="px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+    >
+     Componentes
+    </a>
+   </div>
   </div>
- </div>
+ </main>
+
+ <!-- STATIC FOOTER -->
+ <footer class="pointer-events-none fixed bottom-4 left-0 w-full text-center">
+  <p class="font-mono text-[9px] tracking-widest text-muted-foreground/20 uppercase">
+   Svelte 5 &bull; Tailwind &bull; No Runtime
+  </p>
+ </footer>
 </div>
