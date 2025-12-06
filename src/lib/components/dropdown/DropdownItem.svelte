@@ -26,7 +26,19 @@
  }
 
  function handlePointerEnter() {
-  el?.focus();
+  if (!root.isKeyboardNav) {
+   el?.focus();
+  }
+ }
+
+ function handlePointerMove() {
+  root.isKeyboardNav = false;
+ }
+
+ function handleFocus() {
+  if (root.isKeyboardNav) {
+   root.closeAllSubmenus();
+  }
  }
 </script>
 
@@ -36,10 +48,12 @@
  tabindex="-1"
  onclick={handleClick}
  onpointerenter={handlePointerEnter}
+ onpointermove={handlePointerMove}
+ onfocus={handleFocus}
  data-orientation="vertical"
  {...restProps}
  class={cn(
-  'relative my-1 flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
+  'relative my-1 flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [div:not([data-keyboard-nav])_&]:hover:bg-accent [div:not([data-keyboard-nav])_&]:hover:text-accent-foreground',
   className
  )}
 >

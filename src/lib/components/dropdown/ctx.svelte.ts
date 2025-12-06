@@ -18,6 +18,7 @@ export class DropdownState {
  isOpen = $state(false);
  triggerEl: HTMLElement | undefined = $state();
  contentEl: HTMLElement | undefined = $state();
+ isKeyboardNav = $state(false); // ADICIONAR ESTA LINHA
 
  items: HTMLElement[] = [];
  submenus: DropdownSubState[] = [];
@@ -133,6 +134,8 @@ export class DropdownState {
     break;
    case 'ArrowDown':
     e.preventDefault();
+    this.isKeyboardNav = true;
+    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
     if (!isFocusingItem) {
      this.items[0]?.focus();
     } else {
@@ -142,6 +145,8 @@ export class DropdownState {
     break;
    case 'ArrowUp':
     e.preventDefault();
+    this.isKeyboardNav = true;
+    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
     if (!isFocusingItem) {
      this.items[this.items.length - 1]?.focus();
     } else {
@@ -151,10 +156,14 @@ export class DropdownState {
     break;
    case 'Home':
     e.preventDefault();
+    this.isKeyboardNav = true;
+    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
     this.items[0]?.focus();
     break;
    case 'End':
     e.preventDefault();
+    this.isKeyboardNav = true;
+    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
     this.items[this.items.length - 1]?.focus();
     break;
 

@@ -21,6 +21,7 @@
   <div
    {...root.contentProps}
    {...restProps}
+   data-keyboard-nav={root.isKeyboardNav}
    transition:scale={{ duration: 100, start: 0.95 }}
    class={cn(
     'fixed z-50 min-w-32 overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md',
