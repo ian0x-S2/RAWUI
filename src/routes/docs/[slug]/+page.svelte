@@ -3,7 +3,7 @@
  import { fade, fly } from 'svelte/transition';
  import type { PageData } from './$types';
  import TableOfContents from '$lib/intern/TableOfContents.svelte';
- import SourceCodeViewer from '$lib/components/SourceCodeViewer.svelte';
+ import SourceCodeViewer from '$lib/intern/SourceCodeViewer.svelte';
  import { SidebarTrigger } from '$lib/components/sidebar/index.ts';
  import ModeToggle from '$lib/components/theme-toggle/ModeToggle.svelte';
  import Button from '$lib/components/button/Button.svelte';
