@@ -36,7 +36,7 @@
 
 {#if isDocsPage}
  <Sidebar side="left">
-  <SidebarHeader class="text-md" icon={logo} label="RAWUI" />
+  <SidebarHeader class="text-md h-12" icon={logo} label="RAWUI" />
   <SidebarContent>
    {#if data.docsTree?.length}
     {#each data.docsTree as group (group.groupName)}

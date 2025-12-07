@@ -86,6 +86,7 @@
   <div class="flex items-center gap-2">
    <SidebarTrigger class="h-8   w-8 border-none shadow-none hover:bg-background" />
   </div>
+
   <div class="ml-auto">
    <!-- ModeToggle geralmente já tem seu próprio container, ajustando escala se necessário -->
    <div class="scale-90">
