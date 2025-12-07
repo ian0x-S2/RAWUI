@@ -81,7 +81,7 @@
     - rounded-2xl border: Cria a "ilha" flutuante.
  -->
  <header
-  class="sticky top-4 z-50 mx-auto flex h-12 max-w-6xl shrink-0 items-center gap-2 rounded-full bg-background/80 px-4 shadow-xs backdrop-blur-md transition-all supports-[backdrop-filter]:bg-background/60"
+  class="sticky top-4 z-40 mx-auto flex h-12 w-[95%] shrink-0 items-center gap-2 rounded-full border border-border bg-background/80 px-4 shadow-xs backdrop-blur-md transition-all supports-[backdrop-filter]:bg-background/60 md:max-w-6xl"
  >
   <div class="flex items-center gap-2">
    <SidebarTrigger class="h-8   w-8 border-none shadow-none hover:bg-background" />

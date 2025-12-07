@@ -3,7 +3,6 @@
  import { fade, fly } from 'svelte/transition';
 
  let { data }: { data: PageData } = $props();
-
  const groups = data.docsTree?.filter((g) => g.groupName !== 'Outros') || [];
 </script>
 
@@ -30,22 +29,31 @@
   <div class="flex flex-col items-start gap-5">
    <div in:fly={{ y: 10, duration: 300 }} class="space-y-3">
     <div class="flex items-center gap-3">
+     <!-- Logo Yin Yang -->
+     <img
+      src="/yy.svg"
+      alt="RAWUI Logo"
+      class="h-8 w-8 transition-transform duration-700 ease-in-out hover:rotate-180 dark:invert"
+     />
+
      <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-      Design System
+      RAWUI Component System
      </h1>
      <span
       class="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
      >
-      v1.0.0
+      v0.0.1
      </span>
     </div>
 
     <p
-     class="max-w-lg text-sm leading-relaxed text-muted-foreground"
+     class="max-w-2xl text-sm leading-relaxed text-muted-foreground"
      in:fly={{ y: 10, duration: 300, delay: 100 }}
     >
-     Componentes, tokens e guias para interfaces consistentes. Simples, modular e pronto
-     para produção.
+     Sistema de componentes que equilibra <span class="font-medium text-foreground"
+      >simplicidade e flexibilidade</span
+     >. Construído com Svelte 5 e inspirado na filosofia shadcn/ui, RAWUI oferece
+     componentes modulares, acessíveis e totalmente customizáveis.
     </p>
    </div>
 
@@ -55,7 +63,7 @@
    >
     <a
      href="/docs/introduction"
-     class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
+     class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-md"
     >
      Começar
     </a>
@@ -88,6 +96,7 @@
    <a
     href="https://github.com/seu-repo/issues"
     target="_blank"
+    rel="noreferrer"
     class="text-xs font-medium text-primary underline-offset-4 hover:underline"
    >
     Abrir Issue &rarr;
