@@ -10,7 +10,7 @@
 </script>
 
 <ThemeProvider disableTransitionOnChange={true} defaultTheme="dark" enableSystem={true}>
- <SidebarProvider variant="floating" open={data.sidebarOpen}>
+ <SidebarProvider variant="default" open={data.sidebarOpen}>
   {@render children()}
  </SidebarProvider>
 </ThemeProvider>

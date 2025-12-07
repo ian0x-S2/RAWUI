@@ -21,7 +21,7 @@
 {/snippet}
 
 <div
- class="flex min-h-screen flex-col items-center justify-center bg-background py-12 font-sans text-foreground selection:bg-primary/20"
+ class="mx-auto flex min-h-screen flex-col items-center justify-center bg-background py-12 font-sans text-foreground selection:bg-primary/20"
  in:fade={{ duration: 200 }}
 >
  <div class="w-full max-w-3xl px-6">
