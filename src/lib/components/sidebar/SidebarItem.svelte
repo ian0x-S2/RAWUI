@@ -12,9 +12,18 @@
   active?: boolean;
   onclick?: () => void;
   class?: string;
+  labelClass?: string;
  }
 
- let { icon, label, href, active = false, onclick, class: className }: Props = $props();
+ let {
+  icon,
+  label,
+  href,
+  active = false,
+  onclick,
+  class: className,
+  labelClass
+ }: Props = $props();
 
  const ctx = getSidebarContext();
 
@@ -57,9 +66,10 @@
 
  <span
   class={cn(
-   'overflow-hidden text-sm whitespace-nowrap',
+   'overflow-hidden whitespace-nowrap',
    'transition-[width,opacity] duration-200 ease-out',
-   isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
+   isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100',
+   labelClass
   )}
  >
   {label}

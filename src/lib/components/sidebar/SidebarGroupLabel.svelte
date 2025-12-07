@@ -16,7 +16,7 @@
 
 <div
  class={cn(
-  'flex items-center px-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase',
+  'flex items-center px-2 font-semibold tracking-wide text-muted-foreground uppercase',
   'transition-[max-height,padding,opacity] duration-200 ease-out',
   ctx.isCollapsed
    ? 'max-h-0 overflow-hidden py-0 opacity-0'

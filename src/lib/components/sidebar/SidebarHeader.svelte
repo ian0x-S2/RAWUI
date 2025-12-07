@@ -42,7 +42,7 @@
   {#if label}
    <span
     class={cn(
-     'truncate text-base font-semibold',
+     'truncate font-semibold',
      'transition-[width,opacity] duration-200 ease-out',
      ctx.isCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-auto opacity-100'
     )}
