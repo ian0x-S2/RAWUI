@@ -1,15 +1,31 @@
 <script lang="ts">
- import { getContext } from 'svelte';
+ import { getContext, type Snippet } from 'svelte';
  import { fade } from 'svelte/transition';
  import { cubicOut } from 'svelte/easing';
  import { browser } from '$app/environment';
  import type { Attachment } from 'svelte/attachments';
  import type { TransitionConfig } from 'svelte/transition';
- import type { DialogState } from './ctx.svelte.js';
+ import type { DialogState, FocusOption } from './ctx.svelte.js';
  import { cn } from '$lib/utils';
  import Portal from '$lib/components/portal/Portal.svelte';
 
- let { children, class: className = undefined, ...restProps } = $props();
+ let {
+  children,
+  class: className = undefined,
+  initialFocus = true,
+  finalFocus = true,
+  closeOnBackdropClick = true,
+  closeOnEscape = true,
+  ...restProps
+ }: {
+  children: Snippet;
+  class?: string;
+  initialFocus?: FocusOption;
+  finalFocus?: FocusOption;
+  closeOnBackdropClick?: boolean;
+  closeOnEscape?: boolean;
+ } = $props();
+
  const root = getContext<DialogState>('dialog-root');
 
  const lockBodyScroll: Attachment = () => {
@@ -17,8 +33,10 @@
   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
   const originalOverflow = document.body.style.overflow;
   const originalPadding = document.body.style.paddingRight;
+
   document.body.style.overflow = 'hidden';
   document.body.style.paddingRight = `${scrollbarWidth}px`;
+
   return () => {
    document.body.style.overflow = originalOverflow;
    document.body.style.paddingRight = originalPadding;
@@ -27,15 +45,30 @@
 
  const manageFocus: Attachment = (node) => {
   if (!browser) return;
-
   const el = node as HTMLElement;
 
   const focusTimeout = setTimeout(() => {
-   el.focus();
+   const resolvedInitialFocus = root.resolveFocusOption(initialFocus);
+
+   if (resolvedInitialFocus === false || resolvedInitialFocus === null) {
+    return;
+   } else if (resolvedInitialFocus instanceof HTMLElement) {
+    resolvedInitialFocus.focus();
+   } else {
+    const firstFocusable = el.querySelector(
+     'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    ) as HTMLElement;
+
+    if (firstFocusable) {
+     firstFocusable.focus();
+    } else {
+     el.focus();
+    }
+   }
   }, 10);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-   if (e.key === 'Escape') {
+   if (e.key === 'Escape' && closeOnEscape) {
     e.stopPropagation();
     root.close();
     return;
@@ -43,7 +76,7 @@
 
    if (e.key === 'Tab') {
     const focusableEls = el.querySelectorAll(
-     'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+     'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
     );
 
     if (focusableEls.length === 0) {
@@ -73,7 +106,20 @@
   return () => {
    clearTimeout(focusTimeout);
    el.removeEventListener('keydown', handleKeyDown);
-   root.triggerRef?.focus();
+
+   const resolvedFinalFocus = root.resolveFocusOption(finalFocus);
+
+   if (resolvedFinalFocus === false || resolvedFinalFocus === null) {
+    return;
+   } else if (resolvedFinalFocus instanceof HTMLElement) {
+    resolvedFinalFocus.focus();
+   } else {
+    if (root.triggerRef) {
+     root.triggerRef.focus();
+    } else if (root.previouslyFocusedElement) {
+     root.previouslyFocusedElement.focus();
+    }
+   }
   };
  };
 
@@ -95,11 +141,17 @@
     const scale = start + (1 - start) * t;
     const translateY = y * (1 - t);
     return `
-          opacity: ${opacity};
-          transform: ${transform} translate3d(0, ${translateY}px, 0) scale(${scale});
-        `;
+     opacity: ${opacity};
+     transform: ${transform} translate3d(0, ${translateY}px, 0) scale(${scale});
+    `;
    }
   };
+ }
+
+ function handleBackdropClick() {
+  if (closeOnBackdropClick) {
+   root.close();
+  }
  }
 </script>
 
@@ -109,10 +161,10 @@
    role="presentation"
    transition:fade={{ duration: 150 }}
    {@attach lockBodyScroll}
-   onclick={root.close}
+   onclick={handleBackdropClick}
    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+   data-state={root.isOpen ? 'open' : 'closed'}
   ></div>
-
   <div
    class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0"
   >
@@ -125,6 +177,7 @@
     tabindex="-1"
     {@attach manageFocus}
     transition:flyAndScale={{ duration: 200 }}
+    data-state={root.isOpen ? 'open' : 'closed'}
     class={cn(
      'pointer-events-auto relative grid w-full max-w-lg gap-4 rounded-lg border bg-background p-6 shadow-lg outline-none md:w-full',
      className
@@ -132,10 +185,10 @@
     {...restProps}
    >
     {@render children()}
-
     <button
      onclick={root.close}
      class="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+     aria-label="Close dialog"
     >
      <span class="h-4 w-4">
       <svg

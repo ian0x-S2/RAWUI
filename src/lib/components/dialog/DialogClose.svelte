@@ -1,4 +1,3 @@
-<!-- DialogTrigger.svelte -->
 <script lang="ts">
  import { getContext, type Snippet } from 'svelte';
  import type { DialogState } from './ctx.svelte.js';
@@ -14,29 +13,27 @@
   class: className = undefined,
   variant = 'outline',
   size = 'default',
+  onclick,
   ...restProps
  }: {
   children: Snippet;
   class?: string;
   variant?: ButtonVariantProps['variant'];
   size?: ButtonVariantProps['size'];
+  onclick?: (e: MouseEvent) => void;
  } & HTMLButtonAttributes = $props();
 
  const root = getContext<DialogState>('dialog-root');
 
  function handleClick(e: MouseEvent) {
-  root.triggerRef = e.currentTarget as HTMLElement;
-  root.toggle();
+  onclick?.(e);
+  root.close();
  }
 </script>
 
 <button
  type="button"
  class={cn(buttonVariants({ variant, size }), className)}
- aria-haspopup="dialog"
- aria-expanded={root.isOpen}
- aria-controls={root.baseId}
- data-state={root.isOpen ? 'open' : 'closed'}
  onclick={handleClick}
  {...restProps}
 >

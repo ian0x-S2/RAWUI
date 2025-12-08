@@ -6,7 +6,8 @@
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter
+  DialogFooter,
+  DialogClose
  } from '$lib/components/dialog/index';
  import Button from '$lib/components/button/Button.svelte';
  import {
@@ -23,7 +24,7 @@
   AccordionTrigger,
   AccordionContent
  } from '$lib/components/accordion/index';
-
+ let inputRef: HTMLInputElement;
  // Estados
  let openProfile = $state(false);
  let openProfile2 = $state(false);
@@ -75,24 +76,23 @@
     </div>
     <!-- Preview -->
     <div class="flex min-h-[300px] flex-col items-center justify-center gap-4 p-8">
-     <Dialog bind:open={openProfile}>
-      <DialogTrigger variant="outline" class="w-full max-w-xs bg-background">
-       Editar Perfil
-      </DialogTrigger>
-      <DialogContent class="sm:max-w-[425px]">
+     <Dialog>
+      <DialogTrigger>Open Dialog</DialogTrigger>
+      <DialogContent
+       initialFocus={() => inputRef}
+       finalFocus={true}
+       closeOnBackdropClick={true}
+      >
        <DialogHeader>
-        <DialogTitle>Editar Perfil</DialogTitle>
-        <DialogDescription>Faça alterações no seu perfil aqui.</DialogDescription>
+        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogDescription>Make changes to your profile here.</DialogDescription>
        </DialogHeader>
-       <div class="grid gap-4 py-4">
-        <div
-         class="flex h-24 items-center justify-center rounded border border-dashed bg-muted/30 text-xs text-muted-foreground"
-        >
-         Area de Conteúdo
-        </div>
-       </div>
+
+       <input bind:this={inputRef} type="text" placeholder="Name" />
+
        <DialogFooter>
-        <Button onclick={handleSaveProfile}>Salvar</Button>
+        <DialogClose variant="outline">Cancel</DialogClose>
+        <DialogClose variant="default">Save</DialogClose>
        </DialogFooter>
       </DialogContent>
      </Dialog>
