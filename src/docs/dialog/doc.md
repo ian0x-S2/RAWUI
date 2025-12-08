@@ -1,6 +1,6 @@
 ---
 title: Dialog
-description: Modal overlay acessível para exibir conteúdo importante. Inclui foco automático, navegação por teclado, backdrop e gerenciamento de scroll.
+description: Accessible modal overlay for displaying important content. Includes automatic focus, keyboard navigation, backdrop, and scroll management.
 componentId: dialog
 ---
 
@@ -15,19 +15,21 @@ componentId: dialog
     DialogDescription,
     DialogClose
   } from '$lib/components/dialog/index';
+  import  Button  from '$lib/components/button/Button.svelte';  
   import CodeBlock from '$lib/intern/CodeBlock.svelte';
 
-  let dialogOpen = $state(false);
+  // Estado para o exemplo de Controle Programático
+  let customOpen = $state(false);
 </script>
 
-O componente Dialog oferece uma forma elegante de exibir conteúdo modal acessível. Totalmente acessível, com foco automático, navegação por teclado completa, backdrop com blur e bloqueio de scroll do body.
+The Dialog component provides an elegant way to display accessible modal content. Fully accessible, with automatic focus, complete keyboard navigation, backdrop with blur, and body scroll locking.
 
-## Instalação
+## Installation
 
-Copie os arquivos do componente para o seu projeto:
+Copy the component files to your project:
 
-<CodeBlock language="bash" code={
-`src/lib/components/dialog/
+<CodeBlock language="bash" code={`
+src/lib/components/dialog/
 ├── Dialog.svelte
 ├── DialogTrigger.svelte
 ├── DialogContent.svelte
@@ -40,350 +42,372 @@ Copie os arquivos do componente para o seu projeto:
 └── index.ts
 `} />
 
-> O `DialogTrigger` e `DialogClose` utilizam as variantes do componente Button (`buttonVariants`). O `DialogContent` depende do componente `Portal`.
+> The `DialogTrigger` and `DialogClose` use the Button component variants (`buttonVariants`). The `DialogContent` depends on the `Portal` component.
 
-## Uso Básico
+## Basic Usage
 
-O dialog é composto por um trigger (botão) e um conteúdo que aparece como modal:
+The dialog consists of a trigger (button) and content that appears as a modal:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
   <Dialog>
-    <DialogTrigger>Abrir Dialog</DialogTrigger>
+    <DialogTrigger>Open Dialog</DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Título do Dialog</DialogTitle>
+        <DialogTitle>Dialog Title</DialogTitle>
         <DialogDescription>
-          Esta é uma descrição do conteúdo do dialog.
+          This is a description of the dialog content.
         </DialogDescription>
       </DialogHeader>
-      <p>Conteúdo principal do dialog aqui.</p>
+      <p>Main dialog content goes here.</p>
       <DialogFooter>
-        <DialogClose>Cancelar</DialogClose>
-        <DialogClose variant="default">Confirmar</DialogClose>
+        <DialogClose>Cancel</DialogClose>
+        <DialogClose variant="default">Confirm</DialogClose>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 </div>
 
-<CodeBlock language="svelte" code={
-`<script>
-import {
-Dialog,
-DialogTrigger,
-DialogContent,
-DialogHeader,
-DialogFooter,
-DialogTitle,
-DialogDescription,
-DialogClose
-} from '$lib/components/dialog';
+<CodeBlock language="svelte" code={`
+<script>
+  import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogFooter,
+    DialogTitle,
+    DialogDescription,
+    DialogClose
+  } from '$lib/components/dialog';
 </script>
 
 <Dialog>
-  <DialogTrigger>Abrir Dialog</DialogTrigger>
+  <DialogTrigger>Open Dialog</DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Título do Dialog</DialogTitle>
+      <DialogTitle>Dialog Title</DialogTitle>
       <DialogDescription>
-        Esta é uma descrição do conteúdo do dialog.
+        This is a description of the dialog content.
       </DialogDescription>
     </DialogHeader>
-    <p>Conteúdo principal do dialog aqui.</p>
+    <p>Main dialog content goes here.</p>
     <DialogFooter>
-      <DialogClose>Cancelar</DialogClose>
-      <DialogClose variant="default">Confirmar</DialogClose>
+      <DialogClose>Cancel</DialogClose>
+      <DialogClose variant="default">Confirm</DialogClose>
     </DialogFooter>
   </DialogContent>
 </Dialog>
 `} />
 
-## Recursos
+## Features
 
-- **Modal Verdadeiro** — Backdrop com blur, bloqueio de scroll do body e foco automático
-- **Portal** — Conteúdo renderizado no `<body>`, evitando problemas de z-index e overflow
-- **Acessibilidade** — Atributos ARIA completos e navegação por teclado
-- **Auto-close** — Fecha ao clicar no backdrop, pressionar Esc ou clicar no botão de fechar
-- **Focus Management** — Foco automático no primeiro elemento interativo e trap de foco
-- **Transições** — Animações suaves de entrada e saída com fly and scale
+- **True Modal** — Backdrop with blur, body scroll locking, and automatic focus
+- **Portal** — Content rendered in `<body>`, avoiding z-index and overflow issues
+- **Accessibility** — Complete ARIA attributes and keyboard navigation
+- **Auto-close** — Closes on backdrop click, Escape key, or close button click
+- **Focus Management** — Automatic focus on first interactive element and focus trap
+- **Transitions** — Smooth enter and exit animations with fly and scale
 
-## Exemplos
+## Examples
 
-### Dialog de Confirmação
+### Confirmation Dialog
 
-Dialog simples para confirmações de ação:
+Simple dialog for action confirmations:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
   <Dialog>
-    <DialogTrigger variant="destructive">Deletar Item</DialogTrigger>
+    <DialogTrigger variant="destructive">Delete Item</DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogDescription>
-          Esta ação não pode ser desfeita. Isso excluirá permanentemente o item.
+          This action cannot be undone. This will permanently delete the item.
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
-        <DialogClose>Cancelar</DialogClose>
-        <DialogClose variant="destructive" onclick={() => alert('Item deletado!')}>
-          Deletar
+        <DialogClose>Cancel</DialogClose>
+        <DialogClose variant="destructive" onclick={() => alert('Item deleted!')}>
+          Delete
         </DialogClose>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 </div>
 
-<CodeBlock language="svelte" code={
-`<Dialog>
-<DialogTrigger variant="destructive">Deletar Item</DialogTrigger>
-<DialogContent>
-<DialogHeader>
-<DialogTitle>Confirmar Exclusão</DialogTitle>
-<DialogDescription>
-Esta ação não pode ser desfeita. Isso excluirá permanentemente o item.
-</DialogDescription>
-</DialogHeader>
-<DialogFooter>
-<DialogClose>Cancelar</DialogClose>
-<DialogClose variant="destructive" onclick={handleDelete}>
-Deletar
-</DialogClose>
-</DialogFooter>
-</DialogContent>
-
+<CodeBlock language="svelte" code={`
+<Dialog>
+  <DialogTrigger variant="destructive">Delete Item</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Confirm Deletion</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete the item.
+      </DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <DialogClose>Cancel</DialogClose>
+      <DialogClose variant="destructive" onclick={handleDelete}>
+        Delete
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
 </Dialog>
 `} />
 
-### Dialog com Formulário
+### Form Dialog
 
-Dialog contendo um formulário completo:
+Dialog containing a complete form:
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[300px]">
   <Dialog>
-    <DialogTrigger variant="default">Editar Perfil</DialogTrigger>
+    <DialogTrigger variant="default">Edit Profile</DialogTrigger>
     <DialogContent class="sm:max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>Editar Perfil</DialogTitle>
+        <DialogTitle>Edit Profile</DialogTitle>
         <DialogDescription>
-          Faça alterações no seu perfil aqui. Clique em salvar quando terminar.
+          Make changes to your profile here. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-4">
-          <label for="name" class="text-right">Nome</label>
-          <input id="name" value="João Silva" class="col-span-3" />
+          <label for="name" class="text-right text-sm font-medium">Name</label>
+          <input id="name" value="João Silva" class="col-span-3 border rounded p-2 text-sm" />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
-          <label for="email" class="text-right">Email</label>
-          <input id="email" value="joao@example.com" class="col-span-3" />
+          <label for="email" class="text-right text-sm font-medium">Email</label>
+          <input id="email" value="joao@example.com" class="col-span-3 border rounded p-2 text-sm" />
         </div>
       </div>
       <DialogFooter>
-        <DialogClose>Cancelar</DialogClose>
-        <DialogClose variant="default" onclick={() => alert('Perfil salvo!')}>
-          Salvar Alterações
+        <DialogClose>Cancel</DialogClose>
+        <DialogClose variant="default" onclick={() => alert('Profile saved!')}>
+          Save Changes
         </DialogClose>
       </DialogFooter>
     </DialogContent>
   </Dialog>
 </div>
 
-<CodeBlock language="svelte" code={
-`<Dialog>
-<DialogTrigger variant="default">Editar Perfil</DialogTrigger>
-<DialogContent class="sm:max-w-[425px]">
-<DialogHeader>
-<DialogTitle>Editar Perfil</DialogTitle>
-<DialogDescription>
-Faça alterações no seu perfil aqui. Clique em salvar quando terminar.
-</DialogDescription>
-</DialogHeader>
+<CodeBlock language="svelte" code={`
+<Dialog>
+  <DialogTrigger variant="default">Edit Profile</DialogTrigger>
+  <DialogContent class="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>Edit Profile</DialogTitle>
+      <DialogDescription>
+        Make changes to your profile here. Click save when you're done.
+      </DialogDescription>
+    </DialogHeader>
 
-<div class="grid gap-4 py-4">
-<div class="grid grid-cols-4 items-center gap-4">
-<label for="name" class="text-right">Nome</label>
-<input id="name" value="João Silva" class="col-span-3" />
-</div>
-<div class="grid grid-cols-4 items-center gap-4">
-<label for="email" class="text-right">Email</label>
-<input id="email" value="joao@example.com" class="col-span-3" />
-</div>
-</div>
-<DialogFooter>
-<DialogClose>Cancelar</DialogClose>
-<DialogClose variant="default" onclick={handleSave}>
-Salvar Alterações
-</DialogClose>
-</DialogFooter>
-</DialogContent>
-
+    <div class="grid gap-4 py-4">
+      <div class="grid grid-cols-4 items-center gap-4">
+        <label for="name" class="text-right">Name</label>
+        <input id="name" value="João Silva" class="col-span-3" />
+      </div>
+      <div class="grid grid-cols-4 items-center gap-4">
+        <label for="email" class="text-right">Email</label>
+        <input id="email" value="joao@example.com" class="col-span-3" />
+      </div>
+    </div>
+    
+    <DialogFooter>
+      <DialogClose>Cancel</DialogClose>
+      <DialogClose variant="default" onclick={handleSave}>
+        Save Changes
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
 </Dialog>
 `} />
 
-### Controle Programático
+### Programmatic Control
 
-Controle o estado do dialog programaticamente:
+Control the dialog state programmatically using `bind:open`. This is useful when you want to trigger the modal from anywhere or without using the `DialogTrigger` component.
 
 <div class="preview border rounded-lg p-10 flex items-center justify-center min-h-[200px]">
-  <Dialog bind:open={dialogOpen}>
-    <DialogTrigger>Abrir Dialog</DialogTrigger>
+  
+  <button
+    class="bg-background text-white px-4 py-2 rounded  transition text-sm font-medium"
+    onclick={() => customOpen = true}
+  >
+    Open Custom Dialog
+  </button>
+
+  <Dialog bind:open={customOpen}>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Dialog Controlado</DialogTitle>
+        <DialogTitle>Hello!</DialogTitle>
         <DialogDescription>
-          Este dialog é controlado por uma variável externa.
+            This modal is controlled by an external state variable.
         </DialogDescription>
       </DialogHeader>
-      <p>Estado atual: {dialogOpen ? 'Aberto' : 'Fechado'}</p>
-      <DialogFooter>
-        <DialogClose onclick={() => dialogOpen = false}>Fechar</DialogClose>
-      </DialogFooter>
+
+      <p class="py-4">This modal was opened without using the Trigger component.</p>
+
+      <div class="flex justify-end">
+        <button 
+            class="bg-slate-100 hover:bg-slate-200 text-slate-900 px-4 py-2 rounded text-sm font-medium transition"
+            onclick={() => customOpen = false}
+        >
+            Close
+        </button>
+      </div>
     </DialogContent>
   </Dialog>
 </div>
 
-<CodeBlock language="svelte" code={
-`<script>
-let dialogOpen = $state(false);
+<CodeBlock language="svelte" code={`
+<script lang="ts">
+  import { Dialog, DialogContent, DialogHeader, DialogTitle } from '$lib/components/dialog';
+
+  // 1. Your control state
+  let isOpen = $state(false);
 </script>
 
-<Dialog bind:open={dialogOpen}>
-  <DialogTrigger>Abrir Dialog</DialogTrigger>
+<!-- 2. Your custom button anywhere on the screen -->
+<button
+  class="bg-background text-white px-4 py-2 rounded"
+  onclick={() => isOpen = true}
+>
+  Open Custom Dialog
+</button>
+
+<!-- 3. The "invisible" Dialog that obeys the variable -->
+<Dialog bind:open={isOpen}>
+  <!-- Note that we removed <DialogTrigger> from here -->
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Dialog Controlado</DialogTitle>
-      <DialogDescription>
-        Este dialog é controlado por uma variável externa.
-      </DialogDescription>
+      <DialogTitle>Hello!</DialogTitle>
     </DialogHeader>
-    <p>Estado atual: {dialogOpen ? 'Aberto' : 'Fechado'}</p>
-    <DialogFooter>
-      <DialogClose onclick={() => dialogOpen = false}>Fechar</DialogClose>
-    </DialogFooter>
+
+    <p>This modal was opened without using the Trigger component.</p>
+
+    <button onclick={() => isOpen = false}>
+      Close
+    </button>
   </DialogContent>
 </Dialog>
-
-<button onclick={() => dialogOpen = true}>Abrir Externamente</button>
 `} />
 
-## Estilização
+## Styling
 
-Todos os componentes aceitam a prop `class` para customização:
+All components accept the `class` prop for customization:
 
-<CodeBlock language="svelte" code={
-`<!-- Largura customizada -->
+<CodeBlock language="svelte" code={`
+<!-- Custom width -->
 <DialogContent class="sm:max-w-[600px]">
-...
+  ...
 </DialogContent>
 
-<!-- Header customizado -->
+<!-- Custom header -->
 <DialogHeader class="text-center">
   ...
 </DialogHeader>
 
-<!-- Footer customizado -->
+<!-- Custom footer -->
 <DialogFooter class="justify-between">
   ...
 </DialogFooter>
 
-<!-- Botão de fechar customizado -->
+<!-- Custom close button -->
 <DialogClose class="absolute top-4 right-4">
   <XIcon class="h-4 w-4" />
 </DialogClose>
 `} />
 
-## Navegação por Teclado
+## Keyboard Navigation
 
-| Tecla         | Ação                                            |
-| :------------ | :---------------------------------------------- |
-| `Tab`         | Navega entre elementos interativos (focus trap) |
-| `Shift + Tab` | Navega para trás entre elementos interativos    |
-| `Esc`         | Fecha o dialog                                  |
-| `Enter`       | Ativa o elemento focado (botões, links)         |
+| Key           | Action                                             |
+| :------------ | :------------------------------------------------- |
+| `Tab`         | Navigate between interactive elements (focus trap) |
+| `Shift + Tab` | Navigate backward between interactive elements     |
+| `Esc`         | Close the dialog                                   |
+| `Enter`       | Activate the focused element (buttons, links)      |
 
 ## API Reference
 
 ### Dialog
 
-Componente raiz que gerencia o estado do dialog.
+Root component that manages the dialog state.
 
-| Prop       | Tipo      | Padrão  | Descrição                                         |
-| :--------- | :-------- | :------ | :------------------------------------------------ |
-| `open`     | `boolean` | `false` | Estado de abertura (suporta binding bidirecional) |
-| `children` | `Snippet` | —       | Deve conter `DialogTrigger` e `DialogContent`     |
+| Prop       | Type      | Default | Description                                      |
+| :--------- | :-------- | :------ | :----------------------------------------------- |
+| `open`     | `boolean` | `false` | Open state (supports bidirectional binding)      |
+| `children` | `Snippet` | —       | Must contain `DialogTrigger` and `DialogContent` |
 
 ### DialogTrigger
 
-Botão que abre o dialog.
+Button that opens the dialog.
 
-| Prop       | Tipo      | Padrão      | Descrição                                                         |
+| Prop       | Type      | Default     | Description                                                       |
 | :--------- | :-------- | :---------- | :---------------------------------------------------------------- |
 | `variant`  | `string`  | `'outline'` | `default`, `outline`, `ghost`, `secondary`, `destructive`, `link` |
 | `size`     | `string`  | `'default'` | `default`, `sm`, `lg`, `icon`                                     |
-| `class`    | `string`  | —           | Classes CSS adicionais                                            |
-| `children` | `Snippet` | —           | Conteúdo do botão                                                 |
+| `class`    | `string`  | —           | Additional CSS classes                                            |
+| `children` | `Snippet` | —           | Button content                                                    |
 
 ### DialogContent
 
-Container do conteúdo modal.
+Modal content container.
 
-| Prop                   | Tipo          | Padrão | Descrição                   |
-| :--------------------- | :------------ | :----- | :-------------------------- |
-| `class`                | `string`      | —      | Classes CSS adicionais      |
-| `initialFocus`         | `FocusOption` | `true` | Elemento para foco inicial  |
-| `finalFocus`           | `FocusOption` | `true` | Elemento para foco final    |
-| `closeOnBackdropClick` | `boolean`     | `true` | Fecha ao clicar no backdrop |
-| `closeOnEscape`        | `boolean`     | `true` | Fecha ao pressionar Esc     |
-| `children`             | `Snippet`     | —      | Conteúdo do dialog          |
+| Prop                   | Type          | Default | Description               |
+| :--------------------- | :------------ | :------ | :------------------------ |
+| `class`                | `string`      | —       | Additional CSS classes    |
+| `initialFocus`         | `FocusOption` | `true`  | Element for initial focus |
+| `finalFocus`           | `FocusOption` | `true`  | Element for final focus   |
+| `closeOnBackdropClick` | `boolean`     | `true`  | Close on backdrop click   |
+| `closeOnEscape`        | `boolean`     | `true`  | Close on Escape key       |
+| `children`             | `Snippet`     | —       | Dialog content            |
 
 ### DialogHeader
 
-Container para o cabeçalho do dialog.
+Container for the dialog header.
 
-| Prop       | Tipo      | Padrão | Descrição              |
-| :--------- | :-------- | :----- | :--------------------- |
-| `class`    | `string`  | —      | Classes CSS adicionais |
-| `children` | `Snippet` | —      | Conteúdo do cabeçalho  |
+| Prop       | Type      | Default | Description            |
+| :--------- | :-------- | :------ | :--------------------- |
+| `class`    | `string`  | —       | Additional CSS classes |
+| `children` | `Snippet` | —       | Header content         |
 
 ### DialogTitle
 
-Título do dialog.
+Dialog title.
 
-| Prop       | Tipo      | Padrão | Descrição              |
-| :--------- | :-------- | :----- | :--------------------- |
-| `class`    | `string`  | —      | Classes CSS adicionais |
-| `children` | `Snippet` | —      | Texto do título        |
+| Prop       | Type      | Default | Description            |
+| :--------- | :-------- | :------ | :--------------------- |
+| `class`    | `string`  | —       | Additional CSS classes |
+| `children` | `Snippet` | —       | Title text             |
 
 ### DialogDescription
 
-Descrição do dialog.
+Dialog description.
 
-| Prop       | Tipo      | Padrão | Descrição              |
-| :--------- | :-------- | :----- | :--------------------- |
-| `class`    | `string`  | —      | Classes CSS adicionais |
-| `children` | `Snippet` | —      | Texto da descrição     |
+| Prop       | Type      | Default | Description            |
+| :--------- | :-------- | :------ | :--------------------- |
+| `class`    | `string`  | —       | Additional CSS classes |
+| `children` | `Snippet` | —       | Description text       |
 
 ### DialogFooter
 
-Container para os botões de ação.
+Container for action buttons.
 
-| Prop       | Tipo      | Padrão | Descrição              |
-| :--------- | :-------- | :----- | :--------------------- |
-| `class`    | `string`  | —      | Classes CSS adicionais |
-| `children` | `Snippet` | —      | Botões de ação         |
+| Prop       | Type      | Default | Description            |
+| :--------- | :-------- | :------ | :--------------------- |
+| `class`    | `string`  | —       | Additional CSS classes |
+| `children` | `Snippet` | —       | Action buttons         |
 
 ### DialogClose
 
-Botão que fecha o dialog.
+Button that closes the dialog.
 
-| Prop       | Tipo                      | Padrão      | Descrição                                                         |
+| Prop       | Type                      | Default     | Description                                                       |
 | :--------- | :------------------------ | :---------- | :---------------------------------------------------------------- |
 | `variant`  | `string`                  | `'outline'` | `default`, `outline`, `ghost`, `secondary`, `destructive`, `link` |
 | `size`     | `string`                  | `'default'` | `default`, `sm`, `lg`, `icon`                                     |
-| `class`    | `string`                  | —           | Classes CSS adicionais                                            |
-| `onclick`  | `(e: MouseEvent) => void` | —           | Callback adicional ao fechar                                      |
-| `children` | `Snippet`                 | —           | Conteúdo do botão                                                 |
+| `class`    | `string`                  | —           | Additional CSS classes                                            |
+| `onclick`  | `(e: MouseEvent) => void` | —           | Additional callback on close                                      |
+| `children` | `Snippet`                 | —           | Button content                                                    |
 
-### Tipos
+### Types
 
 ```typescript
 type FocusOption =
@@ -391,4 +415,3 @@ type FocusOption =
  | HTMLElement
  | null
  | (() => HTMLElement | boolean | null | undefined);
-```
