@@ -25,7 +25,6 @@
  }
 </script>
 
-<!-- SNIPPETS DE ÍCONES -->
 {#snippet codeIcon()}
  <svg
   class="size-3.5"
@@ -74,12 +73,6 @@
 {/snippet}
 
 <div class="min-h-screen w-full bg-background text-foreground">
- <!--
-    HEADER COMPACTO E FLUTUANTE
-    - top-4: Dá um respiro do topo.
-    - mx-auto max-w-6xl: Centraliza e limita a largura igual ao conteúdo.
-    - rounded-2xl border: Cria a "ilha" flutuante.
- -->
  <header
   class="sticky top-0 z-40 mx-auto flex h-12 w-full shrink-0 items-center gap-2 border border-border bg-background/80 px-4 shadow-xs backdrop-blur-md transition-all supports-[backdrop-filter]:bg-background/60"
  >
@@ -88,7 +81,6 @@
   </div>
 
   <div class="ml-auto">
-   <!-- ModeToggle geralmente já tem seu próprio container, ajustando escala se necessário -->
    <div class="scale-90">
     <ModeToggle />
    </div>
@@ -107,7 +99,6 @@
       <span class="text-foreground">{data.meta?.title}</span>
      </nav>
 
-     <!-- Título e descrição -->
      <h1 class="text-3xl font-semibold tracking-tight text-foreground lg:text-4xl">
       {data.meta?.title ?? 'Sem Título'}
      </h1>
@@ -117,7 +108,6 @@
       </p>
      {/if}
 
-     <!-- AÇÕES: Substituído por Componentes Button -->
      <div class="mt-6 flex items-center gap-2">
       {#if data.sourceFiles && data.sourceFiles.length > 0}
        <Button
@@ -155,7 +145,6 @@
      </div>
     </header>
 
-    <!-- Conteúdo do artigo -->
     <article
      class="prose max-w-none prose-neutral dark:prose-invert
       prose-headings:font-semibold prose-headings:tracking-tight
@@ -175,9 +164,7 @@
     </article>
    </main>
 
-   <!-- Sidebar Table of Contents -->
    <aside class="hidden lg:block">
-    <!-- Top ajustado para compensar o header flutuante -->
     <div class="sticky top-24">
      {#key data.meta.title}
       <TableOfContents />
@@ -188,7 +175,6 @@
  </div>
 </div>
 
-<!-- Dialog de Código-fonte -->
 {#if data.sourceFiles && data.sourceFiles.length > 0}
  <SourceCodeViewer
   files={data.sourceFiles}
