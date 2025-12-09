@@ -48,7 +48,9 @@ By default, the Portal renders its content at the end of `document.body`.
           <p class="text-muted-foreground mt-2">I am a direct child of body.</p>
           <Button class="mt-4" variant="secondary" onclick={() => show = false}>Close</Button>
         </div>
-        <!-- Backdrop -->
+        
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div class="fixed inset-0 bg-black/50 z-40" onclick={() => show = false}></div>
       </Portal>
     {/if}
@@ -69,6 +71,11 @@ By default, the Portal renders its content at the end of `document.body`.
       <div class="fixed top-1/2 left-1/2 ...">
         I escaped the overflow-hidden container!
       </div>
+      
+      <!-- Backdrop -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div class="fixed inset-0 bg-black/50" onclick={() => show = false}></div>
     </Portal>
   {/if}
 </div>
