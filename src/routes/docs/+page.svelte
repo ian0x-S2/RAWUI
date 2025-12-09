@@ -39,11 +39,6 @@
      <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
       RAWUI Component System
      </h1>
-     <span
-      class="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-     >
-      v0.0.1
-     </span>
     </div>
 
     <p
