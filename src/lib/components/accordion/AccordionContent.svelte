@@ -1,4 +1,3 @@
-<!-- src/lib/components/ui/accordion/AccordionContent.svelte -->
 <script lang="ts">
  import { getAccordionItem, getAccordionRoot } from './ctx.svelte.js';
  import { slide } from 'svelte/transition';
