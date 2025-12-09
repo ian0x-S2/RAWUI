@@ -51,7 +51,7 @@ Why did I build this instead of using an existing library?
     </div>
     <h3 class="font-semibold leading-none tracking-tight mt-2">Native Svelte 5</h3>
     <p class="mt-1 text-sm text-muted-foreground leading-snug">
-      I wanted components written from scratch using <strong>Runes</strong>, without legacy stores or adapters found in older libraries.
+        Built from the ground up using <strong>Runes</strong>, avoiding legacy patterns and unnecessary abstractions.
     </p>
   </div>
 
@@ -94,18 +94,7 @@ Create the file at `src/lib/utils/index.ts` (or wherever you prefer):
 
 <CodeBlock language="typescript" code={utilsCode} />
 
-### 2. Path Configuration
-
-To make imports easier (e.g., `$lib/components/...`), ensure your `tsconfig.json` or `svelte.config.js` has aliases configured. This is standard in SvelteKit.
-
-```json
-"paths": {
-  "$lib": ["./src/lib"],
-  "$lib/*": ["./src/lib/*"]
-}
-```
-
-### 3. Floating UI (Optional)
+### 2. Floating UI (Optional)
 
 For components that "float" (Dropdown, Tooltip, Popover), I use `floating-ui` for positioning.
 
