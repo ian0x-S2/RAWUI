@@ -67,7 +67,7 @@
   <div class="flex items-center">
    <!-- Usando uma escala para ajustar o botão padrão ao header slim -->
    <div class="scale-75">
-    <ModeToggle  />
+    <ModeToggle />
    </div>
   </div>
  </header>
@@ -75,14 +75,6 @@
  <!-- MAIN CONTENT -->
  <main class="flex w-full flex-1 flex-col items-center justify-center px-4">
   <div class="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
-   <!-- Badge Ultra Minimal -->
-   <div
-    class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground/60 uppercase"
-    in:fly={{ y: 10, duration: 400 }}
-   >
-    v1.0.0 &mdash; Production Ready
-   </div>
-
    <!-- Typography Hero Compacto -->
    <h1
     class="mb-4 text-7xl font-bold tracking-tighter text-foreground sm:text-8xl md:text-9xl"
@@ -96,8 +88,8 @@
     class="mb-8 max-w-sm text-sm leading-relaxed font-medium text-muted-foreground md:text-base"
     in:fly={{ y: 10, duration: 400, delay: 100 }}
    >
-    Componentes brutos. Sem abstrações.<br />
-    <span class="text-foreground/80">O código é seu, a regra é sua.</span>
+    Raw components. No abstractions.<br />
+    <span class="text-foreground/80">The code is yours, the rule is yours.</span>
    </p>
 
    <!-- Actions Compactas -->
@@ -109,10 +101,10 @@
     </Button>
 
     <a
-     href="/docs/components/button"
+     href="/docs/button"
      class="px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
     >
-     Componentes
+     Components
     </a>
    </div>
   </div>
@@ -120,7 +112,7 @@
 
  <!-- STATIC FOOTER -->
  <footer class="pointer-events-none fixed bottom-4 left-0 w-full text-center">
-  <p class="font-mono text-[9px] tracking-widest text-muted-foreground/20 uppercase">
+  <p class="font-mono text-[9px] tracking-widest text-muted-foreground/50 uppercase">
    Svelte 5 &bull; Tailwind &bull; No Runtime
   </p>
  </footer>

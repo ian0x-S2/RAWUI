@@ -50,10 +50,10 @@
      class="max-w-2xl text-sm leading-relaxed text-muted-foreground"
      in:fly={{ y: 10, duration: 300, delay: 100 }}
     >
-     Sistema de componentes que equilibra <span class="font-medium text-foreground"
-      >simplicidade e flexibilidade</span
-     >. Construído com Svelte 5 e inspirado na filosofia shadcn/ui, RAWUI oferece
-     componentes modulares, acessíveis e totalmente customizáveis.
+     A component system that balances <span class="font-medium text-foreground"
+      >simplicity and flexibility</span
+     >. Built with Svelte 5 and inspired by the shadcn/ui philosophy, RAWUI offers
+     modular, accessible, and fully customizable components.
     </p>
    </div>
 
@@ -65,10 +65,10 @@
      href="/docs/introduction"
      class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-md"
     >
-     Começar
+     Get Started
     </a>
     <a
-     href="https://github.com/seu-repo"
+     href="https://github.com/your-repo"
      target="_blank"
      rel="noreferrer"
      class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-input bg-background px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -91,15 +91,15 @@
    in:fly={{ y: 10, duration: 300, delay: 400 }}
   >
    <div class="text-muted-foreground">
-    <span class="font-medium text-foreground">Contribua:</span> O projeto é open-source.
+    <span class="font-medium text-foreground">Contribute:</span> The project is open-source.
    </div>
    <a
-    href="https://github.com/seu-repo/issues"
+    href="https://github.com/your-repo/issues"
     target="_blank"
     rel="noreferrer"
     class="text-xs font-medium text-primary underline-offset-4 hover:underline"
    >
-    Abrir Issue &rarr;
+    Open Issue &rarr;
    </a>
   </div>
  </div>
