@@ -30,13 +30,17 @@ export function cn(...inputs: ClassValue[]) {
 
 I built this collection to have a solid, modern foundation for my own Svelte 5 applications. I am sharing it because I believe in the "copy and paste" philosophy, and it might be useful for your projects too.
 
-<div class="my-8 rounded-lg border bg-muted/50 p-6">
-  <p class="text-lg font-medium leading-relaxed">
-    This is a <strong>personal toolkit</strong>, not a strictly versioned library.
-  </p>
-  <p class="mt-2 text-muted-foreground">
-    I use these components in my own apps, so they are battle-tested for my needs. Feel free to copy, adapt, and make them your own.
-  </p>
+While these components are battle-tested in my own apps, **software is a collaborative craft**. I'm sharing this not just as a resource, but as an invitation.
+
+<div class="my-8 rounded-lg border   p-6">
+  <div class="flex flex-col gap-2">
+    <h3 class="font-semibold text-lg">Community Driven Quality</h3>
+    <p class="text-muted-foreground leading-relaxed">
+      This is a personal toolkit, but I know I can't cover every edge case alone. 
+      If you find a bug, an accessibility issue, or a way to make the code cleaner, 
+      <strong>please open an issue or a PR</strong>. Your feedback helps make this a better reference for everyone.
+    </p>
+  </div>
 </div>
 
 ## Motivation
@@ -56,7 +60,7 @@ Why did I build this instead of using an existing library?
   </div>
 
   <!-- Feature 2 -->
-  <div class="flex flex-col items-start gap-1 rounded-lg border  p-4 text-card-foreground shadow-sm transition-colors hover:bg-muted/40">
+  <div class="flex flex-col items-start gap-1 rounded-lg border   p-4 text-card-foreground shadow-sm transition-colors hover:bg-muted/40">
     <div class="flex h-9 w-9 items-center justify-center rounded-md border bg-background">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-open-icon lucide-lock-keyhole-open"><circle cx="12" cy="16" r="1"/><rect width="18" height="12" x="3" y="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 9.33-2.5"/></svg>
     </div>
@@ -105,19 +109,19 @@ For components that "float" (Dropdown, Tooltip, Popover), I use `floating-ui` fo
 <Accordion type="single" class="w-full mt-6">
   <AccordionItem value="item-1">
     <AccordionTrigger>
-      Is this actively maintained?
+      Found a bug or have a suggestion?
     </AccordionTrigger>
     <AccordionContent>
-      I maintain it as long as I use it in my personal projects. Don't expect a strict release schedule or 24/7 support, but do expect code that works in real-world scenarios.
+      Please report it! Since this is a personal project, I might miss things across different browsers or screen readers. Pull Requests are highly appreciated and help make this tool better for everyone.
     </AccordionContent>
   </AccordionItem>
 
   <AccordionItem value="item-2">
     <AccordionTrigger>
-      Can I use this in my projects?
+      Is this actively maintained?
     </AccordionTrigger>
     <AccordionContent>
-      Absolutely. The code is MIT licensed. You are free to use it for personal or commercial work. Just remember that once you copy it, it's yours to maintain.
+      I maintain it as long as I use it in my personal projects. Don't expect a strict release schedule, but do expect code that works in real-world scenarios.
     </AccordionContent>
   </AccordionItem>
 
@@ -126,7 +130,7 @@ For components that "float" (Dropdown, Tooltip, Popover), I use `floating-ui` fo
       How do I handle updates?
     </AccordionTrigger>
     <AccordionContent>
-      There is no "npm update". If I add a cool feature or fix a bug here, you'll need to manually update your file. This is a feature, not a bug—it ensures an update never breaks your app unexpectedly.
+      There is no "npm update". If I fix a bug here, you'll need to manually check the code and update your file. This ensures updates never silently break your app unexpectedly.
     </AccordionContent>
   </AccordionItem>
 </Accordion>
