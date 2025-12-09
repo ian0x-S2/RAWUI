@@ -32,7 +32,7 @@ I built this collection to have a solid, modern foundation for my own Svelte 5 a
 
 While these components are battle-tested in my own apps, **software is a collaborative craft**. I'm sharing this not just as a resource, but as an invitation.
 
-<div class="my-8 rounded-lg border   p-6">
+<div class="my-8 rounded-lg border py-3   p-6">
   <div class="flex flex-col gap-2">
     <h3 class="font-semibold text-lg">Community Driven Quality</h3>
     <p class="text-muted-foreground leading-relaxed">
