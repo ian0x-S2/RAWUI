@@ -1,58 +1,79 @@
-# Svelte library
+# RAWUI Component System
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+<div align="center">
+  <img src="static/yy.svg" alt="RAWUI Logo" width="80" height="80" />
+  <br />
+  <br />
+  <p>
+    <strong>Beautiful, accessible, and type-safe components built with Svelte 5 and Tailwind CSS.</strong>
+  </p>
+  <p>
+    <em>Not a library. A collection of reusable components for the modern Svelte era.</em>
+  </p>
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+  <a href="https://svelte.dev">
+    <img src="https://img.shields.io/badge/Svelte-5.0+-orange?style=flat-square&logo=svelte" alt="Svelte 5" />
+  </a>
+  <a href="https://tailwindcss.com">
+    <img src="https://img.shields.io/badge/Tailwind-3.0+-blue?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
+  </a>
+  <a href="https://www.typescriptlang.org">
+    <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
+  </a>
+</div>
 
-## Creating a project
+<br />
 
-If you're seeing this, you've probably already done this step. Congrats!
+## 📖 Introduction
 
-```sh
-# create a new project in the current directory
-npx sv create
+**RAWUI** is a collection of UI components written from scratch using **Svelte 5 Runes**.
 
-# create a new project in my-app
-npx sv create my-app
+It is **not** a dependency you install via npm. It is a reference code base. You choose the components you need, copy the code into your project, and customize them to your heart's content.
+
+### Why Copy/Paste?
+
+- **Zero Abstraction:** You own the code. No "black box" logic hidden inside `node_modules`.
+- **Full Customization:** Want to change the animation speed? The active color? The DOM structure? Just edit the file.
+- **Svelte 5 Native:** Built to leverage the fine-grained reactivity system of Runes (`$state`, `$derived`, `$effect`).
+- **Accessibility First:** Strict adherence to WAI-ARIA patterns for focus management and keyboard navigation.
+
+---
+
+## 🚀 Getting Started
+
+Since this is not a package, you need to set up your environment to receive the components.
+
+### 1. Prerequisites
+
+Ensure you have a SvelteKit project with Tailwind CSS configured.
+
+### 2. Install Utilities
+
+We use a few tiny libraries to handle class merging and variant management:
+
+```bash
+npm install clsx tailwind-merge class-variance-authority
 ```
 
-## Developing
+## 🤝 Contributing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+This is primarily a personal toolkit, but contributions are welcome!
 
-```sh
-npm run dev
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingComponent`).
+3. Commit your changes.
+4. Open a Pull Request.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## 📄 License
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+This project is licensed under the **MIT License** 
+You are free to use these components in personal and commercial projects.
 
-## Building
+---
 
-To build your library:
-
-```sh
-npm pack
-```
-
-To create a production version of your showcase app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```sh
-npm publish
-```
+<div align="center">
+  <p>Inspired by <a href="https://ui.shadcn.com/">shadcn/ui</a> and the Svelte community.</p>
+</div>
