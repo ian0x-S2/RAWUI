@@ -27,5 +27,5 @@
 
 ## Core Principles
 
-- Zero UI dependencies, copy-paste friendly, composable, accessible, type-safe
+- Copy-paste friendly, composable, accessible, type-safe
 - No comments in code, prioritize readability, follow existing patterns
