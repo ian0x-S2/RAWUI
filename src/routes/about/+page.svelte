@@ -16,7 +16,11 @@
   DropdownContent,
   DropdownItem,
   DropdownSeparator,
-  DropdownLabel
+  DropdownLabel,
+  DropdownSub,
+  DropdownSubTrigger,
+  DropdownSubContent,
+  DropdownSubItem
  } from '$lib/components/dropdown';
  import {
   Accordion,
@@ -24,10 +28,17 @@
   AccordionTrigger,
   AccordionContent
  } from '$lib/components/accordion/index';
+
  let inputRef: HTMLInputElement;
- // Estados
+
+ // Estados do Dialog
  let openProfile = $state(false);
  let openProfile2 = $state(false);
+
+ // Estados para demonstração do Dropdown (closeOnSelect)
+ let wifiEnabled = $state(true);
+ let bluetoothEnabled = $state(false);
+ let airplainMode = $state(false);
 
  function handleSaveProfile() {
   openProfile = false;
@@ -45,7 +56,6 @@
 
 <div class="relative min-h-screen bg-background text-foreground selection:bg-primary/10">
  <!-- BACKGROUND TÉCNICO SUTIL -->
- <!-- Um grid muito leve para dar textura sem chamar atenção -->
  <div class="bg-subtle-grid pointer-events-none fixed inset-0 -z-10"></div>
 
  <div class="container mx-auto max-w-7xl px-6 py-20">
@@ -58,13 +68,11 @@
   </div>
 
   <!-- GRID DE CARDS -->
-  <!-- items-start garante que o accordion não estique os vizinhos -->
   <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 xl:grid-cols-3">
    <!-- CARD 1: DIALOG -->
    <div
     class="group rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
    >
-    <!-- Header -->
     <div class="flex items-center justify-between border-b p-5">
      <h3 class="font-medium tracking-tight">Dialog</h3>
      <a
@@ -74,7 +82,6 @@
       {@html DocIcon()}
      </a>
     </div>
-    <!-- Preview -->
     <div class="flex min-h-[300px] flex-col items-center justify-center gap-4 p-8">
      <Dialog>
       <DialogTrigger>Open Dialog</DialogTrigger>
@@ -154,7 +161,7 @@
     </div>
    </div>
 
-   <!-- CARD 3: DROPDOWN -->
+   <!-- CARD 3: DROPDOWN (DEMO DAS NOVAS FEATURES) -->
    <div
     class="group rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
    >
@@ -168,33 +175,73 @@
      </a>
     </div>
     <div class="flex min-h-[300px] flex-col items-center justify-center gap-8 p-8">
+     <!-- MENU 1: SETTINGS (Demonstra closeOnSelect={false}) -->
      <DropdownMenu>
-      <DropdownTrigger variant="outline" class="w-48 justify-between bg-background">
-       Ações
-       <span class="scale-75 text-[10px] opacity-40">▼</span>
+      <DropdownTrigger variant="default" class="w-48 justify-between">
+       Painel de Controle
+       <span class="scale-75 text-[10px] opacity-60">▼</span>
       </DropdownTrigger>
-      <DropdownContent>
-       <DropdownItem>Editar</DropdownItem>
-       <DropdownItem>Duplicar</DropdownItem>
+
+      <DropdownContent class="w-56">
+       <DropdownLabel>Conectividade</DropdownLabel>
+
+       <!-- Feature: Item mantem aberto ao clicar -->
+       <DropdownItem closeOnSelect={false} onclick={() => (wifiEnabled = !wifiEnabled)}>
+        <span class="flex-1">Wi-Fi</span>
+        <span class={wifiEnabled ? 'font-bold text-primary' : 'text-muted-foreground'}>
+         {wifiEnabled ? 'Ligado' : 'Desl.'}
+        </span>
+       </DropdownItem>
+
+       <DropdownItem
+        role="menuitemcheckbox"
+        closeOnSelect={false}
+        onclick={() => (bluetoothEnabled = !bluetoothEnabled)}
+       >
+        <span class="flex-1">Bluetooth</span>
+        <span
+         class={bluetoothEnabled ? 'font-bold text-primary' : 'text-muted-foreground'}
+        >
+         {bluetoothEnabled ? 'Ligado' : 'Desl.'}
+        </span>
+       </DropdownItem>
+
        <DropdownSeparator />
-       <DropdownItem class="text-destructive focus:text-destructive">
-        Excluir
+
+       <DropdownLabel>Ações</DropdownLabel>
+
+       <!-- Feature: Submenu -->
+       <DropdownSub>
+        <DropdownSubTrigger>Compartilhar</DropdownSubTrigger>
+        <DropdownSubContent>
+         <DropdownSubItem>Email</DropdownSubItem>
+         <DropdownSubItem>Slack</DropdownSubItem>
+         <DropdownSeparator />
+         <DropdownSubItem>Mais...</DropdownSubItem>
+        </DropdownSubContent>
+       </DropdownSub>
+
+       <!-- Feature: Item Desabilitado -->
+       <DropdownItem disabled>
+        <span class="flex-1">Atualizar Sistema</span>
+        <span class="text-[10px] uppercase">Baixando...</span>
        </DropdownItem>
       </DropdownContent>
      </DropdownMenu>
 
+     <!-- MENU 2: SIMPLE -->
      <DropdownMenu>
       <DropdownTrigger
        variant="ghost"
        class="text-xs text-muted-foreground hover:text-foreground"
       >
-       Mais Opções
+       Menu Simples
       </DropdownTrigger>
       <DropdownContent align="center">
-       <DropdownLabel>Navegação</DropdownLabel>
-       <DropdownItem>Perfil</DropdownItem>
-       <DropdownItem>Configurações</DropdownItem>
-       <DropdownItem>Sair</DropdownItem>
+       <DropdownItem onclick={() => alert('Copiado!')}>Copiar Link</DropdownItem>
+       <DropdownItem class="text-destructive focus:text-destructive">
+        Deletar
+       </DropdownItem>
       </DropdownContent>
      </DropdownMenu>
     </div>
@@ -204,10 +251,6 @@
 </div>
 
 <style>
- /*
-		Grid muito sutil e elegante.
-		Usa 'bg-grid-small' logicamente
-	*/
  .bg-subtle-grid {
   background-size: 40px 40px;
   background-image: linear-gradient(

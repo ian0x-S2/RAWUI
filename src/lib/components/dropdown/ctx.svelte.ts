@@ -106,15 +106,25 @@ export class DropdownState {
   });
  }
 
+ isDisabled(node: HTMLElement) {
+  return node.getAttribute('aria-disabled') === 'true' || node.hasAttribute('disabled');
+ }
+
  async openAndFocus(target: 'first' | 'last') {
   this.isClosing = false;
   this.isOpen = true;
   await tick();
 
   if (target === 'first') {
-   this.items[0]?.focus();
+   const firstValid = this.items.find((item) => !this.isDisabled(item));
+   firstValid?.focus();
   } else {
-   this.items[this.items.length - 1]?.focus();
+   for (let i = this.items.length - 1; i >= 0; i--) {
+    if (!this.isDisabled(this.items[i])) {
+     this.items[i].focus();
+     break;
+    }
+   }
   }
  }
 
@@ -152,41 +162,57 @@ export class DropdownState {
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
+
     if (!isFocusingItem) {
-     this.items[0]?.focus();
+     this.openAndFocus('first');
     } else {
-     const nextIndex = (currentIndex + 1) % this.items.length;
-     this.items[nextIndex]?.focus();
+     let nextIndex = currentIndex;
+     for (let i = 0; i < this.items.length; i++) {
+      nextIndex = (nextIndex + 1) % this.items.length;
+      if (!this.isDisabled(this.items[nextIndex])) {
+       this.items[nextIndex]?.focus();
+       break;
+      }
+     }
     }
     break;
    case 'ArrowUp':
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
+
     if (!isFocusingItem) {
-     this.items[this.items.length - 1]?.focus();
+     this.openAndFocus('last');
     } else {
-     const prevIndex = (currentIndex - 1 + this.items.length) % this.items.length;
-     this.items[prevIndex]?.focus();
+     let prevIndex = currentIndex;
+     for (let i = 0; i < this.items.length; i++) {
+      prevIndex = (prevIndex - 1 + this.items.length) % this.items.length;
+      if (!this.isDisabled(this.items[prevIndex])) {
+       this.items[prevIndex]?.focus();
+       break;
+      }
+     }
     }
     break;
    case 'Home':
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
-    this.items[0]?.focus();
+    this.openAndFocus('first');
     break;
    case 'End':
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
-    this.items[this.items.length - 1]?.focus();
+    this.openAndFocus('last');
     break;
 
    case 'Enter':
    case ' ':
     e.preventDefault();
-    if (isFocusingItem) activeElement.click();
+    if (isFocusingItem && !this.isDisabled(activeElement)) {
+     activeElement.click();
+    }
     break;
   }
  };
@@ -359,14 +385,24 @@ export class DropdownSubState {
   };
  }
 
+ isDisabled(node: HTMLElement) {
+  return node.getAttribute('aria-disabled') === 'true' || node.hasAttribute('disabled');
+ }
+
  async openAndFocus(target: 'first' | 'last') {
   this.open();
   await tick();
 
   if (target === 'first') {
-   this.items[0]?.focus();
+   const firstValid = this.items.find((item) => !this.isDisabled(item));
+   firstValid?.focus();
   } else {
-   this.items[this.items.length - 1]?.focus();
+   for (let i = this.items.length - 1; i >= 0; i--) {
+    if (!this.isDisabled(this.items[i])) {
+     this.items[i].focus();
+     break;
+    }
+   }
   }
  }
 
@@ -399,37 +435,51 @@ export class DropdownSubState {
     e.preventDefault();
     e.stopPropagation();
     if (!isFocusingItem) {
-     this.items[0]?.focus();
+     this.openAndFocus('first');
     } else {
-     const nextIndex = (currentIndex + 1) % this.items.length;
-     this.items[nextIndex]?.focus();
+     let nextIndex = currentIndex;
+     for (let i = 0; i < this.items.length; i++) {
+      nextIndex = (nextIndex + 1) % this.items.length;
+      if (!this.isDisabled(this.items[nextIndex])) {
+       this.items[nextIndex]?.focus();
+       break;
+      }
+     }
     }
     break;
    case 'ArrowUp':
     e.preventDefault();
     e.stopPropagation();
     if (!isFocusingItem) {
-     this.items[this.items.length - 1]?.focus();
+     this.openAndFocus('last');
     } else {
-     const prevIndex = (currentIndex - 1 + this.items.length) % this.items.length;
-     this.items[prevIndex]?.focus();
+     let prevIndex = currentIndex;
+     for (let i = 0; i < this.items.length; i++) {
+      prevIndex = (prevIndex - 1 + this.items.length) % this.items.length;
+      if (!this.isDisabled(this.items[prevIndex])) {
+       this.items[prevIndex]?.focus();
+       break;
+      }
+     }
     }
     break;
    case 'Home':
     e.preventDefault();
     e.stopPropagation();
-    this.items[0]?.focus();
+    this.openAndFocus('first');
     break;
    case 'End':
     e.preventDefault();
     e.stopPropagation();
-    this.items[this.items.length - 1]?.focus();
+    this.openAndFocus('last');
     break;
    case 'Enter':
    case ' ':
     e.preventDefault();
     e.stopPropagation();
-    if (isFocusingItem) activeElement.click();
+    if (isFocusingItem && !this.isDisabled(activeElement)) {
+     activeElement.click();
+    }
     break;
   }
  };
