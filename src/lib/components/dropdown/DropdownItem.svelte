@@ -9,14 +9,14 @@
   class?: string;
   onclick?: (e: MouseEvent) => void;
   /**
-   * Determina se o menu deve fechar após selecionar este item.
-   * Útil para manter aberto em ações como "Copiar link" ou toggles.
+   * Determines whether the menu should close after selecting this item.
+   * Useful for keeping it open for actions such as "Copy link" or toggles.
    * @default true
    */
   closeOnSelect?: boolean;
   /**
-   * Desabilita a interação com o item.
-   * Bloqueia clique (mouse e teclado) e aplica estilos visuais.
+   * Disables interaction with the item.
+   * Blocks clicking (mouse and keyboard) and applies visual styles.
    * @default false
    */
   disabled?: boolean;
@@ -40,8 +40,6 @@
  });
 
  function handleClick(e: MouseEvent) {
-  // Proteção Real: Impede a execução se estiver desabilitado.
-  // Isso bloqueia tanto o clique do mouse quanto o 'Enter' via teclado.
   if (disabled) {
    e.preventDefault();
    e.stopPropagation();
@@ -50,15 +48,12 @@
 
   if (onclick) onclick(e);
 
-  // Flexibilidade: Verifica a prop antes de fechar o menu
   if (closeOnSelect) {
    root.close();
   }
  }
 
  function handlePointerEnter() {
-  // Opcional: pointer-events-none no CSS já deve bloquear isso,
-  // mas essa verificação garante segurança extra na lógica JS.
   if (disabled) return;
 
   if (!root.isKeyboardNav) {
