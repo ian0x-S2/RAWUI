@@ -43,13 +43,11 @@ export async function load({ params }) {
  const resolver = modules[matchPath];
  const rawResolver = rawModules[matchPath];
 
- // Executa em paralelo
  const [post, rawContent] = await Promise.all([
   resolver() as Promise<{ default: any; metadata: DocMetadata }>,
   rawResolver() as Promise<string>
  ]);
 
- // Carrega source files se houver componentId
  const componentId = post.metadata?.componentId;
  const sourceFiles = componentId
   ? await loadComponentFiles(componentId, componentSources)
@@ -63,7 +61,6 @@ export async function load({ params }) {
  };
 }
 
-// Entradas para Prerenderização (SSG)
 export function entries() {
  const paths = Object.keys(modules);
  return paths.map((path) => {
@@ -71,7 +68,6 @@ export function entries() {
   const filename = parts.pop();
   const folder = parts.pop();
 
-  // Mesma lógica de extração do slug da API
   const slug = filename === 'doc.md' ? folder : filename?.replace('.md', '');
 
   return { slug };

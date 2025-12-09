@@ -3,7 +3,6 @@
  import { fade, fly } from 'svelte/transition';
 
  let { data }: { data: PageData } = $props();
- const groups = data.docsTree?.filter((g) => g.groupName !== 'Outros') || [];
 </script>
 
 {#snippet githubIcon()}
@@ -25,11 +24,9 @@
  in:fade={{ duration: 200 }}
 >
  <div class="w-full max-w-3xl px-6">
-  <!-- HEADER SECTION -->
   <div class="flex flex-col items-start gap-5">
    <div in:fly={{ y: 10, duration: 300 }} class="space-y-3">
     <div class="flex items-center gap-3">
-     <!-- Logo Yin Yang -->
      <img
       src="/yy.svg"
       alt="RAWUI Logo"
@@ -74,13 +71,11 @@
    </div>
   </div>
 
-  <!-- DIVIDER -->
   <div
    class="my-8 w-full border-t border-border/40"
    in:fade={{ duration: 300, delay: 300 }}
   ></div>
 
-  <!-- COMPACT FOOTER / CONTRIBUTE -->
   <div
    class="flex flex-col justify-between gap-4 text-sm sm:flex-row sm:items-center"
    in:fly={{ y: 10, duration: 300, delay: 400 }}

@@ -2,8 +2,6 @@
  import Button from '$lib/components/button/Button.svelte';
  import ModeToggle from '$lib/components/theme-toggle/ModeToggle.svelte';
  import { fly } from 'svelte/transition';
-
- // Snippet do ícone (Substituindo a string @html)
 </script>
 
 {#snippet terminalIcon()}
@@ -23,7 +21,6 @@
  </svg>
 {/snippet}
 
-<!-- BACKGROUND STATIC NOISE (RAW FEEL) -->
 <div class="fixed inset-0 z-[-1] bg-background">
  <div
   class="absolute inset-0 opacity-[0.04]"
@@ -34,11 +31,9 @@
 <div
  class="relative flex min-h-screen w-full flex-col font-sans selection:bg-foreground selection:text-background"
 >
- <!-- COMPACT HEADER -->
  <header
   class="fixed top-4 left-1/2 z-50 flex h-9 w-auto -translate-x-1/2 items-center gap-3 rounded-full border border-border/40 bg-background/50 pr-2 pl-4 backdrop-blur-md"
  >
-  <!-- LOGO -->
   <a
    href="/"
    class="flex items-center gap-2 text-[11px] font-bold tracking-widest text-foreground uppercase transition-opacity hover:opacity-70"
@@ -47,7 +42,6 @@
    RAWUI
   </a>
 
-  <!-- DIVIDER -->
   <div class="mx-1 h-2.5 w-px bg-border/60"></div>
 
   <!-- NAV -->
@@ -60,22 +54,17 @@
    >
   </nav>
 
-  <!-- DIVIDER -->
   <div class="mx-1 h-2.5 w-px bg-border/60"></div>
 
-  <!-- THEME TOGGLE (Ajustado para caber no header compacto) -->
   <div class="flex items-center">
-   <!-- Usando uma escala para ajustar o botão padrão ao header slim -->
    <div class="scale-75">
     <ModeToggle />
    </div>
   </div>
  </header>
 
- <!-- MAIN CONTENT -->
  <main class="flex w-full flex-1 flex-col items-center justify-center px-4">
   <div class="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
-   <!-- Typography Hero Compacto -->
    <h1
     class="mb-4 text-7xl font-bold tracking-tighter text-foreground sm:text-8xl md:text-9xl"
     style="letter-spacing: -0.06em;"
@@ -92,10 +81,8 @@
     <span class="text-foreground/80">The code is yours, the rule is yours.</span>
    </p>
 
-   <!-- Actions Compactas -->
    <div class="flex items-center gap-3" in:fly={{ y: 10, duration: 400, delay: 150 }}>
     <Button href="/docs" size="sm" class="h-8 rounded-md px-5 text-xs font-semibold">
-     <!-- Uso do snippet render -->
      {@render terminalIcon()}
      Docs
     </Button>
@@ -110,7 +97,6 @@
   </div>
  </main>
 
- <!-- STATIC FOOTER -->
  <footer class="pointer-events-none fixed bottom-4 left-0 w-full text-center">
   <p class="font-mono text-[9px] tracking-widest text-muted-foreground/50 uppercase">
    Svelte 5 &bull; Tailwind &bull; No Runtime
