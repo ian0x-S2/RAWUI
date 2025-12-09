@@ -1,4 +1,3 @@
-<!-- src/lib/components/portal/Portal.svelte -->
 <script lang="ts">
  import { mount, unmount, getAllContexts, type Snippet } from 'svelte';
  import PortalConsumer from './PortalConsumer.svelte';

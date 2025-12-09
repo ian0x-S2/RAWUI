@@ -43,11 +43,11 @@ export function cn(...inputs: ClassValue[]) {
   const floatingUiCode = `npm install @floating-ui/dom`;
 </script>
 
-   # Components on demand 
-  
+# Components on demand
+
     Isso ***não***  é uma biblioteca tradicional. É uma coleção de componentes que você copia e cola.
 
-    Pacotes npm trazem abstrações excessivas e "caixas pretas" que  obscurecem a implementação, tornando o debugging um labirinto e o entendimento do código uma tarefa exaustiva. 
+    Pacotes npm trazem abstrações excessivas e "caixas pretas" que  obscurecem a implementação, tornando o debugging um labirinto e o entendimento do código uma tarefa exaustiva.
 
 ## Características
 
