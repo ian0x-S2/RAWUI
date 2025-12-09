@@ -74,7 +74,7 @@
 
 <div class="min-h-screen w-full bg-background text-foreground">
  <header
-  class="sticky top-0 z-40 mx-auto flex h-12 w-full shrink-0 items-center gap-2 border border-border bg-background/80 px-4 shadow-xs backdrop-blur-md transition-all supports-[backdrop-filter]:bg-background/60"
+  class="sticky top-0 z-40 mx-auto flex h-12 w-full shrink-0 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-md transition-all supports-backdrop-filter:bg-background/60"
  >
   <div class="flex items-center gap-2">
    <SidebarTrigger class="h-8   w-8 border-none shadow-none hover:bg-background" />
