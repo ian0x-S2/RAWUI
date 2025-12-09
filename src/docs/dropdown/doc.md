@@ -226,10 +226,10 @@ Use `closeOnSelect={false}` to keep the menu open after selecting an item. This 
       <DropdownItem 
         closeOnSelect={false} 
         onclick={() => notifications = !notifications}
-        class="justify-between"
+        class="justify-between "
       >
-        <span>Push Notifications</span>
-        <span class={notifications ? "text-primary font-bold" : "text-muted-foreground"}>
+        <span class="pr-1">Push Notifications</span>
+        <span class={notifications ? "text-primary font-bold text-xs" : "text-muted-foreground text-xs"}>
           {notifications ? 'On' : 'Off'}
         </span>
       </DropdownItem>
