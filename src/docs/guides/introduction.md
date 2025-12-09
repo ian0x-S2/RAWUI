@@ -43,36 +43,36 @@ I built this collection to have a solid, modern foundation for my own Svelte 5 a
 
 Why did I build this instead of using an existing library?
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
   <!-- Feature 1 -->
-  <div class="flex flex-col gap-2">
-    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+  <div class="flex flex-col items-start gap-1 rounded-lg border   p-4 text-card-foreground shadow-sm transition-colors hover:bg-muted/40">
+    <div class="flex h-9 w-9 items-center justify-center rounded-md border bg-background">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     </div>
-    <h3 class="font-semibold">Native Svelte 5</h3>
-    <p class="text-sm text-muted-foreground leading-relaxed">
+    <h3 class="font-semibold leading-none tracking-tight mt-2">Native Svelte 5</h3>
+    <p class="mt-1 text-sm text-muted-foreground leading-snug">
       I wanted components written from scratch using <strong>Runes</strong>, without legacy stores or adapters found in older libraries.
     </p>
   </div>
 
   <!-- Feature 2 -->
-  <div class="flex flex-col gap-2">
-    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14"/></svg>
+  <div class="flex flex-col items-start gap-1 rounded-lg border  p-4 text-card-foreground shadow-sm transition-colors hover:bg-muted/40">
+    <div class="flex h-9 w-9 items-center justify-center rounded-md border bg-background">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-open-icon lucide-lock-keyhole-open"><circle cx="12" cy="16" r="1"/><rect width="18" height="12" x="3" y="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 9.33-2.5"/></svg>
     </div>
-    <h3 class="font-semibold">Control & Ownership</h3>
-    <p class="text-sm text-muted-foreground leading-relaxed">
+    <h3 class="font-semibold leading-none tracking-tight mt-2">Control & Ownership</h3>
+    <p class="mt-1 text-sm text-muted-foreground leading-snug">
       NPM packages act as "black boxes". By copying the code, I have full control over the logic and styles, making debugging and customization instant.
     </p>
   </div>
 
   <!-- Feature 3 -->
-  <div class="flex flex-col gap-2">
-    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+  <div class="flex flex-col items-start gap-1 rounded-lg border  p-4 text-card-foreground shadow-sm transition-colors hover:bg-muted/40">
+    <div class="flex h-9 w-9 items-center justify-center rounded-md border bg-background">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
     </div>
-    <h3 class="font-semibold">Headless Core</h3>
-    <p class="text-sm text-muted-foreground leading-relaxed">
+    <h3 class="font-semibold leading-none tracking-tight mt-2">Headless Core</h3>
+    <p class="mt-1 text-sm text-muted-foreground leading-snug">
       I focus on solid HTML structure, focus management, and ARIA attributes. Styling is applied via Tailwind classes that I (and you) can easily change.
     </p>
   </div>
