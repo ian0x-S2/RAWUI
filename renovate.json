@@ -1,0 +1,34 @@
+{
+ "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+ "extends": ["config:base", ":disableDependencyDashboard", ":semanticCommits"],
+ "schedule": ["before 8am on Monday"],
+ "timezone": "America/Sao_Paulo",
+ "minimumReleaseAge": "3 days",
+ "packageRules": [
+  {
+   "description": "Group all minor and patch updates",
+   "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+   "groupName": "all non-major dependencies",
+   "groupSlug": "all-minor-patch",
+   "automerge": true
+  },
+  {
+   "description": "Group Frontend Core (Framework, Styling, Build)",
+   "matchPackagePatterns": [
+    "^svelte",
+    "^@sveltejs",
+    "^tailwindcss",
+    "^autoprefixer",
+    "^postcss",
+    "^vite"
+   ],
+   "groupName": "Core Stack (Svelte & Tailwind)",
+   "automerge": false
+  },
+  {
+   "description": "Group Linting and Formatting tools",
+   "matchPackagePatterns": ["^eslint", "^prettier", "^plugin-", "^@typescript-eslint"],
+   "groupName": "Linting & Formatting"
+  }
+ ]
+}
