@@ -1,7 +1,7 @@
 ---
-title: Introdução
-description: Componentes reutilizáveis construídos com Svelte 5 e Tailwind CSS.
-group: Começando
+title: Introduction
+description: A personal collection of accessible components built with Svelte 5 and Tailwind CSS.
+group: Getting Started
 order: 1
 published: true
 ---
@@ -14,94 +14,89 @@ published: true
     AccordionTrigger, 
     AccordionContent 
   } from '$lib/components/accordion';
-  
-  // Ícones
-  const icons = {
-    copy: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
-    custom: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>`,
-    light: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
-    a11y: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14"/></svg>`
-  };
 
   const installDepsCode = `npm install clsx tailwind-merge class-variance-authority`;
-
+  const floatingUiCode = `npm install @floating-ui/dom`;
+  
   const utilsCode = `import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }`;
-
-  const buttonUsageCode = `<script>
-  import Button from '$lib/components/ui/button/Button.svelte';
-<\/script>
-
-<Button variant="default" onclick={() => console.log('Click')}>
-  Clique aqui
-</Button>`;
-
-  const floatingUiCode = `npm install @floating-ui/dom`;
 </script>
 
-# Components on demand
+# Introduction
 
-    Isso ***não***  é uma biblioteca tradicional. É uma coleção de componentes que você copia e cola.
+I built this collection to have a solid, modern foundation for my own Svelte 5 applications. I am sharing it because I believe in the "copy and paste" philosophy, and it might be useful for your projects too.
 
-    Pacotes npm trazem abstrações excessivas e "caixas pretas" que  obscurecem a implementação, tornando o debugging um labirinto e o entendimento do código uma tarefa exaustiva.
+<div class="my-8 rounded-lg border bg-muted/50 p-6">
+  <p class="text-lg font-medium leading-relaxed">
+    This is a <strong>personal toolkit</strong>, not a strictly versioned library.
+  </p>
+  <p class="mt-2 text-muted-foreground">
+    I use these components in my own apps, so they are battle-tested for my needs. Feel free to copy, adapt, and make them your own.
+  </p>
+</div>
 
-## Características
+## Motivation
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-  <div class="flex flex-col gap-2 rounded-lg border p-4 bg-card text-card-foreground hover:bg-muted/40 transition-colors">
-    <div class="flex items-center gap-2 font-semibold">
-      {@html icons.copy}
-      <span>Copie e Cole</span>
+Why did I build this instead of using an existing library?
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+  <!-- Feature 1 -->
+  <div class="flex flex-col gap-2">
+    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     </div>
-    <span class="text-sm text-muted-foreground">Sem instalações npm complexas. Pegue apenas o que precisa.</span>
+    <h3 class="font-semibold">Native Svelte 5</h3>
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      I wanted components written from scratch using <strong>Runes</strong>, without legacy stores or adapters found in older libraries.
+    </p>
   </div>
-  <div class="flex flex-col gap-2 rounded-lg border p-4 bg-card text-card-foreground hover:bg-muted/40 transition-colors">
-    <div class="flex items-center gap-2 font-semibold">
-      {@html icons.custom}
-      <span>Totalmente Customizável</span>
+
+  <!-- Feature 2 -->
+  <div class="flex flex-col gap-2">
+    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14"/></svg>
     </div>
-    <span class="text-sm text-muted-foreground">O código vive no seu projeto. Altere estilos, lógica e comportamento livremente.</span>
+    <h3 class="font-semibold">Control & Ownership</h3>
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      NPM packages act as "black boxes". By copying the code, I have full control over the logic and styles, making debugging and customization instant.
+    </p>
   </div>
-   <div class="flex flex-col gap-2 rounded-lg border p-4 bg-card text-card-foreground hover:bg-muted/40 transition-colors">
-    <div class="flex items-center gap-2 font-semibold">
-      {@html icons.light}
-      <span>Svelte 5 & Runes</span>
+
+  <!-- Feature 3 -->
+  <div class="flex flex-col gap-2">
+    <div class="flex h-10 w-10 items-center justify-center rounded-md border bg-background shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
     </div>
-    <span class="text-sm text-muted-foreground">Escrito nativamente com a nova sintaxe de reatividade do Svelte 5.</span>
-  </div>
-  <div class="flex flex-col gap-2 rounded-lg border p-4 bg-card text-card-foreground hover:bg-muted/40 transition-colors">
-    <div class="flex items-center gap-2 font-semibold">
-      {@html icons.a11y}
-      <span>Acessível</span>
-    </div>
-    <span class="text-sm text-muted-foreground">Foco em padrões WAI-ARIA, gerenciamento de foco e navegação por teclado.</span>
+    <h3 class="font-semibold">Headless Core</h3>
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      I focus on solid HTML structure, focus management, and ARIA attributes. Styling is applied via Tailwind classes that I (and you) can easily change.
+    </p>
   </div>
 </div>
 
-## Pré-requisitos
+## Installation
 
-Antes de começar, certifique-se de ter um projeto SvelteKit configurado com Tailwind CSS.
+Since this is not an npm package, "installation" consists of preparing your environment.
 
-### 1. Utilitários e Variantes
+### 1. The `cn` Utility
 
-Instale os pacotes necessários para gerenciamento de classes condicionais e variantes de componentes:
+This helper is essential. It allows conditionally combining Tailwind classes (like `clsx`) and resolves style conflicts (like `tailwind-merge`).
+
+Install dependencies:
 
 <CodeBlock language="bash" code={installDepsCode} />
 
-- `clsx` e `tailwind-merge`: Utilizados para mesclar classes CSS de forma inteligente.
-- `class-variance-authority`: Utilizado para criar variantes de estilo (ex: botões `primary`, `outline`, `ghost`).
-
-Em seguida, crie o helper `cn` em `src/lib/utils/index.ts`:
+Create the file at `src/lib/utils/index.ts` (or wherever you prefer):
 
 <CodeBlock language="typescript" code={utilsCode} />
 
-### 2. Configure os caminhos (Aliases)
+### 2. Path Configuration
 
-Para facilitar as importações, recomendamos configurar o alias `$lib` no seu `tsconfig.json` ou `svelte.config.js`, o que é padrão no SvelteKit.
+To make imports easier (e.g., `$lib/components/...`), ensure your `tsconfig.json` or `svelte.config.js` has aliases configured. This is standard in SvelteKit.
 
 ```json
 "paths": {
@@ -110,33 +105,39 @@ Para facilitar as importações, recomendamos configurar o alias `$lib` no seu `
 }
 ```
 
-### 3. Dependências para Flutuantes
+### 3. Floating UI (Optional)
 
-Componentes que precisam de posicionamento dinâmico (como **Dropdowns**, **Popovers** e **Tooltips**) utilizam a biblioteca `@floating-ui/dom`.
+For components that "float" (Dropdown, Tooltip, Popover), I use `floating-ui` for positioning.
 
 <CodeBlock language="bash" code={floatingUiCode} />
 
 ## FAQ
 
-<Accordion type="single" class="w-full">
+<Accordion type="single" class="w-full mt-6">
   <AccordionItem value="item-1">
-    <AccordionTrigger>Posso usar isso em produção?</AccordionTrigger>
+    <AccordionTrigger>
+      Is this actively maintained?
+    </AccordionTrigger>
     <AccordionContent>
-      Sim. O código é seu para auditar e manter. Como não há dependências ocultas de terceiros para a lógica, você tem controle total sobre a estabilidade.
+      I maintain it as long as I use it in my personal projects. Don't expect a strict release schedule or 24/7 support, but do expect code that works in real-world scenarios.
     </AccordionContent>
   </AccordionItem>
 
   <AccordionItem value="item-2">
-    <AccordionTrigger>Vocês usam alguma lib de headless UI?</AccordionTrigger>
+    <AccordionTrigger>
+      Can I use this in my projects?
+    </AccordionTrigger>
     <AccordionContent>
-      Apenas para posicionamento (<code>@floating-ui</code>). A lógica de estado, acessibilidade e interatividade é 100% nativa do Svelte 5 usando Runes, evitando o peso e a complexidade de adaptadores para outras bibliotecas.
+      Absolutely. The code is MIT licensed. You are free to use it for personal or commercial work. Just remember that once you copy it, it's yours to maintain.
     </AccordionContent>
   </AccordionItem>
 
   <AccordionItem value="item-3">
-    <AccordionTrigger>Como atualizo os componentes?</AccordionTrigger>
+    <AccordionTrigger>
+      How do I handle updates?
+    </AccordionTrigger>
     <AccordionContent>
-      Como você copia o código, não há "atualização automática". Você pode voltar aqui para ver se houve melhorias e aplicá-las manualmente se desejar. Isso evita que atualizações automáticas quebrem seu layout silenciosamente.
+      There is no "npm update". If I add a cool feature or fix a bug here, you'll need to manually update your file. This is a feature, not a bug—it ensures an update never breaks your app unexpectedly.
     </AccordionContent>
   </AccordionItem>
 </Accordion>

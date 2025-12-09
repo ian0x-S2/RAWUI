@@ -58,7 +58,7 @@ export async function GET() {
  });
 
  // Define a ordem dos Grupos na Sidebar
- const groupOrder = ['Começando', 'Componentes', 'Utilitários'];
+ const groupOrder = ['Getting Started', 'Components', 'Utilitários'];
 
  const result: DocGroup[] = Object.entries(grouped)
   .map(([groupName, items]) => ({ groupName, items }))

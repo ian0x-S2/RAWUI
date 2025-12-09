@@ -1,6 +1,7 @@
 ---
 title: Dropdown Menu
 description: Accessible dropdown menu for displaying contextual actions. Includes automatic positioning, keyboard navigation, and submenu support.
+group: Components
 componentId: dropdown
 ---
 

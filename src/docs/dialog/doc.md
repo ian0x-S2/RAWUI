@@ -1,6 +1,7 @@
 ---
 title: Dialog
 description: Accessible modal overlay for displaying important content. Includes automatic focus, keyboard navigation, backdrop, and scroll management.
+group: Components
 componentId: dialog
 ---
 
