@@ -16,9 +16,10 @@ type Options = {
 
 export class DropdownState {
  isOpen = $state(false);
+ isClosing = $state(false);
  triggerEl: HTMLElement | undefined = $state();
  contentEl: HTMLElement | undefined = $state();
- isKeyboardNav = $state(false); // ADICIONAR ESTA LINHA
+ isKeyboardNav = $state(false);
 
  items: HTMLElement[] = [];
  submenus: DropdownSubState[] = [];
@@ -64,10 +65,24 @@ export class DropdownState {
   }
  };
 
- open = () => (this.isOpen = true);
+ open = () => {
+  this.isClosing = false;
+  this.isOpen = true;
+ };
 
  close = () => {
-  this.isOpen = false;
+  this.isClosing = true;
+
+  this.submenus.forEach((sub) => sub.freezePosition());
+
+  requestAnimationFrame(() => {
+   this.isOpen = false;
+  });
+
+  setTimeout(() => {
+   this.isClosing = false;
+  }, 150);
+
   this.triggerEl?.focus();
  };
 
@@ -92,6 +107,7 @@ export class DropdownState {
  }
 
  async openAndFocus(target: 'first' | 'last') {
+  this.isClosing = false;
   this.isOpen = true;
   await tick();
 
@@ -135,7 +151,7 @@ export class DropdownState {
    case 'ArrowDown':
     e.preventDefault();
     this.isKeyboardNav = true;
-    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
+    this.closeAllSubmenus();
     if (!isFocusingItem) {
      this.items[0]?.focus();
     } else {
@@ -146,7 +162,7 @@ export class DropdownState {
    case 'ArrowUp':
     e.preventDefault();
     this.isKeyboardNav = true;
-    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
+    this.closeAllSubmenus();
     if (!isFocusingItem) {
      this.items[this.items.length - 1]?.focus();
     } else {
@@ -157,13 +173,13 @@ export class DropdownState {
    case 'Home':
     e.preventDefault();
     this.isKeyboardNav = true;
-    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
+    this.closeAllSubmenus();
     this.items[0]?.focus();
     break;
    case 'End':
     e.preventDefault();
     this.isKeyboardNav = true;
-    this.closeAllSubmenus(); // ADICIONAR: Fecha todos os submenus
+    this.closeAllSubmenus();
     this.items[this.items.length - 1]?.focus();
     break;
 
@@ -204,12 +220,18 @@ export class DropdownState {
  #setupGlobalEvents() {
   const handleClick = (e: MouseEvent) => {
    const target = e.target as Node;
-   if (
+
+   const clickedOutside =
     this.triggerEl &&
     this.contentEl &&
     !this.triggerEl.contains(target) &&
-    !this.contentEl.contains(target)
-   ) {
+    !this.contentEl.contains(target);
+
+   const clickedOutsideSubmenus = this.submenus.every((sub) => {
+    return !sub.contentEl?.contains(target);
+   });
+
+   if (clickedOutside && clickedOutsideSubmenus) {
     this.close();
    }
   };
@@ -230,12 +252,15 @@ export class DropdownSubState {
  isOpen = $state(false);
  triggerEl: HTMLElement | undefined = $state();
  contentEl: HTMLElement | undefined = $state();
+ isFrozen = $state(false);
+ frozenPosition: { x: number; y: number } | null = null;
 
  items: HTMLElement[] = [];
 
  options: SubOptions;
 
  #closeTimeout: ReturnType<typeof setTimeout> | undefined;
+ #cleanupAutoUpdate: (() => void) | undefined;
 
  constructor(options: SubOptions) {
   this.options = options;
@@ -243,8 +268,14 @@ export class DropdownSubState {
   $effect(() => {
    if (!this.isOpen || !this.triggerEl || !this.contentEl) return;
 
-   const cleanupPos = autoUpdate(this.triggerEl, this.contentEl, async () => {
-    if (!this.triggerEl || !this.contentEl) return;
+   const updatePosition = async () => {
+    if (
+     !this.triggerEl ||
+     !this.contentEl ||
+     this.isFrozen ||
+     this.options.rootState.isClosing
+    )
+     return;
 
     const { x, y } = await computePosition(this.triggerEl, this.contentEl, {
      placement: 'right-start',
@@ -252,30 +283,59 @@ export class DropdownSubState {
      middleware: [offset({ mainAxis: 0, crossAxis: -4 }), flip(), shift({ padding: 2 })]
     });
 
+    this.frozenPosition = { x, y };
+
     Object.assign(this.contentEl.style, {
      left: `${x}px`,
      top: `${y}px`,
      position: 'fixed'
     });
-   });
+   };
+
+   this.#cleanupAutoUpdate = autoUpdate(this.triggerEl, this.contentEl, updatePosition);
 
    return () => {
-    cleanupPos();
+    if (this.#cleanupAutoUpdate) {
+     this.#cleanupAutoUpdate();
+     this.#cleanupAutoUpdate = undefined;
+    }
    };
   });
+
+  $effect(() => {
+   if (this.isFrozen && this.contentEl && this.frozenPosition) {
+    Object.assign(this.contentEl.style, {
+     left: `${this.frozenPosition.x}px`,
+     top: `${this.frozenPosition.y}px`,
+     position: 'fixed'
+    });
+   }
+  });
  }
+
+ freezePosition = () => {
+  if (this.isOpen && this.frozenPosition) {
+   this.isFrozen = true;
+   this.#clearCloseTimeout();
+  }
+ };
 
  open = () => {
   this.#clearCloseTimeout();
   this.options.rootState.closeAllSubmenus(this);
+  this.isFrozen = false;
   this.isOpen = true;
  };
 
  close = () => {
   this.isOpen = false;
+  this.isFrozen = false;
+  this.frozenPosition = null;
  };
 
  scheduleClose = () => {
+  if (this.options.rootState.isClosing) return;
+
   this.#closeTimeout = setTimeout(() => {
    this.close();
   }, 100);
