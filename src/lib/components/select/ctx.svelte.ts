@@ -18,11 +18,9 @@ type SelectOptions<Multiple extends boolean> = {
 };
 
 class SelectState<Multiple extends boolean = false> {
- // Estado Visual
  open = $state(false);
  isKeyboardNav = $state(false);
 
- // Estado de Dados
  _value = $state<Multiple extends true ? string[] : string>([] as any);
 
  highlightedValue = $state<string | null>(null);
@@ -30,7 +28,6 @@ class SelectState<Multiple extends boolean = false> {
  triggerEl = $state<HTMLElement>();
  contentEl = $state<HTMLElement>();
 
- // Lista de itens
  items = $state<Item[]>([]);
 
  baseId: string;
@@ -45,7 +42,6 @@ class SelectState<Multiple extends boolean = false> {
   this.loopFocus = options.loopFocus ?? false;
   this.onValueChange = options.onValueChange;
 
-  // 1. Gerenciamento do Floating UI (Posicionamento)
   $effect(() => {
    if (!this.open || !this.triggerEl || !this.contentEl) return;
 
@@ -75,7 +71,6 @@ class SelectState<Multiple extends boolean = false> {
    return () => cleanup();
   });
 
-  // 2. Efeito para sincronizar Highlight quando abre
   $effect(() => {
    if (this.open) {
     tick().then(() => {
@@ -116,8 +111,6 @@ class SelectState<Multiple extends boolean = false> {
   if (this.onValueChange) this.onValueChange(val);
  }
 
- // --- Actions ---
-
  toggle = (e?: Event) => {
   e?.preventDefault();
   if (this.open) this.close();
@@ -149,8 +142,6 @@ class SelectState<Multiple extends boolean = false> {
   }
  };
 
- // --- Item Registration ---
-
  registerItem = (item: Item) => {
   this.items.push(item);
   return () => {
@@ -160,8 +151,6 @@ class SelectState<Multiple extends boolean = false> {
    }
   };
  };
-
- // --- Helpers ---
 
  isSelected = (value: string): boolean => {
   if (this.multiple) {
@@ -184,8 +173,6 @@ class SelectState<Multiple extends boolean = false> {
   if (this.multiple) return this.value as string[];
   return this.value ? [this.value as string] : [];
  }
-
- // --- Keydown Logic (Sem Typeahead) ---
 
  handleContentKeydown = (e: KeyboardEvent) => {
   if (!this.open) return;
@@ -256,7 +243,7 @@ class SelectState<Multiple extends boolean = false> {
    id: `${this.baseId}-trigger`,
    role: 'combobox',
    type: 'button' as const,
-   'aria-haspopup': 'listbox',
+   'aria-haspopup': 'listbox' as const,
    'aria-expanded': this.open,
    'aria-controls': `${this.baseId}-content`,
    'data-state': this.open ? 'open' : 'closed',

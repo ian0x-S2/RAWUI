@@ -12,7 +12,6 @@
  let { children, class: className, ...restProps }: Props = $props();
  const ctx = getSelectContext();
 
- // Apenas para fechar ao clicar fora
  function clickOutside(node: HTMLElement) {
   const handleClick = (e: Event) => {
    const target = e.target as Node;

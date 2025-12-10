@@ -23,7 +23,6 @@
 
  const ctx = getSelectContext();
 
- // Action: Maneira segura de registrar o item sem causar loops infinitos de reatividade
  function register(node: HTMLElement) {
   const textLabel = label || node.textContent || value;
 
@@ -41,7 +40,7 @@
 
  function handleClick(e: MouseEvent) {
   e.preventDefault();
-  e.stopPropagation(); // Importante para evitar fechar ao clicar
+  e.stopPropagation();
   if (disabled) return;
   ctx.select(value);
  }
@@ -68,7 +67,7 @@
  onpointermove={handlePointerMove}
  class={cn(
   'relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none',
-  'data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground',
+  'data-highlighted:bg-accent data-highlighted:text-accent-foreground',
   disabled && 'pointer-events-none opacity-50',
   className
  )}
