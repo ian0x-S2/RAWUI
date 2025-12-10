@@ -12,33 +12,18 @@
  let { children, class: className, ...restProps }: Props = $props();
  const ctx = getSelectContext();
 
+ // Apenas para fechar ao clicar fora
  function clickOutside(node: HTMLElement) {
-  const handleClick = (e: MouseEvent | PointerEvent) => {
+  const handleClick = (e: Event) => {
    const target = e.target as Node;
-   if (
-    ctx.open &&
-    node &&
-    !node.contains(target) &&
-    ctx.contentEl &&
-    !ctx.contentEl.contains(target)
-   ) {
+   if (ctx.open && !node.contains(target) && !ctx.contentEl?.contains(target)) {
     ctx.close();
    }
   };
-
-  const handleEscape = (e: KeyboardEvent) => {
-   if (e.key === 'Escape' && ctx.open) {
-    ctx.close();
-   }
-  };
-
-  document.addEventListener('pointerdown', handleClick, true);
-  document.addEventListener('keydown', handleEscape);
-
+  document.addEventListener('pointerdown', handleClick);
   return {
    destroy() {
-    document.removeEventListener('pointerdown', handleClick, true);
-    document.removeEventListener('keydown', handleEscape);
+    document.removeEventListener('pointerdown', handleClick);
    }
   };
  }
@@ -54,7 +39,6 @@
   {...restProps}
  >
   {@render children?.()}
-
   <svg
    xmlns="http://www.w3.org/2000/svg"
    width="24"

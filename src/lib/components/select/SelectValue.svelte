@@ -10,20 +10,25 @@
  let { placeholder = 'Selecione...', class: className }: Props = $props();
  const ctx = getSelectContext();
 
- const displayValue = $derived(() => {
-  if (ctx.multiple) {
-   const values = ctx.selectedValues;
-   if (values.length === 0) return null;
-   if (values.length === 1) return ctx.labelMap[values[0]];
+ const displayText = $derived.by(() => {
+  const values = ctx.selectedValues;
+  if (values.length === 0) return null;
+
+  if (ctx.multiple && values.length > 1) {
    return `${values.length} selecionados`;
   }
-  return ctx.selectedLabel;
+
+  // Tenta pegar o label do item registrado
+  const label = ctx.selectedLabel;
+
+  // Se achou, retorna. Se não (ainda não montou os SelectItems), retorna o valor bruto como fallback
+  return label || values[0];
  });
 </script>
 
 <span class={cn('pointer-events-none block truncate', className)}>
- {#if displayValue()}
-  {displayValue()}
+ {#if displayText}
+  {displayText}
  {:else}
   <span class="text-muted-foreground">{placeholder}</span>
  {/if}

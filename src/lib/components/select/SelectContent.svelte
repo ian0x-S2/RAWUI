@@ -4,6 +4,7 @@
  import { fly } from 'svelte/transition';
  import type { HTMLAttributes } from 'svelte/elements';
  import type { Snippet } from 'svelte';
+ import Portal from '$lib/components/portal/Portal.svelte'; // Supondo que você tenha um Portal
 
  interface Props extends HTMLAttributes<HTMLDivElement> {
   children: Snippet;
@@ -15,17 +16,19 @@
 </script>
 
 {#if ctx.open}
- <div
-  class={cn(
-   'z-50 max-h-[300px] min-w-[8rem] overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md focus:outline-none',
-   className
-  )}
-  transition:fly={{ y: -5, duration: 150 }}
-  {...ctx.contentProps}
-  {...restProps}
- >
-  <div class="p-1">
-   {@render children()}
+ <Portal>
+  <div
+   class={cn(
+    'z-50 max-h-[300px] overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md focus:outline-none',
+    className
+   )}
+   transition:fly={{ y: -5, duration: 150 }}
+   {...ctx.contentProps}
+   {...restProps}
+  >
+   <div class="p-1">
+    {@render children()}
+   </div>
   </div>
- </div>
+ </Portal>
 {/if}

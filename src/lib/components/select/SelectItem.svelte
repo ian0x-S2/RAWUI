@@ -1,7 +1,6 @@
 <script lang="ts">
  import { getSelectContext } from './ctx.svelte.js';
  import { cn } from '$lib/utils';
- import { onMount, onDestroy } from 'svelte';
  import type { HTMLAttributes } from 'svelte/elements';
  import type { Snippet } from 'svelte';
 
@@ -23,60 +22,53 @@
  }: Props = $props();
 
  const ctx = getSelectContext();
- let ref: HTMLElement | null = $state(null);
 
- onMount(() => {
-  if (ref) {
-   const text = label || ref.textContent || value;
-   ctx.registerItem(value, text.trim(), ref);
-  }
- });
+ // Action: Maneira segura de registrar o item sem causar loops infinitos de reatividade
+ function register(node: HTMLElement) {
+  const textLabel = label || node.textContent || value;
 
- onDestroy(() => {
-  ctx.unregisterItem(value);
- });
+  const cleanup = ctx.registerItem({
+   value,
+   label: textLabel.trim(),
+   element: node,
+   disabled
+  });
+
+  return {
+   destroy: cleanup
+  };
+ }
 
  function handleClick(e: MouseEvent) {
   e.preventDefault();
+  e.stopPropagation(); // Importante para evitar fechar ao clicar
   if (disabled) return;
-  const text = label || ref?.textContent || value;
-  ctx.select(value, text.trim());
+  ctx.select(value);
  }
 
- function handlePointerEnter() {
-  if (disabled) return;
-  if (!ctx.isKeyboardNav) {
-   const index = ctx.items.findIndex((i) => i.value === value);
-   if (index !== -1) {
-    ctx.focusedIndex = index;
-   }
-  }
- }
-
- function handlePointerMove() {
-  if (disabled) return;
-  ctx.isKeyboardNav = false;
+ function handlePointerMove(e: PointerEvent) {
+  if (e.pointerType !== 'mouse' || disabled) return;
+  if (ctx.isKeyboardNav) ctx.isKeyboardNav = false;
+  if (ctx.highlightedValue !== value) ctx.highlightedValue = value;
  }
 
  const isSelected = $derived(ctx.isSelected(value));
- const isFocused = $derived(ctx.focusedValue === value && ctx.open);
+ const isHighlighted = $derived(ctx.highlightedValue === value);
 </script>
 
 <div
- bind:this={ref}
+ use:register
  id="{ctx.baseId}-option-{value}"
  role="option"
  aria-selected={isSelected}
  aria-disabled={disabled}
  data-disabled={disabled || undefined}
- data-highlighted={isFocused || undefined}
+ data-highlighted={isHighlighted || undefined}
  onclick={handleClick}
- onpointerenter={handlePointerEnter}
  onpointermove={handlePointerMove}
  class={cn(
   'relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none',
-  !disabled && 'data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground',
-  !disabled && !ctx.isKeyboardNav && 'hover:bg-accent hover:text-accent-foreground',
+  'data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground',
   disabled && 'pointer-events-none opacity-50',
   className
  )}
