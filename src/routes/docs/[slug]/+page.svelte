@@ -117,7 +117,7 @@
         class="h-7 gap-1.5 px-3 text-xs font-medium text-muted-foreground"
        >
         {@render codeIcon()}
-        Código
+        Code
         <span
          class="ml-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-sm bg-muted px-1 text-[9px] text-foreground tabular-nums"
         >
@@ -135,11 +135,11 @@
        {#if copied}
         <span class="flex items-center gap-1.5 text-emerald-500">
          {@render checkIcon()}
-         Copiado
+         Copied
         </span>
        {:else}
         {@render copyIcon()}
-        Copiar
+        Copy
        {/if}
       </Button>
      </div>
