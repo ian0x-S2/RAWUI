@@ -28,11 +28,18 @@
   AccordionTrigger,
   AccordionContent
  } from '$lib/components/accordion/index';
+ import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem
+ } from '$lib/components/select/index';
 
  let inputRef: HTMLInputElement;
 
  // Estados do Dialog
- let openProfile = $state(false);
+ let framework = $state('');
  let openProfile2 = $state(false);
 
  // Estados para demonstração do Dropdown (closeOnSelect)
@@ -248,6 +255,25 @@
    </div>
   </div>
  </div>
+
+ <div class="h-[600px] w-[280px]">
+  <Select bind:value={framework}>
+   <SelectTrigger>
+    <SelectValue placeholder="Selecione um framework" />
+   </SelectTrigger>
+
+   <SelectContent>
+    <SelectItem value="svelte">SvelteKit</SelectItem>
+    <SelectItem value="react">React / Next.js</SelectItem>
+    <SelectItem value="vue">Vue / Nuxt</SelectItem>
+    <SelectItem value="angular">Angular</SelectItem>
+   </SelectContent>
+  </Select>
+ </div>
+
+ <p class="mt-4 text-sm text-muted-foreground">
+  Selecionado: {framework}
+ </p>
 </div>
 
 <style>
