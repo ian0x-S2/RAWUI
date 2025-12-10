@@ -1,14 +1,6 @@
 # Svelte Component Library Agent Guidelines
 
-## Build & Test Commands
 
-- **Dev server**: `bun run dev`
-- **Build**: `bun run build`
-- **Type check**: `npm run check`
-- **Lint**: `bun run lint`
-- **Format**: `bun run format`
-- **Unit tests**: `bun run test:unit`
-- **Run single test**: `bun run test:unit -- src/routes/page.svelte.spec.ts`
 
 ## Code Style Guidelines
 

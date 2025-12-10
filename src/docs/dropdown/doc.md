@@ -71,10 +71,10 @@ The dropdown consists of a trigger (button) and content that appears when clicke
 <CodeBlock language="svelte" code={
 `<script>
 import {
-  DropdownMenu,
-  DropdownTrigger,
-  DropdownContent,
-  DropdownItem
+DropdownMenu,
+DropdownTrigger,
+DropdownContent,
+DropdownItem
 } from '$lib/components/dropdown';
 </script>
 
@@ -98,6 +98,7 @@ import {
 - **Submenus** — Support for submenus with hover or keyboard opening (Right Arrow / Enter).
 - **Flexible Interactions** — Control whether items close the menu on selection with `closeOnSelect`.
 - **Disabled Items** — Support for non-interactive items that are visually dimmed and **skipped** during keyboard navigation.
+- **Typeahead Navigation** — Type letters to quickly jump to menu items starting with that character.
 
 ## Examples
 
@@ -242,7 +243,7 @@ Use `closeOnSelect={false}` to keep the menu open after selecting an item. This 
 
 <CodeBlock language="svelte" code={
 `<script>
-  let notifications = $state(true);
+let notifications = $state(true);
 </script>
 
 <DropdownMenu>
@@ -290,19 +291,20 @@ Use the `disabled` prop to create non-interactive items. These items are visuall
 
 <CodeBlock language="svelte" code={
 `<DropdownMenu>
-  <DropdownTrigger>Account</DropdownTrigger>
-  <DropdownContent class="w-56">
-    <DropdownItem>Profile</DropdownItem>
-    
+<DropdownTrigger>Account</DropdownTrigger>
+<DropdownContent class="w-56">
+<DropdownItem>Profile</DropdownItem>
+
     <!-- This item cannot be clicked or focused via keyboard -->
     <DropdownItem disabled class="justify-between">
       Billing
       <span class="text-[10px] uppercase font-bold">Soon</span>
     </DropdownItem>
-    
+
     <DropdownItem>Team</DropdownItem>
     <DropdownSeparator />
     <DropdownItem>Log out</DropdownItem>
+
   </DropdownContent>
 </DropdownMenu>
 `}
@@ -320,6 +322,7 @@ Define the preferred menu position through the `placement` prop. The component a
 <DropdownMenu placement="right">...</DropdownMenu>
 
 <!-- With alignment -->
+
 <DropdownMenu placement="bottom-start">...</DropdownMenu>
 <DropdownMenu placement="bottom-end">...</DropdownMenu>
 `} />
@@ -328,17 +331,18 @@ Define the preferred menu position through the `placement` prop. The component a
 
 This component implements a robust keyboard navigation system that respects disabled items.
 
-| Key | Action |
-| :--- | :--- |
-| `Enter` / `Space` | Opens the menu (on trigger) or activates the focused item. |
-| `ArrowDown` | Focuses the next valid item. Skips disabled items. |
-| `ArrowUp` | Focuses the previous valid item. Skips disabled items. |
-| `Home` | Focuses the first valid item. |
-| `End` | Focuses the last valid item. |
-| `Escape` | Closes the menu and returns focus to the trigger. |
-| `ArrowRight` | Opens a submenu if the focused item is a `DropdownSubTrigger`. |
-| `ArrowLeft` | Closes the current submenu and returns focus to the parent menu. |
-| `Tab` | Closes the menu and moves focus to the next focusable element on page. |
+| Key               | Action                                                                 |
+| :---------------- | :--------------------------------------------------------------------- |
+| `Enter` / `Space` | Opens the menu (on trigger) or activates the focused item.             |
+| `ArrowDown`       | Focuses the next valid item. Skips disabled items.                     |
+| `ArrowUp`         | Focuses the previous valid item. Skips disabled items.                 |
+| `Home`            | Focuses the first valid item.                                          |
+| `End`             | Focuses the last valid item.                                           |
+| `Escape`          | Closes the menu and returns focus to the trigger.                      |
+| `ArrowRight`      | Opens a submenu if the focused item is a `DropdownSubTrigger`.         |
+| `ArrowLeft`       | Closes the current submenu and returns focus to the parent menu.       |
+| `Tab`             | Closes the menu and moves focus to the next focusable element on page. |
+| `A-Z`             | Typeahead: Jumps to the first item starting with the typed letter.     |
 
 ## API Reference
 
@@ -346,45 +350,93 @@ This component implements a robust keyboard navigation system that respects disa
 
 Root component that manages the dropdown state.
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `placement` | `Placement` | `'bottom'` | Preferred position options from Floating UI. |
-| `children` | `Snippet` | — | Must contain `DropdownTrigger` and `DropdownContent`. |
+| Prop        | Type        | Default    | Description                                           |
+| :---------- | :---------- | :--------- | :---------------------------------------------------- |
+| `placement` | `Placement` | `'bottom'` | Preferred position options from Floating UI.          |
+| `children`  | `Snippet`   | —          | Must contain `DropdownTrigger` and `DropdownContent`. |
+
+### DropdownTrigger
+
+Button that opens the dropdown menu.
+
+| Prop       | Type            | Default     | Description                               |
+| :--------- | :-------------- | :---------- | :---------------------------------------- |
+| `variant`  | `ButtonVariant` | `'outline'` | Button variant from the Button component. |
+| `size`     | `ButtonSize`    | `'default'` | Button size from the Button component.    |
+| `class`    | `string`        | —           | Additional CSS classes.                   |
+| `children` | `Snippet`       | —           | Button content.                           |
 
 ### DropdownItem
 
 Clickable menu item.
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `onclick` | `(e: MouseEvent) => void` | — | Click event handler. |
-| `closeOnSelect` | `boolean` | `true` | If `false`, the menu remains open after clicking. |
-| `disabled` | `boolean` | `false` | If `true`, the item is non-interactive and skipped by keyboard navigation. |
-| `class` | `string` | — | Additional CSS classes. |
-| `children` | `Snippet` | — | Item content. |
+| Prop            | Type                      | Default | Description                                                                |
+| :-------------- | :------------------------ | :------ | :------------------------------------------------------------------------- |
+| `onclick`       | `(e: MouseEvent) => void` | —       | Click event handler.                                                       |
+| `closeOnSelect` | `boolean`                 | `true`  | If `false`, the menu remains open after clicking.                          |
+| `disabled`      | `boolean`                 | `false` | If `true`, the item is non-interactive and skipped by keyboard navigation. |
+| `class`         | `string`                  | —       | Additional CSS classes.                                                    |
+| `children`      | `Snippet`                 | —       | Item content.                                                              |
+
+### DropdownSeparator
+
+Visual separator between menu sections.
+
+| Prop    | Type     | Default | Description             |
+| :------ | :------- | :------ | :---------------------- |
+| `class` | `string` | —       | Additional CSS classes. |
+
+### DropdownLabel
+
+Non-interactive label for grouping menu items.
+
+| Prop       | Type      | Default | Description             |
+| :--------- | :-------- | :------ | :---------------------- |
+| `class`    | `string`  | —       | Additional CSS classes. |
+| `children` | `Snippet` | —       | Label content.          |
 
 ### DropdownSub
 
 Wrapper to create a submenu.
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `children` | `Snippet` | — | Must contain `DropdownSubTrigger` and `DropdownSubContent`. |
+| Prop       | Type      | Default | Description                                                 |
+| :--------- | :-------- | :------ | :---------------------------------------------------------- |
+| `children` | `Snippet` | —       | Must contain `DropdownSubTrigger` and `DropdownSubContent`. |
 
 ### DropdownSubTrigger
 
 Item that opens the submenu on hover or keyboard.
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `class` | `string` | — | Additional CSS classes. |
-| `children` | `Snippet` | — | Content (text and optional icon). |
+| Prop       | Type      | Default | Description                       |
+| :--------- | :-------- | :------ | :-------------------------------- |
+| `class`    | `string`  | —       | Additional CSS classes.           |
+| `children` | `Snippet` | —       | Content (text and optional icon). |
 
-### DropdownContent & SubContent
+### DropdownSubContent
 
-Containers for menu items.
+Container for submenu items.
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `class` | `string` | — | Additional CSS classes. |
-| `children` | `Snippet` | — | Menu items. |
+| Prop       | Type      | Default | Description             |
+| :--------- | :-------- | :------ | :---------------------- |
+| `class`    | `string`  | —       | Additional CSS classes. |
+| `children` | `Snippet` | —       | Submenu items.          |
+
+### DropdownSubItem
+
+Clickable submenu item. Always closes the menu when selected.
+
+| Prop       | Type                      | Default | Description                                                                |
+| :--------- | :------------------------ | :------ | :------------------------------------------------------------------------- |
+| `onclick`  | `(e: MouseEvent) => void` | —       | Click event handler.                                                       |
+| `disabled` | `boolean`                 | `false` | If `true`, the item is non-interactive and skipped by keyboard navigation. |
+| `class`    | `string`                  | —       | Additional CSS classes.                                                    |
+| `children` | `Snippet`                 | —       | Item content.                                                              |
+
+### DropdownContent
+
+Container for menu items.
+
+| Prop       | Type      | Default | Description             |
+| :--------- | :-------- | :------ | :---------------------- |
+| `class`    | `string`  | —       | Additional CSS classes. |
+| `children` | `Snippet` | —       | Menu items.             |
