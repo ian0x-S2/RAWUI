@@ -15,13 +15,7 @@ type Options = {
  loopFocus?: boolean;
 };
 
-function isEditableElement(element: HTMLElement) {
- return (
-  element.matches('input, textarea, [contenteditable]') &&
-  !element.matches('[type="button"], [type="image"], [type="reset"], [type="submit"]')
- );
-}
-
+// Helper simples para navegação cíclica
 function getNextItem(
  items: HTMLElement[],
  activeItem: Element | null,
@@ -59,9 +53,6 @@ export class DropdownState {
 
  items: HTMLElement[] = [];
  submenus: DropdownSubState[] = [];
-
- typeahead = '';
- typeaheadTimer: ReturnType<typeof setTimeout> | undefined;
 
  options: Options;
 
@@ -115,7 +106,6 @@ export class DropdownState {
 
   requestAnimationFrame(() => {
    this.isOpen = false;
-   this.typeahead = '';
   });
 
   setTimeout(() => {
@@ -169,28 +159,6 @@ export class DropdownState {
   }
  }
 
- handleTypeahead(key: string) {
-  const activeItem = document.activeElement as HTMLElement;
-
-  this.typeahead += key.toLowerCase();
-
-  if (this.typeaheadTimer) clearTimeout(this.typeaheadTimer);
-  this.typeaheadTimer = setTimeout(() => {
-   this.typeahead = '';
-  }, 1000);
-
-  const validItems = this.items.filter((item) => !this.isDisabled(item));
-
-  const match = validItems.find((item) => {
-   const text = item.innerText || item.textContent || '';
-   return text.toLowerCase().startsWith(this.typeahead);
-  });
-
-  if (match) {
-   match.focus();
-  }
- }
-
  handleTriggerKeydown = (e: KeyboardEvent) => {
   if (!this.triggerEl) return;
   this.isKeyboardNav = true;
@@ -212,7 +180,8 @@ export class DropdownState {
  handleContentKeydown = (e: KeyboardEvent) => {
   const activeElement = document.activeElement as HTMLElement;
 
-  if (isEditableElement(activeElement)) return;
+  // Se estiver focado num input dentro do menu, não navega (exceto Tab/Esc)
+  if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') return;
 
   switch (e.key) {
    case 'Escape':
@@ -227,14 +196,12 @@ export class DropdownState {
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
-
     getNextItem(this.items, activeElement, 'next', this.options.loopFocus!)?.focus();
     break;
    case 'ArrowUp':
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
-
     getNextItem(this.items, activeElement, 'prev', this.options.loopFocus!)?.focus();
     break;
    case 'Home':
@@ -252,11 +219,6 @@ export class DropdownState {
      activeElement.click();
     }
     break;
-   default:
-    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-     e.preventDefault();
-     this.handleTypeahead(e.key);
-    }
   }
  };
 
@@ -500,18 +462,6 @@ export class DropdownSubState {
      activeElement.click();
     }
     break;
-   default:
-    if (e.key.length === 1) {
-     this.options.rootState.handleTypeahead.call(
-      {
-       typeahead: this.options.rootState.typeahead,
-       typeaheadTimer: this.options.rootState.typeaheadTimer,
-       items: this.items,
-       isDisabled: this.isDisabled
-      } as any,
-      e.key
-     );
-    }
   }
  };
 

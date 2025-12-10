@@ -23,7 +23,6 @@ class SelectState<Multiple extends boolean = false> {
  isKeyboardNav = $state(false);
 
  // Estado de Dados
- // Usamos _value interno para controlar o proxy corretamente
  _value = $state<Multiple extends true ? string[] : string>([] as any);
 
  highlightedValue = $state<string | null>(null);
@@ -38,9 +37,6 @@ class SelectState<Multiple extends boolean = false> {
  multiple: Multiple;
  loopFocus: boolean;
  onValueChange?: (val: Multiple extends true ? string[] : string) => void;
-
- private typeaheadString = '';
- private typeaheadTimer: ReturnType<typeof setTimeout> | null = null;
 
  constructor(options: SelectOptions<Multiple>) {
   this._value = options.value;
@@ -59,7 +55,7 @@ class SelectState<Multiple extends boolean = false> {
     top: '0',
     minWidth: 'max-content',
     zIndex: '50',
-    display: 'block' // Garante que não esteja hidden
+    display: 'block'
    });
 
    const cleanup = autoUpdate(this.triggerEl, this.contentEl, async () => {
@@ -79,25 +75,20 @@ class SelectState<Multiple extends boolean = false> {
    return () => cleanup();
   });
 
-  // 2. Efeito para sincronizar Highlight quando abre (CORRIGIDO)
+  // 2. Efeito para sincronizar Highlight quando abre
   $effect(() => {
    if (this.open) {
-    // Pequeno delay para garantir que os itens foram montados e registrados
     tick().then(() => {
-     // Lógica para encontrar o item a ser destacado
      let valueToHighlight: string | null = null;
 
-     // Se for múltiplo, tenta pegar o primeiro item selecionado
      if (this.multiple) {
       const valArray = this.value as string[];
       if (valArray.length > 0) valueToHighlight = valArray[0];
      } else {
-      // Se for single, pega o valor atual
       const valString = this.value as string;
       if (valString) valueToHighlight = valString;
      }
 
-     // Verifica se o valor selecionado existe na lista atual de itens
      const itemExists = valueToHighlight
       ? this.items.some((i) => i.value === valueToHighlight && !i.disabled)
       : false;
@@ -105,7 +96,6 @@ class SelectState<Multiple extends boolean = false> {
      if (itemExists && valueToHighlight) {
       this.highlightedValue = valueToHighlight;
      } else {
-      // Fallback: destaca o primeiro item não desabilitado
       this.highlightedValue = this.items.find((i) => !i.disabled)?.value ?? null;
      }
 
@@ -113,14 +103,11 @@ class SelectState<Multiple extends boolean = false> {
      this.contentEl?.focus({ preventScroll: true });
     });
    } else {
-    // Ao fechar, limpa o highlight
     this.highlightedValue = null;
-    this.typeaheadString = '';
    }
   });
  }
 
- // Getter/Setter para value para disparar o callback
  get value() {
   return this._value;
  }
@@ -166,7 +153,6 @@ class SelectState<Multiple extends boolean = false> {
 
  registerItem = (item: Item) => {
   this.items.push(item);
-
   return () => {
    const index = this.items.findIndex((i) => i.value === item.value);
    if (index !== -1) {
@@ -199,12 +185,11 @@ class SelectState<Multiple extends boolean = false> {
   return this.value ? [this.value as string] : [];
  }
 
- // --- Keydown & Typeahead Logic ---
+ // --- Keydown Logic (Sem Typeahead) ---
 
  handleContentKeydown = (e: KeyboardEvent) => {
   if (!this.open) return;
 
-  // Previne scroll padrão para teclas de navegação
   if (['ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', ' '].includes(e.key)) {
    e.preventDefault();
   }
@@ -234,10 +219,6 @@ class SelectState<Multiple extends boolean = false> {
    case 'Tab':
     this.close();
     break;
-   default:
-    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-     this.handleTypeahead(e.key);
-    }
   }
  };
 
@@ -248,7 +229,6 @@ class SelectState<Multiple extends boolean = false> {
   const idx = validItems.findIndex((i) => i.value === this.highlightedValue);
   let nextIdx = idx + step;
 
-  // Loop focus logic
   if (nextIdx < 0) nextIdx = this.loopFocus ? validItems.length - 1 : 0;
   if (nextIdx >= validItems.length) nextIdx = this.loopFocus ? 0 : validItems.length - 1;
 
@@ -262,24 +242,6 @@ class SelectState<Multiple extends boolean = false> {
   item?.element?.scrollIntoView({ block: 'nearest' });
  };
 
- handleTypeahead = (key: string) => {
-  if (this.typeaheadTimer) clearTimeout(this.typeaheadTimer);
-  this.typeaheadString += key.toLowerCase();
-
-  const match = this.items.find(
-   (i) => !i.disabled && i.label.toLowerCase().startsWith(this.typeaheadString)
-  );
-
-  if (match) {
-   this.highlightedValue = match.value;
-   this.scrollToHighlighted();
-  }
-
-  this.typeaheadTimer = setTimeout(() => {
-   this.typeaheadString = '';
-  }, 1000);
- };
-
  handleTriggerKeydown = (e: KeyboardEvent) => {
   if (this.open) return;
   if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
@@ -287,8 +249,6 @@ class SelectState<Multiple extends boolean = false> {
    this.openMenu();
   }
  };
-
- // --- Props ---
 
  get triggerProps() {
   return {
