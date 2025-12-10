@@ -98,7 +98,6 @@ DropdownItem
 - **Submenus** — Support for submenus with hover or keyboard opening (Right Arrow / Enter).
 - **Flexible Interactions** — Control whether items close the menu on selection with `closeOnSelect`.
 - **Disabled Items** — Support for non-interactive items that are visually dimmed and **skipped** during keyboard navigation.
-- **Typeahead Navigation** — Type letters to quickly jump to menu items starting with that character.
 
 ## Examples
 
@@ -342,7 +341,6 @@ This component implements a robust keyboard navigation system that respects disa
 | `ArrowRight`      | Opens a submenu if the focused item is a `DropdownSubTrigger`.         |
 | `ArrowLeft`       | Closes the current submenu and returns focus to the parent menu.       |
 | `Tab`             | Closes the menu and moves focus to the next focusable element on page. |
-| `A-Z`             | Typeahead: Jumps to the first item starting with the typed letter.     |
 
 ## API Reference
 
