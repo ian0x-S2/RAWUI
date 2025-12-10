@@ -2,15 +2,13 @@ import { error } from '@sveltejs/kit';
 import { loadComponentFiles } from '$lib/utils/component-loader';
 import type { DocMetadata } from '$lib/types/docs';
 
-export const prerender = true;
+export const prerender = false;
 
-// Glob component sources (mantido igual)
 const componentSources = import.meta.glob('/src/lib/components/**/*.{svelte,ts,js}', {
  query: '?raw',
  import: 'default'
 }) as Record<string, () => Promise<string>>;
 
-// Carrega os módulos do Mdsvex (Componente + Metadata)
 const modules = import.meta.glob('/src/docs/**/*.md');
 
 // Carrega os módulos RAW (Texto puro para copy/paste/AI)
@@ -22,13 +20,9 @@ const rawModules = import.meta.glob('/src/docs/**/*.md', {
 export async function load({ params }) {
  const { slug } = params;
 
- // Lógica de busca flexível:
- // Procura por uma chave no objeto 'modules' que corresponda ao slug
  let matchPath = '';
 
  for (const path in modules) {
-  // Verifica: /src/docs/guides/intro.md (termina em /intro.md)
-  // Verifica: /src/docs/components/button/doc.md (termina em /button/doc.md)
   if (path.endsWith(`/${slug}.md`) || path.endsWith(`/${slug}/doc.md`)) {
    matchPath = path;
    break;
@@ -39,7 +33,6 @@ export async function load({ params }) {
   error(404, `Documentação não encontrada para: ${slug}`);
  }
 
- // Pega os resolvers corretos
  const resolver = modules[matchPath];
  const rawResolver = rawModules[matchPath];
 
