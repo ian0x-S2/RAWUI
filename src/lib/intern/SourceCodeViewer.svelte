@@ -28,10 +28,8 @@
  let sidebarOpen = $state(true);
  let isMobile = $state(false);
 
- // Tema do Highlight.js
  let themeFileName = $derived(themeState.theme === 'dark' ? 'github-dark' : 'github');
 
- // Metadados do arquivo
  let lineCount = $derived(selectedFile ? selectedFile.code.trim().split('\n').length : 0);
  let fileSize = $derived(
   selectedFile
@@ -39,12 +37,11 @@
    : '0 KB'
  );
 
- // Inicialização e detecção de tamanho de tela
  $effect(() => {
   const checkMobile = () => {
    isMobile = window.innerWidth < 768;
-   if (!isMobile) sidebarOpen = true; // Força aberto em desktop
-   if (isMobile && open) sidebarOpen = false; // Começa fechado em mobile ao abrir o modal
+   if (!isMobile) sidebarOpen = true;
+   if (isMobile && open) sidebarOpen = false;
   };
 
   checkMobile();
@@ -53,8 +50,10 @@
  });
 
  $effect(() => {
-  if (files.length > 0 && !selectedFile) {
+  if (files.length > 0) {
    selectedFile = files[0];
+  } else {
+   selectedFile = null;
   }
  });
 
@@ -91,17 +90,14 @@
    class="mx-2 flex h-[85vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border border-border/50 bg-background p-0 shadow-2xl sm:rounded-xl"
   >
    <DialogHeader class="sr-only">
-    <DialogTitle>Código: {componentName}</DialogTitle>
-    <DialogDescription>Visualizador de código fonte.</DialogDescription>
+    <DialogTitle>Code: {componentName}</DialogTitle>
+    <DialogDescription>Source code viewer.</DialogDescription>
    </DialogHeader>
 
-   <!-- Toolbar Superior -->
-   <!-- Adicionado pr-12 para dar espaço ao botão 'X' nativo do Dialog -->
    <div
     class="flex h-12 shrink-0 items-center justify-between border-b border-border/40 bg-muted/20 pr-12 pl-4 select-none"
    >
     <div class="flex items-center gap-3">
-     <!-- Botão Toggle Sidebar -->
      <button
       onclick={() => (sidebarOpen = !sidebarOpen)}
       class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
@@ -124,7 +120,6 @@
       </svg>
      </button>
 
-     <!-- Nome do Arquivo Atual -->
      {#if selectedFile}
       <div class="flex items-center gap-2 text-sm text-foreground/80">
        <span class="nerd-icon">{getFileIcon(selectedFile.name)}</span>
@@ -133,7 +128,6 @@
      {/if}
     </div>
 
-    <!-- Ações -->
     <div class="flex items-center gap-2">
      <button
       onclick={copyCode}
@@ -142,18 +136,16 @@
      >
       {#if copied}
        <span class="nerd-icon text-sm text-emerald-500">{'\uf00c'}</span>
-       <span class="text-emerald-500">Copiado</span>
+       <span class="text-emerald-500">Copied</span>
       {:else}
        <span class="nerd-icon text-sm group-hover:text-foreground">{'\uf0c5'}</span>
-       <span>Copiar</span>
+       <span>Copy</span>
       {/if}
      </button>
     </div>
    </div>
 
    <div class="relative flex min-h-0 flex-1">
-    <!-- Mobile Backdrop (Correção A11y) -->
-    <!-- Botão invisível que cobre o editor quando a sidebar está aberta no mobile -->
     {#if isMobile && sidebarOpen}
      <button
       type="button"
@@ -164,7 +156,6 @@
      ></button>
     {/if}
 
-    <!-- Sidebar -->
     {#if sidebarOpen}
      <div
       transition:fly={{ x: -20, duration: 200 }}
@@ -174,7 +165,7 @@
        <div
         class="flex h-9 shrink-0 items-center px-4 text-[10px] font-bold tracking-widest text-muted-foreground/60 uppercase"
        >
-        Explorador
+        Explorer
        </div>
 
        <div class="custom-scrollbar flex-1 overflow-y-auto px-2 py-1">
@@ -204,14 +195,12 @@
      </div>
     {/if}
 
-    <!-- Main Editor Area -->
     <div class="flex min-w-0 flex-1 flex-col bg-background">
      {#if selectedFile}
       <div class="relative flex-1 overflow-hidden">
        <div class="code-scroll custom-scrollbar h-full w-full overflow-auto">
         {#key selectedFile.name}
          <div class="flex min-w-full" in:fade={{ duration: 150 }}>
-          <!-- Números das Linhas -->
           <div
            class="shrink-0 border-r border-border/20 bg-muted/5 py-4 pr-3 pl-3 text-right font-mono text-xs leading-6 text-muted-foreground/40 select-none"
            aria-hidden="true"
@@ -221,7 +210,6 @@
            {/each}
           </div>
 
-          <!-- Código -->
           <div class="flex-1 py-4 pr-4 pl-4">
            <Highlight
             language={getLanguage(selectedFile.name)}
@@ -233,7 +221,6 @@
        </div>
       </div>
 
-      <!-- Footer / Status Bar -->
       <div
        class="flex h-6 shrink-0 items-center justify-between border-t border-border/40 bg-primary/5 px-3 text-[10px] font-medium text-muted-foreground select-none"
       >
@@ -257,7 +244,7 @@
        class="flex flex-1 flex-col items-center justify-center gap-3 text-muted-foreground/50"
       >
        <span class="nerd-icon text-5xl opacity-20">{'\uf1c9'}</span>
-       <p class="text-sm">Selecione um arquivo para visualizar</p>
+       <p class="text-sm">Select a file to view.</p>
       </div>
      {/if}
     </div>
