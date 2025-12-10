@@ -7,7 +7,7 @@
   class?: string;
  }
 
- let { placeholder = 'Selecione...', class: className }: Props = $props();
+ let { placeholder = 'Select...', class: className }: Props = $props();
  const ctx = getSelectContext();
 
  const displayText = $derived.by(() => {
@@ -18,10 +18,8 @@
    return `${values.length} selecionados`;
   }
 
-  // Tenta pegar o label do item registrado
   const label = ctx.selectedLabel;
 
-  // Se achou, retorna. Se não (ainda não montou os SelectItems), retorna o valor bruto como fallback
   return label || values[0];
  });
 </script>

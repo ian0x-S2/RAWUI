@@ -16,7 +16,7 @@ componentId: select
   import CodeBlock from '$lib/intern/CodeBlock.svelte';
 
   // Example states for documentation
-  let singleValue = $state('apple');
+  let singleValue = $state('');
   let multipleValues = $state(['apple', 'banana']);
 </script>
 
@@ -53,11 +53,10 @@ The select consists of a trigger button and content with selectable items. Use `
       <SelectValue placeholder="Select a fruit..." />
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="apple">Apple</SelectItem>
-      <SelectItem value="banana">Banana</SelectItem>
-      <SelectItem value="orange">Orange</SelectItem>
-      <SelectItem value="grape">Grape</SelectItem>
-      <SelectItem value="abacate">Abacate</SelectItem>
+      <SelectItem value="Apple">Apple</SelectItem>
+      <SelectItem value="Banana">Banana</SelectItem>
+      <SelectItem value="Orange">Orange</SelectItem>
+      <SelectItem value="Grape">Grape</SelectItem>
     </SelectContent>
   </Select>
 </div>
@@ -72,10 +71,10 @@ let selectedFruit = $state('apple');
     <SelectValue placeholder="Select a fruit..." />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="apple">Apple</SelectItem>
-    <SelectItem value="banana">Banana</SelectItem>
-    <SelectItem value="orange">Orange</SelectItem>
-    <SelectItem value="grape">Grape</SelectItem>
+      <SelectItem value="Apple">Apple</SelectItem>
+      <SelectItem value="Banana">Banana</SelectItem>
+      <SelectItem value="Orange">Orange</SelectItem>
+      <SelectItem value="Grape">Grape</SelectItem>
   </SelectContent>
 </Select>
 `} />
@@ -102,10 +101,10 @@ Use the `multiple` prop and bind to an array:
       <SelectValue placeholder="Select fruits..." />
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="apple">🍎 Apple</SelectItem>
-      <SelectItem value="banana">🍌 Banana</SelectItem>
-      <SelectItem value="orange">🍊 Orange</SelectItem>
-      <SelectItem value="grape">🍇 Grape</SelectItem>
+      <SelectItem value="Apple">🍎 Apple</SelectItem>
+      <SelectItem value="Banana">🍌 Banana</SelectItem>
+      <SelectItem value="Orange">🍊 Orange</SelectItem>
+      <SelectItem value="Grape">🍇 Grape</SelectItem>
     </SelectContent>
   </Select>
 </div>
@@ -138,9 +137,9 @@ Use the `disabled` prop to create non-interactive items:
       <SelectValue placeholder="Select an option..." />
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="active">Active Option</SelectItem>
-      <SelectItem value="disabled" disabled>Disabled Option</SelectItem>
-      <SelectItem value="another">Another Option</SelectItem>
+      <SelectItem value="Active Option">Active Option</SelectItem>
+      <SelectItem value="Disabled" disabled>Disabled Option</SelectItem>
+      <SelectItem value="Another Option">Another Option</SelectItem>
     </SelectContent>
   </Select>
 </div>
