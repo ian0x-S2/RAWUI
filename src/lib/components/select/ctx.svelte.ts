@@ -274,7 +274,7 @@ class SelectState<Multiple extends boolean = false> {
    'aria-activedescendant': this.highlightedValue
     ? `${this.baseId}-option-${this.highlightedValue}`
     : undefined,
-   'aria-multiselectable': this.multiple ? 'true' : undefined,
+   'aria-multiselectable': this.multiple ? ('true' as const) : undefined,
    onkeydown: this.handleContentKeydown
   };
  }

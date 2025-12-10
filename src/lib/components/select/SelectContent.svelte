@@ -15,8 +15,8 @@
  const ctx = getSelectContext();
 </script>
 
-{#if ctx.open}
- <Portal>
+<Portal>
+ {#if ctx.open}
   <div
    class={cn(
     'z-50 max-h-[300px] overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md focus:outline-none',
@@ -30,5 +30,5 @@
     {@render children()}
    </div>
   </div>
- </Portal>
-{/if}
+ {/if}
+</Portal>
