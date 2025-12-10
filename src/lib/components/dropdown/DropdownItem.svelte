@@ -8,18 +8,9 @@
   children: Snippet;
   class?: string;
   onclick?: (e: MouseEvent) => void;
-  /**
-   * Determines whether the menu should close after selecting this item.
-   * Useful for keeping it open for actions such as "Copy link" or toggles.
-   * @default true
-   */
   closeOnSelect?: boolean;
-  /**
-   * Disables interaction with the item.
-   * Blocks clicking (mouse and keyboard) and applies visual styles.
-   * @default false
-   */
   disabled?: boolean;
+  href?: string;
  } & HTMLAttributes<HTMLDivElement>;
 
  let {
@@ -28,11 +19,11 @@
   onclick,
   closeOnSelect = true,
   disabled = false,
+  href,
   ...restProps
  }: Props = $props();
 
  const root = getDropdownRoot();
-
  let el: HTMLElement;
 
  $effect(() => {
@@ -45,31 +36,35 @@
    e.stopPropagation();
    return;
   }
-
   if (onclick) onclick(e);
-
-  if (closeOnSelect) {
-   root.close();
-  }
+  if (closeOnSelect) root.close();
  }
 
- function handlePointerEnter() {
+ function syncFocus() {
   if (disabled) return;
 
-  if (!root.isKeyboardNav) {
-   el?.focus();
-  }
- }
-
- function handlePointerMove() {
-  if (disabled) return;
-  root.isKeyboardNav = false;
- }
-
- function handleFocus() {
   if (root.isKeyboardNav) {
-   root.closeAllSubmenus();
+   root.isKeyboardNav = false;
   }
+
+  if (document.activeElement !== el) {
+   el?.focus({ preventScroll: true });
+  }
+ }
+
+ function handlePointerMove(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return;
+
+  root.closeAllSubmenus();
+
+  syncFocus();
+ }
+
+ function handlePointerEnter(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return;
+
+  root.closeAllSubmenus();
+  syncFocus();
  }
 </script>
 
@@ -80,8 +75,6 @@
  onclick={handleClick}
  onpointerenter={handlePointerEnter}
  onpointermove={handlePointerMove}
- onfocus={handleFocus}
- data-orientation="vertical"
  aria-disabled={disabled ? 'true' : undefined}
  data-disabled={disabled ? '' : undefined}
  {...restProps}
@@ -89,7 +82,6 @@
   'relative my-1 flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none',
   'focus:bg-accent focus:text-accent-foreground',
   'data-disabled:pointer-events-none data-disabled:opacity-50',
-  '[div:not([data-keyboard-nav])_&]:hover:bg-accent [div:not([data-keyboard-nav])_&]:hover:text-accent-foreground',
   className
  )}
 >

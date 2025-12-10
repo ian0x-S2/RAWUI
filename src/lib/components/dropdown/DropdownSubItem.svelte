@@ -8,9 +8,16 @@
   children: Snippet;
   class?: string;
   onclick?: (e: MouseEvent) => void;
+  disabled?: boolean;
  } & HTMLAttributes<HTMLDivElement>;
 
- let { children, class: className, onclick, ...restProps }: Props = $props();
+ let {
+  children,
+  class: className,
+  onclick,
+  disabled = false,
+  ...restProps
+ }: Props = $props();
 
  const root = getDropdownRoot();
  const sub = getDropdownSub();
@@ -22,19 +29,33 @@
  });
 
  function handleClick(e: MouseEvent) {
+  if (disabled) {
+   e.preventDefault();
+   e.stopPropagation();
+   return;
+  }
   if (onclick) onclick(e);
   sub.close();
   root.close();
  }
 
- function handlePointerEnter() {
-  if (!root.isKeyboardNav) {
-   el?.focus();
+ function syncFocus() {
+  if (disabled) return;
+  if (root.isKeyboardNav) root.isKeyboardNav = false;
+
+  if (document.activeElement !== el) {
+   el?.focus({ preventScroll: true });
   }
  }
 
- function handlePointerMove() {
-  root.isKeyboardNav = false;
+ function handlePointerMove(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return;
+  syncFocus();
+ }
+
+ function handlePointerEnter(e: PointerEvent) {
+  if (e.pointerType !== 'mouse') return;
+  syncFocus();
  }
 </script>
 
@@ -46,9 +67,13 @@
  onpointerenter={handlePointerEnter}
  onpointermove={handlePointerMove}
  data-orientation="vertical"
+ aria-disabled={disabled ? 'true' : undefined}
+ data-disabled={disabled ? '' : undefined}
  {...restProps}
  class={cn(
-  'relative my-1 flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [div:not([data-keyboard-nav])_&]:hover:bg-accent [div:not([data-keyboard-nav])_&]:hover:text-accent-foreground',
+  'relative my-1 flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm transition-colors outline-none select-none',
+  'focus:bg-accent focus:text-accent-foreground',
+  'data-disabled:pointer-events-none data-disabled:opacity-50',
   className
  )}
 >

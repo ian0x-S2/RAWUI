@@ -12,7 +12,43 @@ import { getContext, setContext, tick } from 'svelte';
 type Options = {
  placement?: Placement;
  baseId: string;
+ loopFocus?: boolean;
 };
+
+function isEditableElement(element: HTMLElement) {
+ return (
+  element.matches('input, textarea, [contenteditable]') &&
+  !element.matches('[type="button"], [type="image"], [type="reset"], [type="submit"]')
+ );
+}
+
+function getNextItem(
+ items: HTMLElement[],
+ activeItem: Element | null,
+ direction: 'next' | 'prev',
+ loop: boolean
+) {
+ const validItems = items.filter(
+  (item) =>
+   !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
+ );
+ if (validItems.length === 0) return null;
+
+ const index = validItems.indexOf(activeItem as HTMLElement);
+ const lastIdx = validItems.length - 1;
+
+ if (index === -1) return direction === 'next' ? validItems[0] : validItems[lastIdx];
+
+ const nextIndex = direction === 'next' ? index + 1 : index - 1;
+
+ if (nextIndex < 0) {
+  return loop ? validItems[lastIdx] : validItems[0];
+ } else if (nextIndex > lastIdx) {
+  return loop ? validItems[0] : validItems[lastIdx];
+ }
+
+ return validItems[nextIndex];
+}
 
 export class DropdownState {
  isOpen = $state(false);
@@ -24,10 +60,13 @@ export class DropdownState {
  items: HTMLElement[] = [];
  submenus: DropdownSubState[] = [];
 
+ typeahead = '';
+ typeaheadTimer: ReturnType<typeof setTimeout> | undefined;
+
  options: Options;
 
  constructor(options: Options) {
-  this.options = { placement: 'bottom', ...options };
+  this.options = { placement: 'bottom', loopFocus: true, ...options };
 
   $effect(() => {
    if (!this.isOpen || !this.triggerEl || !this.contentEl) return;
@@ -72,18 +111,20 @@ export class DropdownState {
 
  close = () => {
   this.isClosing = true;
-
   this.submenus.forEach((sub) => sub.freezePosition());
 
   requestAnimationFrame(() => {
    this.isOpen = false;
+   this.typeahead = '';
   });
 
   setTimeout(() => {
    this.isClosing = false;
   }, 150);
 
-  this.triggerEl?.focus();
+  if (this.isKeyboardNav) {
+   this.triggerEl?.focus();
+  }
  };
 
  registerItem(node: HTMLElement) {
@@ -128,8 +169,31 @@ export class DropdownState {
   }
  }
 
+ handleTypeahead(key: string) {
+  const activeItem = document.activeElement as HTMLElement;
+
+  this.typeahead += key.toLowerCase();
+
+  if (this.typeaheadTimer) clearTimeout(this.typeaheadTimer);
+  this.typeaheadTimer = setTimeout(() => {
+   this.typeahead = '';
+  }, 1000);
+
+  const validItems = this.items.filter((item) => !this.isDisabled(item));
+
+  const match = validItems.find((item) => {
+   const text = item.innerText || item.textContent || '';
+   return text.toLowerCase().startsWith(this.typeahead);
+  });
+
+  if (match) {
+   match.focus();
+  }
+ }
+
  handleTriggerKeydown = (e: KeyboardEvent) => {
   if (!this.triggerEl) return;
+  this.isKeyboardNav = true;
 
   switch (e.key) {
    case 'Enter':
@@ -147,13 +211,14 @@ export class DropdownState {
 
  handleContentKeydown = (e: KeyboardEvent) => {
   const activeElement = document.activeElement as HTMLElement;
-  const currentIndex = this.items.indexOf(activeElement);
-  const isFocusingItem = currentIndex !== -1;
+
+  if (isEditableElement(activeElement)) return;
 
   switch (e.key) {
    case 'Escape':
     e.preventDefault();
     this.close();
+    this.triggerEl?.focus();
     break;
    case 'Tab':
     this.close();
@@ -163,57 +228,35 @@ export class DropdownState {
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
 
-    if (!isFocusingItem) {
-     this.openAndFocus('first');
-    } else {
-     let nextIndex = currentIndex;
-     for (let i = 0; i < this.items.length; i++) {
-      nextIndex = (nextIndex + 1) % this.items.length;
-      if (!this.isDisabled(this.items[nextIndex])) {
-       this.items[nextIndex]?.focus();
-       break;
-      }
-     }
-    }
+    getNextItem(this.items, activeElement, 'next', this.options.loopFocus!)?.focus();
     break;
    case 'ArrowUp':
     e.preventDefault();
     this.isKeyboardNav = true;
     this.closeAllSubmenus();
 
-    if (!isFocusingItem) {
-     this.openAndFocus('last');
-    } else {
-     let prevIndex = currentIndex;
-     for (let i = 0; i < this.items.length; i++) {
-      prevIndex = (prevIndex - 1 + this.items.length) % this.items.length;
-      if (!this.isDisabled(this.items[prevIndex])) {
-       this.items[prevIndex]?.focus();
-       break;
-      }
-     }
-    }
+    getNextItem(this.items, activeElement, 'prev', this.options.loopFocus!)?.focus();
     break;
    case 'Home':
     e.preventDefault();
-    this.isKeyboardNav = true;
-    this.closeAllSubmenus();
     this.openAndFocus('first');
     break;
    case 'End':
     e.preventDefault();
-    this.isKeyboardNav = true;
-    this.closeAllSubmenus();
     this.openAndFocus('last');
     break;
-
    case 'Enter':
    case ' ':
     e.preventDefault();
-    if (isFocusingItem && !this.isDisabled(activeElement)) {
+    if (!this.isDisabled(activeElement)) {
      activeElement.click();
     }
     break;
+   default:
+    if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+     e.preventDefault();
+     this.handleTypeahead(e.key);
+    }
   }
  };
 
@@ -239,12 +282,14 @@ export class DropdownState {
    'aria-labelledby': `${this.options.baseId}-trigger`,
    'data-state': this.isOpen ? 'open' : 'closed',
    onkeydown: this.handleContentKeydown,
-   tabindex: -1
+   tabindex: -1,
+   dir: 'ltr'
   };
  }
 
  #setupGlobalEvents() {
   const handleClick = (e: MouseEvent) => {
+   if (!this.isOpen) return;
    const target = e.target as Node;
 
    const clickedOutside =
@@ -254,7 +299,7 @@ export class DropdownState {
     !this.contentEl.contains(target);
 
    const clickedOutsideSubmenus = this.submenus.every((sub) => {
-    return !sub.contentEl?.contains(target);
+    return !sub.contentEl?.contains(target) && !sub.triggerEl?.contains(target);
    });
 
    if (clickedOutside && clickedOutsideSubmenus) {
@@ -282,7 +327,6 @@ export class DropdownSubState {
  frozenPosition: { x: number; y: number } | null = null;
 
  items: HTMLElement[] = [];
-
  options: SubOptions;
 
  #closeTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -321,10 +365,7 @@ export class DropdownSubState {
    this.#cleanupAutoUpdate = autoUpdate(this.triggerEl, this.contentEl, updatePosition);
 
    return () => {
-    if (this.#cleanupAutoUpdate) {
-     this.#cleanupAutoUpdate();
-     this.#cleanupAutoUpdate = undefined;
-    }
+    this.#cleanupAutoUpdate?.();
    };
   });
 
@@ -361,7 +402,6 @@ export class DropdownSubState {
 
  scheduleClose = () => {
   if (this.options.rootState.isClosing) return;
-
   this.#closeTimeout = setTimeout(() => {
    this.close();
   }, 100);
@@ -392,21 +432,19 @@ export class DropdownSubState {
  async openAndFocus(target: 'first' | 'last') {
   this.open();
   await tick();
-
   if (target === 'first') {
-   const firstValid = this.items.find((item) => !this.isDisabled(item));
-   firstValid?.focus();
+   this.items.find((i) => !this.isDisabled(i))?.focus();
   } else {
-   for (let i = this.items.length - 1; i >= 0; i--) {
-    if (!this.isDisabled(this.items[i])) {
-     this.items[i].focus();
-     break;
-    }
-   }
+   [...this.items]
+    .reverse()
+    .find((i) => !this.isDisabled(i))
+    ?.focus();
   }
  }
 
  handleTriggerKeydown = (e: KeyboardEvent) => {
+  if (this.isDisabled(e.target as HTMLElement)) return;
+
   switch (e.key) {
    case 'ArrowRight':
    case 'Enter':
@@ -420,11 +458,16 @@ export class DropdownSubState {
 
  handleContentKeydown = (e: KeyboardEvent) => {
   const activeElement = document.activeElement as HTMLElement;
-  const currentIndex = this.items.indexOf(activeElement);
-  const isFocusingItem = currentIndex !== -1;
 
   switch (e.key) {
    case 'ArrowLeft':
+    e.preventDefault();
+    e.stopPropagation();
+    this.close();
+    requestAnimationFrame(() => {
+     this.triggerEl?.focus();
+    });
+    break;
    case 'Escape':
     e.preventDefault();
     e.stopPropagation();
@@ -434,53 +477,41 @@ export class DropdownSubState {
    case 'ArrowDown':
     e.preventDefault();
     e.stopPropagation();
-    if (!isFocusingItem) {
-     this.openAndFocus('first');
-    } else {
-     let nextIndex = currentIndex;
-     for (let i = 0; i < this.items.length; i++) {
-      nextIndex = (nextIndex + 1) % this.items.length;
-      if (!this.isDisabled(this.items[nextIndex])) {
-       this.items[nextIndex]?.focus();
-       break;
-      }
-     }
-    }
+    getNextItem(this.items, activeElement, 'next', true)?.focus();
     break;
    case 'ArrowUp':
     e.preventDefault();
     e.stopPropagation();
-    if (!isFocusingItem) {
-     this.openAndFocus('last');
-    } else {
-     let prevIndex = currentIndex;
-     for (let i = 0; i < this.items.length; i++) {
-      prevIndex = (prevIndex - 1 + this.items.length) % this.items.length;
-      if (!this.isDisabled(this.items[prevIndex])) {
-       this.items[prevIndex]?.focus();
-       break;
-      }
-     }
-    }
+    getNextItem(this.items, activeElement, 'prev', true)?.focus();
     break;
    case 'Home':
     e.preventDefault();
-    e.stopPropagation();
     this.openAndFocus('first');
     break;
    case 'End':
     e.preventDefault();
-    e.stopPropagation();
     this.openAndFocus('last');
     break;
    case 'Enter':
    case ' ':
     e.preventDefault();
     e.stopPropagation();
-    if (isFocusingItem && !this.isDisabled(activeElement)) {
+    if (!this.isDisabled(activeElement)) {
      activeElement.click();
     }
     break;
+   default:
+    if (e.key.length === 1) {
+     this.options.rootState.handleTypeahead.call(
+      {
+       typeahead: this.options.rootState.typeahead,
+       typeaheadTimer: this.options.rootState.typeaheadTimer,
+       items: this.items,
+       isDisabled: this.isDisabled
+      } as any,
+      e.key
+     );
+    }
   }
  };
 
