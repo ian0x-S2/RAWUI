@@ -48,7 +48,7 @@
   <nav class="flex items-center gap-3 text-[11px] font-medium text-muted-foreground">
    <a href="/docs" class="transition-colors hover:text-foreground">Docs</a>
    <a
-    href="https://github.com/seu-repo"
+    href="https://github.com/ian0x-S2/RAWUI"
     target="_blank"
     class="transition-colors hover:text-foreground">GitHub</a
    >
