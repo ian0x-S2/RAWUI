@@ -49,7 +49,6 @@ class CollapsibleState {
    type: 'button' as const,
    disabled: this.disabled,
 
-   // Data Attributes (Zag/Radix compatible)
    'data-state': this.open ? 'open' : 'closed',
    'data-disabled': this.disabled ? '' : undefined,
 
