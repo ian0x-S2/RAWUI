@@ -1,5 +1,7 @@
 {
- "files.associations": {
-  "*.css": "tailwindcss"
- }
+    "editor.fontFamily": "JetBrainsMono Nerd Font",
+    "editor.fontWeight": "700",
+    "files.associations": {
+        "*.css": "tailwindcss",
+    }
 }
