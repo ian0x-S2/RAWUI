@@ -17,7 +17,7 @@ componentId: select
 
   // Example states for documentation
   let singleValue = $state('');
-  let multipleValues = $state(['apple', 'banana']);
+  let multipleValues = $state(['Apple', 'Banana']);
 </script>
 
 The Select component provides an accessible dropdown for selecting single or multiple values. Built with Floating UI for positioning, it includes complete keyboard navigation and full accessibility support.
