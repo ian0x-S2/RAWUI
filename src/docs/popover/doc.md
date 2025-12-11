@@ -31,17 +31,13 @@ componentId: popover
 
 The Popover component displays floating content positioned relative to a trigger element. It uses **Floating UI** for robust positioning, collision detection, and flip logic.
 
-
-
 ## Installation
 
 1. Install the required dependency:
 
 <CodeBlock language="bash" code={`npm install @floating-ui/dom`} />
 
-2. Ensure you have your utility class merger (`cn`) available in `$lib/utils`.
-
-3. Copy the component files to your project:
+2. Copy the component files to your project:
 
 <CodeBlock language="bash" code={`src/lib/components/popover/
 ├── Popover.svelte
@@ -103,7 +99,8 @@ A simple popover that opens when clicking the trigger. It automatically handles 
     <p class="text-sm text-muted-foreground">Set the dimensions for the layer.</p>
     
     <div class="grid gap-2 py-4">
-       </div>
+       <!-- Inputs here -->
+    </div>
 
     <PopoverClose />
   </PopoverContent>
@@ -118,26 +115,26 @@ The popover automatically positions itself to avoid collisions. You can set a pr
 <div class="preview-container border rounded-lg p-10 flex-col gap-8">
   <div class="flex gap-4">
       <Popover placement="top">
-        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-gray-100">Top</PopoverTrigger>
+        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-card ">Top</PopoverTrigger>
         <PopoverContent><p class="text-sm">Content at Top</p></PopoverContent>
       </Popover>
   </div>
   
   <div class="flex gap-16">
       <Popover placement="left">
-        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-gray-100">Left</PopoverTrigger>
+        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-card ">Left</PopoverTrigger>
         <PopoverContent><p class="text-sm">Content at Left</p></PopoverContent>
       </Popover>
 
       <Popover placement="right">
-        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-gray-100">Right</PopoverTrigger>
+        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-card">Right</PopoverTrigger>
         <PopoverContent><p class="text-sm">Content at Right</p></PopoverContent>
       </Popover>
   </div>
 
   <div class="flex gap-4">
       <Popover placement="bottom">
-        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-gray-100">Bottom</PopoverTrigger>
+        <PopoverTrigger class="px-4 py-2 border rounded hover:bg-card">Bottom</PopoverTrigger>
         <PopoverContent><p class="text-sm">Content at Bottom</p></PopoverContent>
       </Popover>
   </div>
@@ -151,41 +148,6 @@ The popover automatically positions itself to avoid collisions. You can set a pr
 <Popover placement="right">
   <PopoverTrigger>Right</PopoverTrigger>
   <PopoverContent>...</PopoverContent>
-</Popover>`} />
-
-### Modal Behavior
-
-Use the `modal` prop to create a modal-like experience. This adds a backdrop behind the popover and traps focus inside the content, preventing interaction with the rest of the page until closed.
-
-<div class="preview-container border rounded-lg p-10">
-    <Popover bind:open={modalOpen} modal>
-      <PopoverTrigger class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-        Open Modal Popover
-      </PopoverTrigger>
-      <PopoverContent class="w-80">
-        <div class="grid gap-4">
-          <div class="space-y-2">
-            <h4 class="font-medium leading-none">Modal Content</h4>
-            <p class="text-sm text-muted-foreground">
-              This popover has a backdrop and focus is trapped inside.
-            </p>
-          </div>
-          <div class="flex justify-end gap-2">
-            <Button variant="outline" size="sm" onclick={() => modalOpen = false}>Cancel</Button>
-            <Button size="sm" onclick={() => modalOpen = false}>Save</Button>
-          </div>
-        </div>
-        <PopoverClose />
-      </PopoverContent>
-    </Popover>
-</div>
-
-<CodeBlock language="svelte" code={`<Popover modal>
-  <PopoverTrigger>Open Modal</PopoverTrigger>
-  <PopoverContent>
-    <h3>I have a backdrop!</h3>
-    <p>And you can't tab outside of me.</p>
-  </PopoverContent>
 </Popover>`} />
 
 ### Controlled State
@@ -227,7 +189,7 @@ You can control the open state programmatically using `bind:open`.
 
 ## Accessibility
 
-The Popover component follows WAI-ARIA design patterns for the Dialog (Modal) and Popover widgets.
+The Popover component follows WAI-ARIA design patterns.
 
 ### Keyboard Interactions
 

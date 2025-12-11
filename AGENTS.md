@@ -1,7 +1,5 @@
 # Svelte Component Library Agent Guidelines
 
-
-
 ## Code Style Guidelines
 
 - **TypeScript**: Strict mode enabled, no `any` types, use Svelte 5 runes

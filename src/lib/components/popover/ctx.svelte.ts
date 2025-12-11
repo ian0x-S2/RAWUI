@@ -24,18 +24,15 @@ type PopoverOptions = {
 class PopoverState {
  private opts: PopoverOptions;
 
- // Elementos
  triggerEl = $state<HTMLElement>();
  contentEl = $state<HTMLElement>();
 
- // Estado
  currentPlacement = $state<Placement>('bottom');
  styles = $state({ top: '0', left: '0' });
 
  constructor(options: PopoverOptions) {
   this.opts = options;
 
-  // Gerenciamento de Posicionamento (Floating UI)
   $effect(() => {
    if (!this.open || !this.triggerEl || !this.contentEl) return;
 
@@ -62,10 +59,8 @@ class PopoverState {
    return () => cleanup();
   });
 
-  // Gerenciamento de Foco e Eventos Globais
   $effect(() => {
    if (this.open) {
-    // Click Outside
     const handlePointerDown = (e: PointerEvent) => {
      const target = e.target as Node;
      const isOutside =
@@ -79,7 +74,6 @@ class PopoverState {
      }
     };
 
-    // Escape Key
     const handleKeyDown = (e: KeyboardEvent) => {
      if (e.key === 'Escape' && (this.opts.closeOnEscape ?? true)) {
       e.preventDefault();
@@ -90,7 +84,6 @@ class PopoverState {
     document.addEventListener('pointerdown', handlePointerDown);
     document.addEventListener('keydown', handleKeyDown);
 
-    // Foco inicial no conteúdo
     tick().then(() => {
      if (this.contentEl) {
       const focusable = this.contentEl.querySelector(
@@ -110,7 +103,6 @@ class PopoverState {
   });
  }
 
- // --- Getters/Setters ---
  get baseId() {
   return this.opts.baseId;
  }
@@ -121,7 +113,6 @@ class PopoverState {
   this.opts.open = value;
  }
 
- // --- Actions ---
  toggle = () => {
   this.open = !this.open;
   this.opts.onOpenChange?.(this.open);
@@ -132,7 +123,6 @@ class PopoverState {
   this.opts.onOpenChange?.(false);
  };
 
- // --- Props Getters (Zag Style + Attachments) ---
  get triggerProps() {
   return {
    [createAttachmentKey()]: (node: HTMLElement) => (this.triggerEl = node),
@@ -144,7 +134,6 @@ class PopoverState {
    'data-state': this.open ? 'open' : 'closed',
    'data-placement': this.currentPlacement,
    onclick: (e: MouseEvent) => {
-    // e.preventDefault(); // Opcional: depende se o trigger for submit
     this.toggle();
    }
   };
