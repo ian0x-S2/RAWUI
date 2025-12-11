@@ -1,0 +1,407 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+ctx.svelte.ts
+index.ts
+Popover.svelte
+PopoverClose.svelte
+PopoverContent.svelte
+PopoverTrigger.svelte
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="ctx.svelte.ts">
+import { getContext, setContext, tick } from 'svelte';
+import { createAttachmentKey } from 'svelte/attachments';
+import {
+ computePosition,
+ autoUpdate,
+ flip,
+ shift,
+ offset,
+ type Placement,
+ type Middleware
+} from '@floating-ui/dom';
+
+type PopoverOptions = {
+ baseId: string;
+ open: boolean;
+ modal?: boolean;
+ placement?: Placement;
+ offset?: number;
+ closeOnOutsideClick?: boolean;
+ closeOnEscape?: boolean;
+ onOpenChange?: (open: boolean) => void;
+};
+
+class PopoverState {
+ private opts: PopoverOptions;
+
+ // Elementos
+ triggerEl = $state<HTMLElement>();
+ contentEl = $state<HTMLElement>();
+
+ // Estado
+ currentPlacement = $state<Placement>('bottom');
+ styles = $state({ top: '0', left: '0' });
+
+ constructor(options: PopoverOptions) {
+  this.opts = options;
+
+  // Gerenciamento de Posicionamento (Floating UI)
+  $effect(() => {
+   if (!this.open || !this.triggerEl || !this.contentEl) return;
+
+   const updatePosition = async () => {
+    if (!this.triggerEl || !this.contentEl) return;
+
+    const middleware: Middleware[] = [
+     offset(this.opts.offset ?? 8),
+     flip(),
+     shift({ padding: 5 })
+    ];
+
+    const { x, y, placement } = await computePosition(this.triggerEl, this.contentEl, {
+     placement: this.opts.placement ?? 'bottom',
+     strategy: 'fixed',
+     middleware
+    });
+
+    this.currentPlacement = placement;
+    this.styles = { left: `${x}px`, top: `${y}px` };
+   };
+
+   const cleanup = autoUpdate(this.triggerEl, this.contentEl, updatePosition);
+   return () => cleanup();
+  });
+
+  // Gerenciamento de Foco e Eventos Globais
+  $effect(() => {
+   if (this.open) {
+    // Click Outside
+    const handlePointerDown = (e: PointerEvent) => {
+     const target = e.target as Node;
+     const isOutside =
+      this.contentEl &&
+      !this.contentEl.contains(target) &&
+      this.triggerEl &&
+      !this.triggerEl.contains(target);
+
+     if (isOutside && (this.opts.closeOnOutsideClick ?? true)) {
+      this.close();
+     }
+    };
+
+    // Escape Key
+    const handleKeyDown = (e: KeyboardEvent) => {
+     if (e.key === 'Escape' && (this.opts.closeOnEscape ?? true)) {
+      e.preventDefault();
+      this.close();
+     }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Foco inicial no conteúdo
+    tick().then(() => {
+     if (this.contentEl) {
+      const focusable = this.contentEl.querySelector(
+       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) as HTMLElement;
+      focusable?.focus();
+     }
+    });
+
+    return () => {
+     document.removeEventListener('pointerdown', handlePointerDown);
+     document.removeEventListener('keydown', handleKeyDown);
+     // Restaura foco ao fechar
+     this.triggerEl?.focus();
+    };
+   }
+  });
+ }
+
+ // --- Getters/Setters ---
+ get baseId() {
+  return this.opts.baseId;
+ }
+ get open() {
+  return this.opts.open;
+ }
+ set open(value: boolean) {
+  this.opts.open = value;
+ }
+
+ // --- Actions ---
+ toggle = () => {
+  this.open = !this.open;
+  this.opts.onOpenChange?.(this.open);
+ };
+
+ close = () => {
+  this.open = false;
+  this.opts.onOpenChange?.(false);
+ };
+
+ // --- Props Getters (Zag Style + Attachments) ---
+ get triggerProps() {
+  return {
+   [createAttachmentKey()]: (node: HTMLElement) => (this.triggerEl = node),
+   id: `${this.baseId}-trigger`,
+   type: 'button' as const,
+   'aria-haspopup': 'dialog' as const,
+   'aria-expanded': this.open,
+   'aria-controls': `${this.baseId}-content`,
+   'data-state': this.open ? 'open' : 'closed',
+   'data-placement': this.currentPlacement,
+   onclick: (e: MouseEvent) => {
+    // e.preventDefault(); // Opcional: depende se o trigger for submit
+    this.toggle();
+   }
+  };
+ }
+
+ get contentProps() {
+  return {
+   [createAttachmentKey()]: (node: HTMLElement) => (this.contentEl = node),
+   id: `${this.baseId}-content`,
+   role: 'dialog',
+   'aria-modal': this.opts.modal ? ('true' as const) : undefined,
+   'data-state': this.open ? 'open' : 'closed',
+   'data-placement': this.currentPlacement,
+   tabindex: -1,
+   style: `
+				position: fixed;
+				left: ${this.styles.left};
+				top: ${this.styles.top};
+				z-index: 50;
+			`
+  };
+ }
+}
+
+const POPOVER_KEY = Symbol('POPOVER_CTX');
+
+export function setPopoverContext(options: PopoverOptions) {
+ return setContext(POPOVER_KEY, new PopoverState(options));
+}
+
+export function getPopoverContext() {
+ return getContext<PopoverState>(POPOVER_KEY);
+}
+</file>
+
+<file path="index.ts">
+import Popover from './Popover.svelte';
+import PopoverTrigger from './PopoverTrigger.svelte';
+import PopoverContent from './PopoverContent.svelte';
+import PopoverClose from './PopoverClose.svelte';
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverClose };
+</file>
+
+<file path="Popover.svelte">
+<script lang="ts">
+ import { setPopoverContext } from './ctx.svelte.js';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import type { Snippet } from 'svelte';
+ import type { Placement } from '@floating-ui/dom';
+
+ interface Props extends HTMLAttributes<HTMLDivElement> {
+  open?: boolean;
+  modal?: boolean;
+  placement?: Placement;
+  offset?: number;
+  closeOnOutsideClick?: boolean;
+  closeOnEscape?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: Snippet;
+ }
+
+ let {
+  open = $bindable(false),
+  modal = false,
+  placement = 'bottom',
+  offset = 8,
+  closeOnOutsideClick = true,
+  closeOnEscape = true,
+  onOpenChange,
+  children
+ }: Props = $props();
+
+ const baseId = $props.id();
+
+ setPopoverContext({
+  baseId,
+  get open() {
+   return open;
+  },
+  set open(v) {
+   open = v;
+   onOpenChange?.(v);
+  },
+  get modal() {
+   return modal;
+  },
+  get placement() {
+   return placement;
+  },
+  get offset() {
+   return offset;
+  },
+  get closeOnOutsideClick() {
+   return closeOnOutsideClick;
+  },
+  get closeOnEscape() {
+   return closeOnEscape;
+  }
+ });
+</script>
+
+{@render children()}
+</file>
+
+<file path="PopoverClose.svelte">
+<script lang="ts">
+ import { getPopoverContext } from './ctx.svelte.js';
+ import { cn } from '$lib/utils';
+ import type { HTMLButtonAttributes } from 'svelte/elements';
+ import type { Snippet } from 'svelte';
+
+ interface Props extends HTMLButtonAttributes {
+  children?: Snippet;
+  class?: string;
+ }
+
+ let { children, class: className, ...restProps }: Props = $props();
+ const ctx = getPopoverContext();
+</script>
+
+<button
+ type="button"
+ onclick={ctx.close}
+ class={cn(
+  'absolute top-2 right-2 opacity-70 transition-opacity hover:opacity-100',
+  className
+ )}
+ {...restProps}
+>
+ {#if children}
+  {@render children()}
+ {:else}
+  <svg
+   xmlns="http://www.w3.org/2000/svg"
+   width="16"
+   height="16"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg
+  >
+  <span class="sr-only">Close</span>
+ {/if}
+</button>
+</file>
+
+<file path="PopoverContent.svelte">
+<script lang="ts">
+ import { getPopoverContext } from './ctx.svelte.js';
+ import { cn } from '$lib/utils';
+ import { scale } from 'svelte/transition';
+ import Portal from '$lib/components/portal/Portal.svelte';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import type { Snippet } from 'svelte';
+
+ interface Props extends HTMLAttributes<HTMLDivElement> {
+  children: Snippet;
+  class?: string;
+ }
+
+ let { children, class: className, ...restProps }: Props = $props();
+ const ctx = getPopoverContext();
+</script>
+
+<Portal>
+ {#if ctx.open}
+  <div
+   transition:scale={{ duration: 150, start: 0.95 }}
+   class={cn(
+    'min-w-[200px] rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none',
+    className
+   )}
+   {...ctx.contentProps}
+   {...restProps}
+  >
+   {@render children()}
+  </div>
+ {/if}
+</Portal>
+</file>
+
+<file path="PopoverTrigger.svelte">
+<script lang="ts">
+ import { getPopoverContext } from './ctx.svelte.js';
+ import { cn } from '$lib/utils';
+ import type { HTMLButtonAttributes } from 'svelte/elements';
+ import type { Snippet } from 'svelte';
+
+ interface Props extends HTMLButtonAttributes {
+  children: Snippet;
+  class?: string;
+ }
+
+ let { children, class: className, ...restProps }: Props = $props();
+ const ctx = getPopoverContext();
+</script>
+
+<button class={cn(className)} {...ctx.triggerProps} {...restProps}>
+ {@render children()}
+</button>
+</file>
+
+</files>
