@@ -9,6 +9,7 @@ componentId: toast
   import { Toaster, toast } from '$lib/components/toast';
   import Button from '$lib/components/button/Button.svelte';
   import CodeBlock from '$lib/intern/CodeBlock.svelte';
+  import PositionDemo from './PositionDemo.svelte';
 
   const promiseExample = () => {
     const promise = new Promise((resolve, reject) => {
@@ -166,22 +167,22 @@ Automatically handle loading, success, and error states for a Promise:
 
 Control where toasts appear on screen with the `position` prop on the `<Toaster />` component. Six positions are available:
 
+
 <div class="preview border rounded-lg p-10 flex flex-col gap-4 items-center justify-center min-h-[200px]">
-  <p class="text-sm text-muted-foreground">The position is set on the Toaster component in your layout. Try changing it to see toasts in different locations:</p>
+  <p class="text-sm text-muted-foreground">Click each button to see toasts in different positions:</p>
   <div class="flex flex-wrap gap-2 justify-center">
-    <Button size="sm" variant="outline" onclick={() => toast.message('Top Left')}>Top Left</Button>
-    <Button size="sm" variant="outline" onclick={() => toast.message('Top Center')}>Top Center</Button>
-    <Button size="sm" variant="outline" onclick={() => toast.message('Top Right')}>Top Right</Button>
-    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Left')}>Bottom Left</Button>
-    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Center')}>Bottom Center</Button>
-    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Right')}>Bottom Right</Button>
+    <PositionDemo position="top-left" />
+    <PositionDemo position="top-center" />
+    <PositionDemo position="top-right" />
+    <PositionDemo position="bottom-left" />
+    <PositionDemo position="bottom-center" />
+    <PositionDemo position="bottom-right" />
   </div>
 </div>
 
 <CodeBlock language="svelte" code={`
 <Toaster position="top-center" />
-
-<Toaster />
+<Toaster position="bottom-right" />
 `} />
 
 ## API Reference

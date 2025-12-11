@@ -1,16 +1,19 @@
 <script lang="ts">
- import { toast } from './ctx.svelte.js';
+ import { toast as globalToast } from './ctx.svelte.js';
  import Toast from './Toast.svelte';
  import { cn } from '$lib/utils';
  import type { ToastPosition } from './types.js';
+ import type { ToastState } from './ctx.svelte.js';
  import { browser } from '$app/environment';
 
  let {
   position = 'bottom-right',
+  toastState = globalToast,
   class: className = undefined,
   ...restProps
  }: {
   position?: ToastPosition;
+  toastState?: ToastState;
   class?: string;
  } = $props();
 
@@ -25,7 +28,9 @@
 
  let isTop = $derived(position.startsWith('top'));
 
- let displayToasts = $derived(isTop ? [...toast.toasts].reverse() : toast.toasts);
+ let displayToasts = $derived(
+  isTop ? [...toastState.toasts].reverse() : toastState.toasts
+ );
 </script>
 
 {#if browser}
@@ -42,7 +47,7 @@
  >
   <div class="flex w-full flex-col gap-2">
    {#each displayToasts as t (t.id)}
-    <Toast data={t} />
+    <Toast data={t} {toastState} {position} />
    {/each}
   </div>
  </div>

@@ -1,23 +1,66 @@
 <script lang="ts">
  import { onMount, onDestroy, type Snippet } from 'svelte';
- import { fly, fade } from 'svelte/transition';
- import { toast } from './ctx.svelte.js';
+ import { fly, fade, scale } from 'svelte/transition';
+ import { toast as globalToast } from './ctx.svelte.js';
  import { ToastTimer } from './ctx.svelte.js';
  import type { ToastData, ToastOptions } from './types.js';
+ import type { ToastState } from './ctx.svelte.js';
+ import type { ToastPosition } from './types.js';
  import { cn } from '$lib/utils';
  import { browser } from '$app/environment';
 
- let { data }: { data: ToastData } = $props();
+ let {
+  data,
+  toastState = globalToast,
+  position = 'bottom-right'
+ }: {
+  data: ToastData;
+  toastState?: ToastState;
+  position?: ToastPosition;
+ } = $props();
 
  let timer: ToastTimer | undefined;
  let isHovering = $state(false);
+
+ // Determinar direção da animação baseada na posição
+ const animationConfig = $derived.by(() => {
+  const [vertical, horizontal] = position.split('-');
+
+  let inX = 0;
+  let inY = 0;
+  let outX = 0;
+  let outY = 0;
+
+  // Animação de entrada e saída baseada na posição horizontal
+  if (horizontal === 'left') {
+   inX = -100; // Entra da esquerda
+   outX = -100; // Sai para esquerda
+  } else if (horizontal === 'right') {
+   inX = 100; // Entra da direita
+   outX = 100; // Sai para direita
+  } else if (horizontal === 'center') {
+   // Para center, anima verticalmente
+   if (vertical === 'top') {
+    inY = -100;
+    outY = -100;
+   } else {
+    inY = 100;
+    outY = 100;
+   }
+  }
+
+  return {
+   in: { x: inX, y: inY },
+   out: { x: outX, y: outY }
+  };
+ });
 
  function startTimer(duration: number) {
   if (!browser) return;
   timer?.clear();
   if (duration !== Infinity) {
-   timer = new ToastTimer(duration, () => toast.dismiss(data.id));
-   if (!toast.isPaused && !isHovering) {
+   timer = new ToastTimer(duration, () => toastState.dismiss(data.id));
+   if (!toastState.isPaused && !isHovering) {
     timer.start();
    }
   }
@@ -32,7 +75,7 @@
  // Pause/Resume logic
  $effect(() => {
   if (!timer) return;
-  if (toast.isPaused || isHovering) {
+  if (toastState.isPaused || isHovering) {
    timer.pause();
   } else {
    timer.resume();
@@ -188,7 +231,7 @@
   <button
    type="button"
    class="group-[.destructive]:text-destructive-foreground group-[.destructive]:hover:text-destructive-foreground absolute top-1 right-1 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground focus:opacity-100 focus:ring-1 focus:outline-none group-[.destructive]:focus:ring-destructive group-[.destructive]:focus:ring-offset-destructive"
-   onclick={() => toast.dismiss(data.id)}
+   onclick={() => toastState.dismiss(data.id)}
    aria-label="Close"
   >
    <svg
@@ -219,8 +262,8 @@
    )}
    onmouseenter={() => (isHovering = true)}
    onmouseleave={() => (isHovering = false)}
-   in:fly|global={{ y: 20, duration: 300 }}
-   out:fade|global={{ duration: 0 }}
+   in:fly|global={{ ...animationConfig.in, duration: 300 }}
+   out:scale|global={{ start: 0.95, opacity: 0, duration: 150 }}
   >
    {@render content(resolveOptions(data.promiseData.loading), 'loading')}
   </div>
@@ -239,8 +282,8 @@
    )}
    onmouseenter={() => (isHovering = true)}
    onmouseleave={() => (isHovering = false)}
-   in:fly|global={{ y: 20, duration: 300, delay: 100 }}
-   out:fade|global={{ duration: 200 }}
+   in:scale|global={{ start: 0.95, opacity: 0, duration: 200 }}
+   out:fly|global={{ ...animationConfig.out, duration: 200 }}
   >
    {@render content(successOpts, 'success')}
   </div>
@@ -259,8 +302,8 @@
    )}
    onmouseenter={() => (isHovering = true)}
    onmouseleave={() => (isHovering = false)}
-   in:fly|global={{ y: 20, duration: 300, delay: 100 }}
-   out:fade|global={{ duration: 200 }}
+   in:scale|global={{ start: 0.95, opacity: 0, duration: 200 }}
+   out:fly|global={{ ...animationConfig.out, duration: 200 }}
   >
    {@render content(errorOpts, 'error')}
   </div>
@@ -278,8 +321,8 @@
   )}
   onmouseenter={() => (isHovering = true)}
   onmouseleave={() => (isHovering = false)}
-  in:fly|global={{ y: 20, x: 0, duration: 300 }}
-  out:fly|global={{ duration: 200, x: 20 }}
+  in:fly|global={{ ...animationConfig.in, duration: 300 }}
+  out:fly|global={{ ...animationConfig.out, duration: 200 }}
  >
   {@render content(data, data.type)}
  </div>
