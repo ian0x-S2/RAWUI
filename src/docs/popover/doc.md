@@ -31,6 +31,8 @@ componentId: popover
 
 The Popover component displays floating content positioned relative to a trigger element. It uses **Floating UI** for robust positioning, collision detection, and flip logic.
 
+The popover content is rendered using a Portal component by default, ensuring it appears above other content in the DOM hierarchy.
+
 ## Installation
 
 1. Install the required dependency:
@@ -81,12 +83,12 @@ A simple popover that opens when clicking the trigger. It automatically handles 
 </div>
 
 <CodeBlock language="svelte" code={`<script>
-  import { 
-    Popover, 
-    PopoverTrigger, 
-    PopoverContent, 
-    PopoverClose 
-  } from '$lib/components/popover';
+import {
+Popover,
+PopoverTrigger,
+PopoverContent,
+PopoverClose
+} from '$lib/components/popover';
 </script>
 
 <Popover>
@@ -103,6 +105,7 @@ A simple popover that opens when clicking the trigger. It automatically handles 
     </div>
 
     <PopoverClose />
+
   </PopoverContent>
 </Popover>`} />
 
@@ -130,6 +133,7 @@ The popover automatically positions itself to avoid collisions. You can set a pr
         <PopoverTrigger class="px-4 py-2 border rounded hover:bg-card">Right</PopoverTrigger>
         <PopoverContent><p class="text-sm">Content at Right</p></PopoverContent>
       </Popover>
+
   </div>
 
   <div class="flex gap-4">
@@ -141,8 +145,8 @@ The popover automatically positions itself to avoid collisions. You can set a pr
 </div>
 
 <CodeBlock language="svelte" code={`<Popover placement="top">
-  <PopoverTrigger>Top</PopoverTrigger>
-  <PopoverContent>...</PopoverContent>
+<PopoverTrigger>Top</PopoverTrigger>
+<PopoverContent>...</PopoverContent>
 </Popover>
 
 <Popover placement="right">
@@ -180,6 +184,7 @@ Note: When using an external button to toggle, prevent the pointerdown propagati
 <CodeBlock language="svelte" code={`<script>
 let open = $state(false);
 </script>
+
 <!--
 Use onpointerdown with stopPropagation to prevent the
 "click outside" logic from closing the popover before the toggle happens.
@@ -200,11 +205,10 @@ The Popover component follows WAI-ARIA design patterns.
 
 ### Keyboard Interactions
 
-| Key | Description |
-| --- | --- |
-| `Enter` / `Space` | Opens the popover when focus is on the trigger. |
-| `Escape` | Closes the popover and moves focus back to the trigger. |
-| `Tab` | Traps focus within the content when `modal={true}`. |
+| Key               | Description                                             |
+| ----------------- | ------------------------------------------------------- |
+| `Enter` / `Space` | Opens the popover when focus is on the trigger.         |
+| `Escape`          | Closes the popover and moves focus back to the trigger. |
 
 ## API Reference
 
@@ -212,39 +216,39 @@ The Popover component follows WAI-ARIA design patterns.
 
 The root component that manages popover state and context.
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `open` | `boolean` | `false` | Controls the open/closed state. |
-| `modal` | `boolean` | `false` | Enables modal mode (backdrop + focus trap). |
-| `placement` | `Placement` | `'bottom'` | Preferred position (`top`, `bottom`, `left`, `right`). |
-| `offset` | `number` | `8` | Distance from trigger in pixels. |
-| `closeOnOutsideClick` | `boolean` | `true` | Close when clicking outside content. |
-| `closeOnEscape` | `boolean` | `true` | Close when pressing Escape. |
-| `onOpenChange` | `(v: boolean) => void` | - | Callback when state changes. |
+| Prop                  | Type                   | Default    | Description                                                                                                                                             |
+| --------------------- | ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`                | `boolean`              | `false`    | Controls the open/closed state.                                                                                                                         |
+| `modal`               | `boolean`              | `false`    | Enables modal mode with ARIA attributes for screen readers. For full modal behavior with backdrop and focus trapping, use the Dialog component instead. |
+| `placement`           | `Placement`            | `'bottom'` | Preferred position (`top`, `bottom`, `left`, `right`).                                                                                                  |
+| `offset`              | `number`               | `8`        | Distance from trigger in pixels.                                                                                                                        |
+| `closeOnOutsideClick` | `boolean`              | `true`     | Close when clicking outside content.                                                                                                                    |
+| `closeOnEscape`       | `boolean`              | `true`     | Close when pressing Escape.                                                                                                                             |
+| `onOpenChange`        | `(v: boolean) => void` | -          | Callback when state changes.                                                                                                                            |
 
 ### PopoverTrigger
 
 The element that toggles the popover.
 
-| Prop | Type | Description |
-| --- | --- | --- |
+| Prop       | Type      | Description      |
+| ---------- | --------- | ---------------- |
 | `children` | `Snippet` | Trigger content. |
-| `class` | `string` | CSS classes. |
+| `class`    | `string`  | CSS classes.     |
 
 ### PopoverContent
 
 The floating container. It renders inside a Portal when open.
 
-| Prop | Type | Description |
-| --- | --- | --- |
+| Prop       | Type      | Description      |
+| ---------- | --------- | ---------------- |
 | `children` | `Snippet` | Popover content. |
-| `class` | `string` | CSS classes. |
+| `class`    | `string`  | CSS classes.     |
 
 ### PopoverClose
 
 A utility button to close the popover from inside.
 
-| Prop | Type | Description |
-| --- | --- | --- |
+| Prop       | Type      | Description                                    |
+| ---------- | --------- | ---------------------------------------------- |
 | `children` | `Snippet` | Optional custom content (default is 'X' icon). |
-| `class` | `string` | CSS classes. |
+| `class`    | `string`  | CSS classes.                                   |
