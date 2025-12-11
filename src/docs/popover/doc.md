@@ -9,7 +9,7 @@ componentId: popover
   import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from '$lib/components/popover/index';
   import Button from '$lib/components/button/Button.svelte';
   import CodeBlock from '$lib/intern/CodeBlock.svelte';
-
+ import Input from "$lib/components/input/Input.svelte"
   // Icons (SVGs inline)
   const SettingsIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 
@@ -67,11 +67,11 @@ A simple popover that opens when clicking the trigger. It automatically handles 
           <div class="grid gap-2">
             <div class="grid grid-cols-3 items-center gap-4">
               <label class="text-sm font-medium" for="width">Width</label>
-              <input class="col-span-2 flex h-8 w-full rounded-md border border-input bg-background px-3 text-sm" id="width" value="100%" />
+              <Input class="col-span-2 flex h-8 w-full rounded-md   px-3 text-sm" id="width" value="100%" />
             </div>
             <div class="grid grid-cols-3 items-center gap-4">
               <label class="text-sm font-medium" for="height">Height</label>
-              <input class="col-span-2 flex h-8 w-full rounded-md border border-input bg-background px-3 text-sm" id="height" value="25px" />
+              <Input  class="col-span-2 flex h-8 w-full rounded-md   px-3 text-sm" id="height" value="25px" />
             </div>
           </div>
         </div>
@@ -153,38 +153,45 @@ The popover automatically positions itself to avoid collisions. You can set a pr
 ### Controlled State
 
 You can control the open state programmatically using `bind:open`.
+Note: When using an external button to toggle, prevent the pointerdown propagation to avoid conflict with the "click outside" logic.
 
 <div class="preview-container border rounded-lg p-10 flex-col gap-4">
-  <div class="flex items-center gap-2">
-    <Button variant="outline" size="sm" onclick={() => controlledOpen = !controlledOpen}>
-      {controlledOpen ? 'Close' : 'Open'} via External Button
-    </Button>
-  </div>
-
-  <Popover bind:open={controlledOpen}>
-      <PopoverTrigger class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2 gap-2">
-        {@html SettingsIcon} Settings
-      </PopoverTrigger>
-      <PopoverContent class="w-80">
-        <div class="grid gap-4">
-          <h4 class="font-medium leading-none">Settings</h4>
-          <p class="text-sm text-muted-foreground">Managed programmatically.</p>
-        </div>
-      </PopoverContent>
-    </Popover>
+<div class="flex items-center gap-2">
+<!-- Adicionado onpointerdown com stopPropagation para evitar o conflito -->
+<div onpointerdown={(e) => e.stopPropagation()}>
+<Button variant="outline" size="sm" onclick={() => controlledOpen = !controlledOpen}>
+{controlledOpen ? 'Close' : 'Open'} via External Button
+</Button>
+</div>
+</div>
+<Popover bind:open={controlledOpen}>
+<PopoverTrigger class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2 gap-2">
+{@html SettingsIcon} Settings
+</PopoverTrigger>
+<PopoverContent class="w-80">
+<div class="grid gap-4">
+<h4 class="font-medium leading-none">Settings</h4>
+<p class="text-sm text-muted-foreground">Managed programmatically.</p>
+</div>
+</PopoverContent>
+</Popover>
 </div>
 
 <CodeBlock language="svelte" code={`<script>
-  let open = $state(false);
+let open = $state(false);
 </script>
-
+<!--
+Use onpointerdown with stopPropagation to prevent the
+"click outside" logic from closing the popover before the toggle happens.
+-->
+<div onpointerdown={(e) => e.stopPropagation()}>
 <Button onclick={() => open = !open}>
-  Toggle via Prop
+Toggle via Prop
 </Button>
-
+</div>
 <Popover bind:open>
-  <PopoverTrigger>Settings</PopoverTrigger>
-  <PopoverContent>...</PopoverContent>
+<PopoverTrigger>Settings</PopoverTrigger>
+<PopoverContent>...</PopoverContent>
 </Popover>`} />
 
 ## Accessibility
