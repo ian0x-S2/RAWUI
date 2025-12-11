@@ -28,6 +28,11 @@ componentId: toast
 
 The Toast component provides a simple yet powerful way to display ephemeral notifications. It handles multiple toasts, positioning, automatic dismissal, and rich content.
 
+## Promise Handling
+
+The component uses Svelte's declarative `{#await}` blocks to handle promise states elegantly. When you use `toast.promise()`, the component automatically displays different UI for loading, success, and error states without manual state management.
+
+
 ## Installation
 
 Copy the component files to your project:
@@ -155,6 +160,28 @@ Automatically handle loading, success, and error states for a Promise:
 <Button onclick={handlePromise}>
   Start Promise
 </Button>
+`} />
+
+### Positioning
+
+Control where toasts appear on screen with the `position` prop on the `<Toaster />` component. Six positions are available:
+
+<div class="preview border rounded-lg p-10 flex flex-col gap-4 items-center justify-center min-h-[200px]">
+  <p class="text-sm text-muted-foreground">The position is set on the Toaster component in your layout. Try changing it to see toasts in different locations:</p>
+  <div class="flex flex-wrap gap-2 justify-center">
+    <Button size="sm" variant="outline" onclick={() => toast.message('Top Left')}>Top Left</Button>
+    <Button size="sm" variant="outline" onclick={() => toast.message('Top Center')}>Top Center</Button>
+    <Button size="sm" variant="outline" onclick={() => toast.message('Top Right')}>Top Right</Button>
+    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Left')}>Bottom Left</Button>
+    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Center')}>Bottom Center</Button>
+    <Button size="sm" variant="outline" onclick={() => toast.message('Bottom Right')}>Bottom Right</Button>
+  </div>
+</div>
+
+<CodeBlock language="svelte" code={`
+<Toaster position="top-center" />
+
+<Toaster />
 `} />
 
 ## API Reference
