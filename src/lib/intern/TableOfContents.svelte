@@ -15,13 +15,34 @@
  async function updateHeadings() {
   await tick();
   const elements = Array.from(document.querySelectorAll('.prose h2')) as HTMLElement[];
+
+  const idCounts = new Map<string, number>();
+
   headings = elements
-   .map((elem) => ({
-    id: elem.id,
-    text: elem.innerText,
-    element: elem
-   }))
-   .filter((h) => h.id);
+   .map((elem) => {
+    let id = elem.id;
+    const text = elem.innerText;
+
+    if (!id) return null;
+
+    // Se o ID já existe, adicionar um sufixo
+    if (idCounts.has(id)) {
+     const count = idCounts.get(id)! + 1;
+     idCounts.set(id, count);
+     id = `${id}-${count}`;
+     // Atualizar o ID do elemento também
+     elem.id = id;
+    } else {
+     idCounts.set(id, 0);
+    }
+
+    return {
+     id,
+     text,
+     element: elem
+    };
+   })
+   .filter((h): h is HeadingData => h !== null);
 
   if (!activeId && headings.length > 0) {
    handleScroll();
@@ -33,7 +54,6 @@
 
   const scrollY = window.scrollY;
   const offset = 120;
-
   let newActiveId = '';
 
   for (let i = headings.length - 1; i >= 0; i--) {
@@ -54,7 +74,6 @@
 
  function scrollToHeading(e: MouseEvent, id: string) {
   e.preventDefault();
-
   const element = document.getElementById(id);
   if (!element) return;
 
@@ -93,7 +112,6 @@
 
   const observer = new MutationObserver(updateHeadings);
   const prose = document.querySelector('.prose');
-
   if (prose) {
    observer.observe(prose, { childList: true, subtree: true });
   }
@@ -118,12 +136,12 @@
       href="#{heading.id}"
       onclick={(e) => scrollToHeading(e, heading.id)}
       class="
-       -ml-px block border-l-2 py-1.5 pl-4 transition-colors duration-200 ease-in-out
-       hover:text-foreground
-       {activeId === heading.id
+             -ml-px block border-l-2 py-1.5 pl-4 transition-colors duration-200 ease-in-out
+             hover:text-foreground
+             {activeId === heading.id
        ? 'border-primary text-primary'
        : 'border-transparent text-muted-foreground hover:border-border'}
-      "
+           "
      >
       {heading.text}
      </a>
