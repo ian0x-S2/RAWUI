@@ -53,7 +53,6 @@ src/lib/components/toast/
 2. Use the `toast` object to trigger notifications.
 
 <div class="preview border rounded-lg p-10 flex flex-col gap-4 items-center justify-center min-h-[200px]">
-  <Toaster position="bottom-right" />
   <Button onclick={() => toast.message('Hello from Toast!')}>
     Show Toast
   </Button>

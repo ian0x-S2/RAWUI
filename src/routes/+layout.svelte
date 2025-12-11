@@ -5,9 +5,12 @@
  import ThemeProvider from '$lib/components/theme-toggle/ThemeProvider.svelte';
 
  import SidebarProvider from '$lib/components/sidebar/SidebarProvider.svelte';
+ import { Toaster } from '$lib/components/toast';
 
  let { data, children }: LayoutProps = $props();
 </script>
+
+<Toaster position="bottom-right" />
 
 <ThemeProvider disableTransitionOnChange={true} defaultTheme="dark" enableSystem={true}>
  <SidebarProvider variant="default" open={data.sidebarOpen}>
