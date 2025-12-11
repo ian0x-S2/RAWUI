@@ -5,7 +5,6 @@
 
  let { position }: { position: ToastPosition } = $props();
 
- // Cada instância tem seu próprio state de toast
  const toastInstance = new ToastState();
  const instanceId = $props.id();
 

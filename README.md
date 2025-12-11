@@ -15,7 +15,7 @@
     <img src="https://img.shields.io/badge/Svelte-5.0+-orange?style=flat-square&logo=svelte" alt="Svelte 5" />
   </a>
   <a href="https://tailwindcss.com">
-    <img src="https://img.shields.io/badge/Tailwind-3.0+-blue?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/Tailwind-4.0+-blue?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
   </a>
   <a href="https://www.typescriptlang.org">
     <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=flat-square&logo=typescript" alt="TypeScript" />
