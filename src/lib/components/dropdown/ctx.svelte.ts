@@ -15,7 +15,11 @@ type Options = {
  loopFocus?: boolean;
 };
 
-// Helper simples para navegação cíclica
+const hasHoverSupport = () => {
+ if (typeof window === 'undefined') return true;
+ return window.matchMedia('(hover: hover)').matches;
+};
+
 function getNextItem(
  items: HTMLElement[],
  activeItem: Element | null,
@@ -50,6 +54,7 @@ export class DropdownState {
  triggerEl: HTMLElement | undefined = $state();
  contentEl: HTMLElement | undefined = $state();
  isKeyboardNav = $state(false);
+ supportHover = $state(true);
 
  items: HTMLElement[] = [];
  submenus: DropdownSubState[] = [];
@@ -58,6 +63,7 @@ export class DropdownState {
 
  constructor(options: Options) {
   this.options = { placement: 'bottom', loopFocus: true, ...options };
+  this.supportHover = hasHoverSupport();
 
   $effect(() => {
    if (!this.isOpen || !this.triggerEl || !this.contentEl) return;
@@ -180,7 +186,6 @@ export class DropdownState {
  handleContentKeydown = (e: KeyboardEvent) => {
   const activeElement = document.activeElement as HTMLElement;
 
-  // Se estiver focado num input dentro do menu, não navega (exceto Tab/Esc)
   if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') return;
 
   switch (e.key) {
@@ -263,6 +268,15 @@ export class DropdownState {
    const clickedOutsideSubmenus = this.submenus.every((sub) => {
     return !sub.contentEl?.contains(target) && !sub.triggerEl?.contains(target);
    });
+
+   const clickedInMainContent = this.contentEl?.contains(target);
+   const clickedInSubmenu = this.submenus.some(
+    (sub) => sub.contentEl?.contains(target) || sub.triggerEl?.contains(target)
+   );
+
+   if (clickedInMainContent && !clickedInSubmenu) {
+    this.closeAllSubmenus();
+   }
 
    if (clickedOutside && clickedOutsideSubmenus) {
     this.close();
@@ -360,6 +374,14 @@ export class DropdownSubState {
   this.isOpen = false;
   this.isFrozen = false;
   this.frozenPosition = null;
+ };
+
+ toggle = () => {
+  if (this.isOpen) {
+   this.close();
+  } else {
+   this.open();
+  }
  };
 
  scheduleClose = () => {
@@ -475,8 +497,7 @@ export class DropdownSubState {
    'aria-controls': `${this.options.baseId}-sub-content`,
    'data-state': this.isOpen ? 'open' : 'closed',
    tabindex: -1,
-   onpointerenter: this.open,
-   onpointerleave: this.scheduleClose,
+   onpointerleave: this.options.rootState.supportHover ? this.scheduleClose : undefined,
    onkeydown: this.handleTriggerKeydown
   };
  }
@@ -489,8 +510,8 @@ export class DropdownSubState {
    'aria-labelledby': `${this.options.baseId}-sub-trigger`,
    'data-state': this.isOpen ? 'open' : 'closed',
    tabindex: -1,
-   onpointerenter: this.cancelClose,
-   onpointerleave: this.scheduleClose,
+   onpointerenter: this.options.rootState.supportHover ? this.cancelClose : undefined,
+   onpointerleave: this.options.rootState.supportHover ? this.scheduleClose : undefined,
    onkeydown: this.handleContentKeydown
   };
  }

@@ -20,6 +20,14 @@
   if (el) return root.registerItem(el);
  });
 
+ function handleClick(e: MouseEvent) {
+  e.stopPropagation();
+
+  if (!root.supportHover) {
+   sub.toggle();
+  }
+ }
+
  function handlePointerMove(e: PointerEvent) {
   if (e.pointerType !== 'mouse') return;
   if (root.isKeyboardNav) root.isKeyboardNav = false;
@@ -37,7 +45,9 @@
    el?.focus({ preventScroll: true });
   }
 
-  sub.open();
+  if (root.supportHover) {
+   sub.open();
+  }
  }
 </script>
 
@@ -45,6 +55,7 @@
  bind:this={el}
  {...sub.triggerProps}
  {...restProps}
+ onclick={handleClick}
  onpointerenter={handlePointerEnter}
  onpointermove={handlePointerMove}
  class={cn(
