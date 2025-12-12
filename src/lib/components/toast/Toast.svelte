@@ -250,63 +250,69 @@
 {#if data.promise && data.promiseData}
  {#await data.promise}
   <!-- PENDING -->
-  <div
-   role="status"
-   aria-live="polite"
-   aria-atomic="true"
-   data-state="open"
-   data-type="loading"
-   class={cn(
-    'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
-    styles.loading
-   )}
-   onmouseenter={() => (isHovering = true)}
-   onmouseleave={() => (isHovering = false)}
-   in:fly|global={{ ...animationConfig.in, duration: 300 }}
-   out:scale|global={{ start: 0.95, opacity: 0, duration: 150 }}
-  >
-   {@render content(resolveOptions(data.promiseData.loading), 'loading')}
-  </div>
+  {#key 'loading'}
+   <div
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-state="open"
+    data-type="loading"
+    class={cn(
+     'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
+     styles.loading
+    )}
+    onmouseenter={() => (isHovering = true)}
+    onmouseleave={() => (isHovering = false)}
+    in:fly|global={{ ...animationConfig.in, duration: 300 }}
+    out:scale|global={{ start: 0.95, opacity: 0, duration: 150 }}
+   >
+    {@render content(resolveOptions(data.promiseData.loading), 'loading')}
+   </div>
+  {/key}
  {:then result}
   {@const successOpts = resolveOptions(data.promiseData.success, result)}
-  <div
-   {@attach triggerDismiss}
-   role="status"
-   aria-live="polite"
-   aria-atomic="true"
-   data-state="open"
-   data-type="success"
-   class={cn(
-    'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
-    styles.success
-   )}
-   onmouseenter={() => (isHovering = true)}
-   onmouseleave={() => (isHovering = false)}
-   in:scale|global={{ start: 0.95, opacity: 0, duration: 200 }}
-   out:fly|global={{ ...animationConfig.out, duration: 200 }}
-  >
-   {@render content(successOpts, 'success')}
-  </div>
+  {#key 'success'}
+   <div
+    {@attach triggerDismiss}
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-state="open"
+    data-type="success"
+    class={cn(
+     'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
+     styles.success
+    )}
+    onmouseenter={() => (isHovering = true)}
+    onmouseleave={() => (isHovering = false)}
+    in:scale|global={{ start: 0.8, opacity: 0, duration: 300 }}
+    out:fly|global={{ ...animationConfig.out, duration: 200 }}
+   >
+    {@render content(successOpts, 'success')}
+   </div>
+  {/key}
  {:catch error}
   {@const errorOpts = resolveOptions(data.promiseData.error, error)}
-  <div
-   {@attach triggerDismiss}
-   role="status"
-   aria-live="assertive"
-   aria-atomic="true"
-   data-state="open"
-   data-type="error"
-   class={cn(
-    'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
-    styles.error
-   )}
-   onmouseenter={() => (isHovering = true)}
-   onmouseleave={() => (isHovering = false)}
-   in:scale|global={{ start: 0.95, opacity: 0, duration: 200 }}
-   out:fly|global={{ ...animationConfig.out, duration: 200 }}
-  >
-   {@render content(errorOpts, 'error')}
-  </div>
+  {#key 'error'}
+   <div
+    {@attach triggerDismiss}
+    role="status"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-state="open"
+    data-type="error"
+    class={cn(
+     'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all',
+     styles.error
+    )}
+    onmouseenter={() => (isHovering = true)}
+    onmouseleave={() => (isHovering = false)}
+    in:scale|global={{ start: 0.8, opacity: 0, duration: 300 }}
+    out:fly|global={{ ...animationConfig.out, duration: 200 }}
+   >
+    {@render content(errorOpts, 'error')}
+   </div>
+  {/key}
  {/await}
 {:else}
  <div
