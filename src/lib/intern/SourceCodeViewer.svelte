@@ -87,7 +87,7 @@
 {#if files.length > 0}
  <Dialog bind:open>
   <DialogContent
-   class="mx-2 flex h-[85vh] w-[95vw] max-w-6xl flex-col gap-0 overflow-hidden border border-border/50 bg-background p-0 shadow-2xl sm:rounded-xl"
+   class="mx-auto flex h-[85vh] w-[99%] flex-col gap-0 overflow-hidden border border-border/50 bg-background p-0 shadow-2xl sm:rounded-xl md:mx-2 md:w-[95vw] md:max-w-6xl"
   >
    <DialogHeader class="sr-only">
     <DialogTitle>Code: {componentName}</DialogTitle>

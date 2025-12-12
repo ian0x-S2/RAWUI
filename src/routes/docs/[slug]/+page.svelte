@@ -1,6 +1,5 @@
-<!-- src/routes/doc/[slug]/+page.svelte -->
 <script lang="ts">
- import { fade, fly } from 'svelte/transition';
+ import { fade } from 'svelte/transition';
  import type { PageData } from './$types';
  import TableOfContents from '$lib/intern/TableOfContents.svelte';
  import SourceCodeViewer from '$lib/intern/SourceCodeViewer.svelte';
@@ -72,12 +71,12 @@
  </svg>
 {/snippet}
 
-<div class="min-h-screen w-full bg-background text-foreground">
+<div class="min-h-screen bg-background text-foreground">
  <header
-  class="sticky top-0 z-40 mx-auto flex h-12 w-full shrink-0 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-md transition-all supports-backdrop-filter:bg-background/60"
+  class="sticky top-0 z-40 mx-auto flex h-12 w-full shrink-0 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-md transition-all"
  >
   <div class="flex items-center gap-2">
-   <SidebarTrigger class="h-8   w-8 border-none shadow-none hover:bg-background" />
+   <SidebarTrigger class="h-8 w-8 border-none shadow-none hover:bg-background" />
   </div>
 
   <div class="ml-auto">
@@ -87,11 +86,9 @@
   </div>
  </header>
 
- <div class="mx-auto max-w-6xl px-6 py-8 lg:px-8 lg:py-12">
+ <div class="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
   <div class="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_220px]">
-   <!-- MAIN -->
    <main class="min-w-0" in:fade={{ duration: 150 }}>
-    <!-- Header do Artigo -->
     <header class="mb-12">
      <nav class="mb-6 flex items-center gap-1.5 text-sm text-muted-foreground">
       <a href="/docs" class="transition-colors hover:text-foreground">Docs</a>
@@ -147,16 +144,17 @@
 
     <article
      class="prose max-w-none prose-neutral dark:prose-invert
-      prose-headings:font-semibold prose-headings:tracking-tight
-      prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-xl prose-h2:font-semibold
-      prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-lg
-      prose-p:leading-relaxed prose-p:text-muted-foreground
-      prose-a:font-medium prose-a:text-foreground prose-a:underline prose-a:decoration-muted-foreground/40 prose-a:underline-offset-4 hover:prose-a:decoration-foreground
-      prose-strong:font-medium prose-strong:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[13px] prose-code:font-normal
-      prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-lg
-      prose-pre:bg-zinc-950
-      prose-pre:text-sm
-      prose-li:text-muted-foreground prose-img:rounded-lg"
+          prose-headings:font-semibold prose-headings:tracking-tight
+          prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-xl prose-h2:font-semibold
+          prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-lg
+          prose-p:leading-relaxed prose-p:text-muted-foreground
+          prose-a:font-medium prose-a:text-foreground prose-a:underline prose-a:decoration-muted-foreground/40 prose-a:underline-offset-4 hover:prose-a:decoration-foreground
+          prose-strong:font-medium prose-strong:text-foreground
+          prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[13px] prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
+          prose-pre:rounded-lg prose-pre:bg-zinc-950 prose-pre:text-sm
+          prose-li:text-muted-foreground prose-table:block
+
+          prose-table:w-full prose-table:overflow-x-auto prose-table:text-sm prose-table:whitespace-nowrap prose-img:rounded-lg"
     >
      {#key data.meta.title}
       <data.content />
